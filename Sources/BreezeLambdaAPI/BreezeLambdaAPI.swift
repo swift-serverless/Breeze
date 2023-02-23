@@ -17,15 +17,23 @@ import AWSLambdaEvents
 import AWSLambdaRuntimeCore
 import BreezeDynamoDBService
 import SotoDynamoDB
+import Foundation
 
-public struct BreezeLambdaAPI<T: BreezeCodable>: LambdaHandler {
+public extension LambdaInitializationContext {
+    enum DynamoDB {
+        public static var Service: BreezeDynamoDBServing.Type = BreezeDynamoDBService.self
+        public static var dbTimeout: Int64 = 30
+    }
+}
+
+public class BreezeLambdaAPI<T: BreezeCodable>: LambdaHandler {
     public typealias Event = APIGatewayV2Request
     public typealias Output = APIGatewayV2Response
 
-    let dbTimeout: Int64 = 30
+    let dbTimeout: Int64
     let region: Region
     let db: SotoDynamoDB.DynamoDB
-    let service: BreezeDynamoDBService<T>
+    let service: BreezeDynamoDBServing
     let tableName: String
     let keyName: String
     let operation: BreezeOperation
@@ -54,7 +62,7 @@ public struct BreezeLambdaAPI<T: BreezeCodable>: LambdaHandler {
         return tableName
     }
 
-    public init(context: LambdaInitializationContext) async throws {
+    required public init(context: LambdaInitializationContext) async throws {
         guard let handler = Lambda.env("_HANDLER"),
               let operation = BreezeOperation(handler: handler)
         else {
@@ -62,6 +70,7 @@ public struct BreezeLambdaAPI<T: BreezeCodable>: LambdaHandler {
         }
         self.operation = operation
         self.region = Self.currentRegion()
+        self.dbTimeout = LambdaInitializationContext.DynamoDB.dbTimeout
 
         let lambdaRuntimeTimeout: TimeAmount = .seconds(dbTimeout)
         let timeout = HTTPClient.Configuration.Timeout(
@@ -80,11 +89,21 @@ public struct BreezeLambdaAPI<T: BreezeCodable>: LambdaHandler {
         self.tableName = try Self.tableName()
         self.keyName = try Self.keyName()
 
-        self.service = BreezeDynamoDBService<T>(
+        self.service = LambdaInitializationContext.DynamoDB.Service.init(
             db: self.db,
             tableName: self.tableName,
             keyName: self.keyName
         )
+        
+        context.terminator.register(name: "shutdown") { eventLoop in
+            let promise = eventLoop.makePromise(of: Void.self)
+            Task {
+                try awsClient.syncShutdown()
+                try await self.httpClient.shutdown()
+                promise.succeed()
+            }
+            return promise.futureResult
+        }
     }
 
     public func handle(_ event: AWSLambdaEvents.APIGatewayV2Request, context: AWSLambdaRuntimeCore.LambdaContext) async throws -> AWSLambdaEvents.APIGatewayV2Response {

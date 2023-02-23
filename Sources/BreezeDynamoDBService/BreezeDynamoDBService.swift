@@ -16,7 +16,7 @@ import struct Foundation.Date
 import NIO
 import SotoDynamoDB
 
-public class BreezeDynamoDBService<T: BreezeCodable> {
+public class BreezeDynamoDBService: BreezeDynamoDBServing {
     enum ServiceError: Error {
         case notFound
     }
@@ -25,7 +25,7 @@ public class BreezeDynamoDBService<T: BreezeCodable> {
     public let keyName: String
     let tableName: String
 
-    public init(db: DynamoDB, tableName: String, keyName: String) {
+    required public init(db: DynamoDB, tableName: String, keyName: String) {
         self.db = db
         self.tableName = tableName
         self.keyName = keyName
@@ -33,7 +33,7 @@ public class BreezeDynamoDBService<T: BreezeCodable> {
 }
 
 public extension BreezeDynamoDBService {
-    func createItem(item: T) async throws -> T {
+    func createItem<T: BreezeCodable>(item: T) async throws -> T {
         var item = item
         let date = Date()
         item.createdAt = date.iso8601
@@ -47,7 +47,7 @@ public extension BreezeDynamoDBService {
         return try await readItem(key: item.key)
     }
 
-    func readItem(key: String) async throws -> T {
+    func readItem<T: BreezeCodable>(key: String) async throws -> T {
         let input = DynamoDB.GetItemInput(
             key: [keyName: DynamoDB.AttributeValue.s(key)],
             tableName: tableName
@@ -59,7 +59,7 @@ public extension BreezeDynamoDBService {
         return item
     }
 
-    func updateItem(item: T) async throws -> T {
+    func updateItem<T: BreezeCodable>(item: T) async throws -> T {
         var item = item
         let date = Date()
         item.updatedAt = date.iso8601
@@ -82,12 +82,7 @@ public extension BreezeDynamoDBService {
         return
     }
 
-    struct ListResponse<T: Codable>: Codable {
-        let items: [T]
-        let lastEvaluatedKey: String?
-    }
-
-    func listItems(key: String?, limit: Int?) async throws -> ListResponse<T> {
+    func listItems<T: BreezeCodable>(key: String?, limit: Int?) async throws -> ListResponse<T> {
         var exclusiveStartKey: [String: DynamoDB.AttributeValue]?
         if let key {
             exclusiveStartKey = [keyName: DynamoDB.AttributeValue.s(key)]

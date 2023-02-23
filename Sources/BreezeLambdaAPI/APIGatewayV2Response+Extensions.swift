@@ -26,14 +26,14 @@ extension APIGatewayV2Response {
         "Access-Control-Allow-Methods": "OPTIONS,GET,POST,PUT,DELETE",
         "Access-Control-Allow-Credentials": "true",
     ]
+    
+    struct BodyError: Codable {
+        let error: String
+    }
 
     init(with error: Error, statusCode: AWSLambdaEvents.HTTPResponseStatus) {
-        self.init(
-            statusCode: statusCode,
-            headers: APIGatewayV2Response.defaultHeaders,
-            body: "{\"message\":\"\(String(describing: error))\"}",
-            isBase64Encoded: false
-        )
+        let bodyError = BodyError(error: String(describing: error))
+        self.init(with: bodyError, statusCode: statusCode)
     }
 
     init<Output: Encodable>(with object: Output, statusCode: AWSLambdaEvents.HTTPResponseStatus) {

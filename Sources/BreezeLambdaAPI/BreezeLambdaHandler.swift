@@ -21,7 +21,7 @@ struct BreezeLambdaHandler<T: BreezeCodable> {
     typealias Event = APIGatewayV2Request
     typealias Output = APIGatewayV2Response
 
-    let service: BreezeDynamoDBService<T>
+    let service: BreezeDynamoDBServing
     let operation: BreezeOperation
 
     var keyName: String {
@@ -49,7 +49,7 @@ struct BreezeLambdaHandler<T: BreezeCodable> {
             return APIGatewayV2Response(with: error, statusCode: .forbidden)
         }
         do {
-            let result = try await service.createItem(item: item)
+            let result: T = try await service.createItem(item: item)
             return APIGatewayV2Response(with: result, statusCode: .created)
         } catch {
             return APIGatewayV2Response(with: error, statusCode: .forbidden)
@@ -62,7 +62,7 @@ struct BreezeLambdaHandler<T: BreezeCodable> {
             return APIGatewayV2Response(with: error, statusCode: .forbidden)
         }
         do {
-            let result = try await service.readItem(key: key)
+            let result: T = try await service.readItem(key: key)
             return APIGatewayV2Response(with: result, statusCode: .ok)
         } catch {
             return APIGatewayV2Response(with: error, statusCode: .notFound)
@@ -75,7 +75,7 @@ struct BreezeLambdaHandler<T: BreezeCodable> {
             return APIGatewayV2Response(with: error, statusCode: .forbidden)
         }
         do {
-            let result = try await service.updateItem(item: item)
+            let result: T = try await service.updateItem(item: item)
             return APIGatewayV2Response(with: result, statusCode: .ok)
         } catch {
             return APIGatewayV2Response(with: error, statusCode: .notFound)
@@ -99,7 +99,7 @@ struct BreezeLambdaHandler<T: BreezeCodable> {
         do {
             let key = event.pathParameters?["exclusiveStartKey"]
             let limit: Int? = event.pathParameter("limit")
-            let result = try await service.listItems(key: key, limit: limit)
+            let result: ListResponse<T> = try await service.listItems(key: key, limit: limit)
             return APIGatewayV2Response(with: result, statusCode: .ok)
         } catch {
             return APIGatewayV2Response(with: error, statusCode: .forbidden)
