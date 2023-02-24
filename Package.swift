@@ -45,7 +45,8 @@ let package = Package(
             dependencies: [
                 .product(name: "AWSLambdaTesting", package: "swift-aws-lambda-runtime"),
                 "BreezeLambdaAPI"
-            ]
+            ],
+            resources: [.copy("Fixtures")]
         ),
         .testTarget(
             name: "BreezeDynamoDBServiceTests",

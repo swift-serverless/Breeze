@@ -14,12 +14,13 @@
 
 import Foundation
 
-public struct ListResponse<Item: Codable>: Codable {
-    public init(items: [Item], lastEvaluatedKey: String? = nil) {
-        self.items = items
-        self.lastEvaluatedKey = lastEvaluatedKey
-    }
+func setEnvironmentVar(name: String, value: String, overwrite: Bool) {
+    setenv(name, value, overwrite ? 1 : 0)
+}
 
-    public let items: [Item]
-    public let lastEvaluatedKey: String?
+func fixture(name: String, type: String) throws -> Data {
+    guard let fixtureUrl = Bundle.module.url(forResource: name, withExtension: type, subdirectory: "Fixtures") else {
+        throw TestError.missingFixture
+    }
+    return try Data(contentsOf: fixtureUrl)
 }

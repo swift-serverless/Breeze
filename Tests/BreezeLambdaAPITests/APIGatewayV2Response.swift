@@ -12,14 +12,13 @@
 //    See the License for the specific language governing permissions and
 //    limitations under the License.
 
+import AWSLambdaEvents
 import Foundation
 
-public struct ListResponse<Item: Codable>: Codable {
-    public init(items: [Item], lastEvaluatedKey: String? = nil) {
-        self.items = items
-        self.lastEvaluatedKey = lastEvaluatedKey
+extension APIGatewayV2Response {
+    func decodeBody<Out: Decodable>() throws -> Out {
+        let decoder = JSONDecoder()
+        let data = body?.data(using: .utf8) ?? Data()
+        return try decoder.decode(Out.self, from: data)
     }
-
-    public let items: [Item]
-    public let lastEvaluatedKey: String?
 }

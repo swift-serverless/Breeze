@@ -12,14 +12,25 @@
 //    See the License for the specific language governing permissions and
 //    limitations under the License.
 
+import BreezeDynamoDBService
 import Foundation
 
-public struct ListResponse<Item: Codable>: Codable {
-    public init(items: [Item], lastEvaluatedKey: String? = nil) {
-        self.items = items
-        self.lastEvaluatedKey = lastEvaluatedKey
-    }
+struct Product: BreezeCodable {
+    var key: String
+    let name: String
+    let description: String
+    var createdAt: String?
+    var updatedAt: String?
 
-    public let items: [Item]
-    public let lastEvaluatedKey: String?
+    enum CodingKeys: String, CodingKey {
+        case key = "sku"
+        case name
+        case description
+        case createdAt
+        case updatedAt
+    }
+}
+
+enum TestError: Error {
+    case missingFixture
 }

@@ -16,8 +16,8 @@ import AsyncHTTPClient
 import AWSLambdaEvents
 import AWSLambdaRuntimeCore
 import BreezeDynamoDBService
-import SotoDynamoDB
 import Foundation
+import SotoDynamoDB
 
 public extension LambdaInitializationContext {
     enum DynamoDB {
@@ -62,7 +62,7 @@ public class BreezeLambdaAPI<T: BreezeCodable>: LambdaHandler {
         return tableName
     }
 
-    required public init(context: LambdaInitializationContext) async throws {
+    public required init(context: LambdaInitializationContext) async throws {
         guard let handler = Lambda.env("_HANDLER"),
               let operation = BreezeOperation(handler: handler)
         else {
@@ -89,12 +89,12 @@ public class BreezeLambdaAPI<T: BreezeCodable>: LambdaHandler {
         self.tableName = try Self.tableName()
         self.keyName = try Self.keyName()
 
-        self.service = LambdaInitializationContext.DynamoDB.Service.init(
+        self.service = LambdaInitializationContext.DynamoDB.Service(
             db: self.db,
             tableName: self.tableName,
             keyName: self.keyName
         )
-        
+
         context.terminator.register(name: "shutdown") { eventLoop in
             let promise = eventLoop.makePromise(of: Void.self)
             Task {

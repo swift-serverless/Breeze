@@ -26,7 +26,7 @@ extension APIGatewayV2Response {
         "Access-Control-Allow-Methods": "OPTIONS,GET,POST,PUT,DELETE",
         "Access-Control-Allow-Credentials": "true",
     ]
-    
+
     struct BodyError: Codable {
         let error: String
     }

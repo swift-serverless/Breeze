@@ -25,7 +25,7 @@ public class BreezeDynamoDBService: BreezeDynamoDBServing {
     public let keyName: String
     let tableName: String
 
-    required public init(db: DynamoDB, tableName: String, keyName: String) {
+    public required init(db: DynamoDB, tableName: String, keyName: String) {
         self.db = db
         self.tableName = tableName
         self.keyName = keyName
