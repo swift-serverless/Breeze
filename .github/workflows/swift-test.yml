@@ -7,12 +7,28 @@ on:
       - main
   pull_request:
 
+env:
+  AWS_ACCESS_KEY_ID : ${{ secrets.AWS_ACCESS_KEY_ID }}
+  AWS_SECRET_ACCESS_KEY : ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+  AWS_DISABLE_LOCALSTACK : "false"
+  AWS_ENABLE_LOGGING : "true"
+  AWS_LOG_LEVEL: "trace"
+
 jobs:
   swift-tests:
     name: 'Swift Tests'
     runs-on: ubuntu-latest
-    container: swift:5.7-jammy
-  
+    strategy:
+      matrix:
+        image:
+          - swift:5.7.2
+    services:
+      localstack:
+        image: localstack/localstack
+    container: 
+      image: ${{ matrix.image }}
+      env:
+        LOCALSTACK_ENDPOINT : "http://localstack:4566"
      # Use the Bash shell regardless whether the GitHub Actions runner is ubuntu-latest, macos-latest, or windows-latest
     defaults:
       run:
@@ -22,7 +38,10 @@ jobs:
       # Checkout the repository to the GitHub Actions runner
       - name: Checkout
         uses: actions/checkout@v3
-
-      # Run tests with Thread Sanitizer https://www.swift.org/blog/tsan-support-on-linux/
-      - name: Run tests with Thread Sanitizer
-        run: swift test --sanitize=thread
+      - name: Test Resource Prefix
+        # set AWS_TEST_RESOURCE_PREFIX environment variable to a random series of 8 letters
+        run: |
+          echo AWS_TEST_RESOURCE_PREFIX=$(cat /dev/urandom | tr -dc 'a-z' | head -c 8) >> $GITHUB_ENV
+      - name: Test
+        run: |
+          swift test --sanitize=thread
