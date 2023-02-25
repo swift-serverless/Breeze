@@ -97,8 +97,8 @@ struct BreezeLambdaHandler<T: BreezeCodable> {
 
     func listLambdaHandler(context: AWSLambdaRuntimeCore.LambdaContext, event: APIGatewayV2Request) async -> APIGatewayV2Response {
         do {
-            let key = event.pathParameters?["exclusiveStartKey"]
-            let limit: Int? = event.pathParameter("limit")
+            let key = event.queryStringParameters?["exclusiveStartKey"]
+            let limit: Int? = event.queryStringParameter("limit")
             let result: ListResponse<T> = try await service.listItems(key: key, limit: limit)
             return APIGatewayV2Response(with: result, statusCode: .ok)
         } catch {

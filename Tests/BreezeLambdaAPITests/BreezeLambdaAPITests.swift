@@ -20,6 +20,7 @@ import BreezeDynamoDBService
 import XCTest
 
 final class BreezeLambdaAPITests: XCTestCase {
+    
     let decoder = JSONDecoder()
 
     override func setUpWithError() throws {
@@ -32,129 +33,246 @@ final class BreezeLambdaAPITests: XCTestCase {
     }
 
     override func tearDownWithError() throws {
+        unsetenv("LOCAL_LAMBDA_SERVER_ENABLED")
+        unsetenv("AWS_REGION")
+        unsetenv("DYNAMO_DB_TABLE_NAME")
+        unsetenv("DYNAMO_DB_KEY")
+        unsetenv("_HANDLER")
         LambdaInitializationContext.DynamoDB.Service = BreezeDynamoDBService.self
         LambdaInitializationContext.DynamoDB.dbTimeout = 30
         BreezeDynamoDBServiceMock.reset()
     }
+    
+    func test_initWhenMissing_AWS_REGION_thenDefaultRegion() async throws {
+        unsetenv("AWS_REGION")
+        setEnvironmentVar(name: "_HANDLER", value: "build/Products.create", overwrite: true)
+        BreezeDynamoDBServiceMock.response = Fixtures.product2023
+        let createRequest = try Fixtures.fixture(name: Fixtures.postProductsRequest, type: "json")
+        let request = try decoder.decode(APIGatewayV2Request.self, from: createRequest)
+        _ = try await Lambda.test(BreezeLambdaAPI<Product>.self, with: request)
+    }
 
-    let postProductsRequest = "post_products_api_gtw"
-
-    let getProductsSkuRequest = "get_products_sku_api_gtw"
-
-    let putProductsRequest = "put_products_api_gtw"
-
-    let deleteProductsSkuRequest = "delete_products_sku_api_gtw"
-
-    let getProductsRequest = "get_products_api_gtw"
-
-    let product2022 = Product(key: "2022", name: "Swift Serverless API with async/await! 🚀🥳", description: "Swift Serverless API is MAGIC 🪄!")
-    let product2023 = Product(key: "2023", name: "Swift Serverless API with async/await! 🚀🥳", description: "Swift Serverless API is MAGIC 🪄!")
-
+    func test_initWhenMissing__HANDLER_thenThrowError() async throws {
+        BreezeDynamoDBServiceMock.response = Fixtures.product2023
+        let createRequest = try Fixtures.fixture(name: Fixtures.postProductsRequest, type: "json")
+        let request = try decoder.decode(APIGatewayV2Request.self, from: createRequest)
+        do {
+            _ = try await Lambda.test(BreezeLambdaAPI<Product>.self, with: request)
+            XCTFail("It should throw an Error when _HANDLER is missing")
+        } catch BreezeLambdaAPIError.invalidHandler {
+            XCTAssert(true)
+        } catch {
+            XCTFail("Is should throw an BreezeLambdaAPIError.invalidHandler")
+        }
+    }
+    
+    func test_initWhenInvalid__HANDLER_thenThrowError() async throws {
+        setEnvironmentVar(name: "_HANDLER", value: "build/Products.c", overwrite: true)
+        BreezeDynamoDBServiceMock.response = Fixtures.product2023
+        let createRequest = try Fixtures.fixture(name: Fixtures.postProductsRequest, type: "json")
+        let request = try decoder.decode(APIGatewayV2Request.self, from: createRequest)
+        do {
+            _ = try await Lambda.test(BreezeLambdaAPI<Product>.self, with: request)
+            XCTFail("It should throw an Error when _HANDLER is invalid")
+        } catch BreezeLambdaAPIError.invalidHandler {
+            XCTAssert(true)
+        } catch {
+            XCTFail("Is should throw an BreezeLambdaAPIError.invalidHandler")
+        }
+    }
+    
+    func test_initWhenMissing_DYNAMO_DB_TABLE_NAME_thenThrowError() async throws {
+        unsetenv("DYNAMO_DB_TABLE_NAME")
+        setEnvironmentVar(name: "_HANDLER", value: "build/Products.create", overwrite: true)
+        BreezeDynamoDBServiceMock.response = Fixtures.product2023
+        let createRequest = try Fixtures.fixture(name: Fixtures.postProductsRequest, type: "json")
+        let request = try decoder.decode(APIGatewayV2Request.self, from: createRequest)
+        do {
+            _ = try await Lambda.test(BreezeLambdaAPI<Product>.self, with: request)
+            XCTFail("It should throw an Error when DYNAMO_DB_TABLE_NAME is missing")
+        } catch BreezeLambdaAPIError.tableNameNotFound {
+            XCTAssert(true)
+        } catch {
+            XCTFail("Is should throw an BreezeLambdaAPIError.tableNameNotFound")
+        }
+    }
+    
+    func test_initWhenMissing_DYNAMO_DB_KEY_thenThrowError() async throws {
+        unsetenv("DYNAMO_DB_KEY")
+        setEnvironmentVar(name: "_HANDLER", value: "build/Products.create", overwrite: true)
+        BreezeDynamoDBServiceMock.response = Fixtures.product2023
+        let createRequest = try Fixtures.fixture(name: Fixtures.postProductsRequest, type: "json")
+        let request = try decoder.decode(APIGatewayV2Request.self, from: createRequest)
+        do {
+            _ = try await Lambda.test(BreezeLambdaAPI<Product>.self, with: request)
+            XCTFail("It should throw an Error when DYNAMO_DB_KEY is missing")
+        } catch BreezeLambdaAPIError.keyNameNotFound {
+            XCTAssert(true)
+        } catch {
+            XCTFail("Is should throw an BreezeLambdaAPIError.keyNameNotFound")
+        }
+    }
+    
     func test_create() async throws {
         setEnvironmentVar(name: "_HANDLER", value: "build/Products.create", overwrite: true)
-        BreezeDynamoDBServiceMock.response = self.product2023
-        let createRequest = try fixture(name: postProductsRequest, type: "json")
+        BreezeDynamoDBServiceMock.response = Fixtures.product2023
+        let createRequest = try Fixtures.fixture(name: Fixtures.postProductsRequest, type: "json")
         let request = try decoder.decode(APIGatewayV2Request.self, from: createRequest)
         let apiResponse: APIGatewayV2Response = try await Lambda.test(BreezeLambdaAPI<Product>.self, with: request)
         let response: Product = try apiResponse.decodeBody()
+        XCTAssertEqual(apiResponse.statusCode, .created)
         XCTAssertEqual(response.key, "2023")
         XCTAssertEqual(response.name, "Swift Serverless API with async/await! 🚀🥳")
-        XCTAssertEqual(response.description, "Swift Serverless API is MAGIC 🪄!")
+        XCTAssertEqual(response.description, "BreezeLambaAPI is magic 🪄!")
     }
 
-    func test_create_whenMissingItem_thenError() async throws {
+    func test_create_whenInvalidItem_thenError() async throws {
         setEnvironmentVar(name: "_HANDLER", value: "build/Products.create", overwrite: true)
         BreezeDynamoDBServiceMock.response = nil
-        let createRequest = try fixture(name: postProductsRequest, type: "json")
+        let createRequest = try Fixtures.fixture(name: Fixtures.postInvalidRequest, type: "json")
         let request = try decoder.decode(APIGatewayV2Request.self, from: createRequest)
         let apiResponse: APIGatewayV2Response = try await Lambda.test(BreezeLambdaAPI<Product>.self, with: request)
         let response: APIGatewayV2Response.BodyError = try apiResponse.decodeBody()
+        XCTAssertEqual(apiResponse.statusCode, .forbidden)
+        XCTAssertEqual(response.error, "invalidRequest")
+    }
+    
+    func test_create_whenMissingItem_thenError() async throws {
+        setEnvironmentVar(name: "_HANDLER", value: "build/Products.create", overwrite: true)
+        BreezeDynamoDBServiceMock.response = nil
+        let createRequest = try Fixtures.fixture(name: Fixtures.postProductsRequest, type: "json")
+        let request = try decoder.decode(APIGatewayV2Request.self, from: createRequest)
+        let apiResponse: APIGatewayV2Response = try await Lambda.test(BreezeLambdaAPI<Product>.self, with: request)
+        let response: APIGatewayV2Response.BodyError = try apiResponse.decodeBody()
+        XCTAssertEqual(apiResponse.statusCode, .forbidden)
         XCTAssertEqual(response.error, "invalidRequest")
     }
 
     func test_read() async throws {
         setEnvironmentVar(name: "_HANDLER", value: "build/Products.read", overwrite: true)
-        BreezeDynamoDBServiceMock.keyedResponse = self.product2023
-        let readRequest = try fixture(name: getProductsSkuRequest, type: "json")
+        BreezeDynamoDBServiceMock.keyedResponse = Fixtures.product2023
+        let readRequest = try Fixtures.fixture(name: Fixtures.getProductsSkuRequest, type: "json")
         let request = try decoder.decode(APIGatewayV2Request.self, from: readRequest)
         let apiResponse: APIGatewayV2Response = try await Lambda.test(BreezeLambdaAPI<Product>.self, with: request)
         let response: Product = try apiResponse.decodeBody()
+        XCTAssertEqual(apiResponse.statusCode, .ok)
         XCTAssertEqual(response.key, "2023")
         XCTAssertEqual(response.name, "Swift Serverless API with async/await! 🚀🥳")
-        XCTAssertEqual(response.description, "Swift Serverless API is MAGIC 🪄!")
+        XCTAssertEqual(response.description, "BreezeLambaAPI is magic 🪄!")
+    }
+    
+    func test_read_whenInvalidRequest_thenError() async throws {
+        setEnvironmentVar(name: "_HANDLER", value: "build/Products.read", overwrite: true)
+        BreezeDynamoDBServiceMock.keyedResponse = Fixtures.product2023
+        let readRequest = try Fixtures.fixture(name: Fixtures.getInvalidRequest, type: "json")
+        let request = try decoder.decode(APIGatewayV2Request.self, from: readRequest)
+        let apiResponse: APIGatewayV2Response = try await Lambda.test(BreezeLambdaAPI<Product>.self, with: request)
+        let response: APIGatewayV2Response.BodyError = try apiResponse.decodeBody()
+        XCTAssertEqual(apiResponse.statusCode, .forbidden)
+        XCTAssertEqual(response.error, "invalidRequest")
     }
 
     func test_read_whenMissingItem_thenError() async throws {
         setEnvironmentVar(name: "_HANDLER", value: "build/Products.read", overwrite: true)
-        BreezeDynamoDBServiceMock.keyedResponse = self.product2022
-        let readRequest = try fixture(name: getProductsSkuRequest, type: "json")
+        BreezeDynamoDBServiceMock.keyedResponse = Fixtures.product2022
+        let readRequest = try Fixtures.fixture(name: Fixtures.getProductsSkuRequest, type: "json")
         let request = try decoder.decode(APIGatewayV2Request.self, from: readRequest)
         let apiResponse: APIGatewayV2Response = try await Lambda.test(BreezeLambdaAPI<Product>.self, with: request)
         let response: APIGatewayV2Response.BodyError = try apiResponse.decodeBody()
+        XCTAssertEqual(apiResponse.statusCode, .notFound)
         XCTAssertEqual(response.error, "invalidRequest")
     }
 
     func test_update() async throws {
         setEnvironmentVar(name: "_HANDLER", value: "build/Products.update", overwrite: true)
-        BreezeDynamoDBServiceMock.keyedResponse = self.product2023
-        let updateRequest = try fixture(name: putProductsRequest, type: "json")
+        BreezeDynamoDBServiceMock.keyedResponse = Fixtures.product2023
+        let updateRequest = try Fixtures.fixture(name: Fixtures.putProductsRequest, type: "json")
         let request = try decoder.decode(APIGatewayV2Request.self, from: updateRequest)
         let apiResponse: APIGatewayV2Response = try await Lambda.test(BreezeLambdaAPI<Product>.self, with: request)
         let response: Product = try apiResponse.decodeBody()
+        XCTAssertEqual(apiResponse.statusCode, .ok)
         XCTAssertEqual(response.key, "2023")
         XCTAssertEqual(response.name, "Swift Serverless API with async/await! 🚀🥳")
-        XCTAssertEqual(response.description, "Swift Serverless API is MAGIC 🪄!")
+        XCTAssertEqual(response.description, "BreezeLambaAPI is magic 🪄!")
+    }
+    
+    func test_update_whenInvalidRequest_thenError() async throws {
+        setEnvironmentVar(name: "_HANDLER", value: "build/Products.update", overwrite: true)
+        BreezeDynamoDBServiceMock.keyedResponse = Fixtures.product2023
+        let updateRequest = try Fixtures.fixture(name: Fixtures.getInvalidRequest, type: "json")
+        let request = try decoder.decode(APIGatewayV2Request.self, from: updateRequest)
+        let apiResponse: APIGatewayV2Response = try await Lambda.test(BreezeLambdaAPI<Product>.self, with: request)
+        let response: APIGatewayV2Response.BodyError = try apiResponse.decodeBody()
+        XCTAssertEqual(apiResponse.statusCode, .forbidden)
+        XCTAssertEqual(response.error, "invalidRequest")
     }
 
     func test_update_whenMissingItem_thenError() async throws {
         setEnvironmentVar(name: "_HANDLER", value: "build/Products.update", overwrite: true)
-        BreezeDynamoDBServiceMock.keyedResponse = self.product2022
-        let updateRequest = try fixture(name: putProductsRequest, type: "json")
+        BreezeDynamoDBServiceMock.keyedResponse = Fixtures.product2022
+        let updateRequest = try Fixtures.fixture(name: Fixtures.putProductsRequest, type: "json")
         let request = try decoder.decode(APIGatewayV2Request.self, from: updateRequest)
         let apiResponse: APIGatewayV2Response = try await Lambda.test(BreezeLambdaAPI<Product>.self, with: request)
         let response: APIGatewayV2Response.BodyError = try apiResponse.decodeBody()
+        XCTAssertEqual(apiResponse.statusCode, .notFound)
         XCTAssertEqual(response.error, "invalidRequest")
     }
 
     func test_delete() async throws {
         setEnvironmentVar(name: "_HANDLER", value: "build/Products.delete", overwrite: true)
-        BreezeDynamoDBServiceMock.keyedResponse = self.product2023
-        let deleteProductsSku = try fixture(name: deleteProductsSkuRequest, type: "json")
+        BreezeDynamoDBServiceMock.keyedResponse = Fixtures.product2023
+        let deleteProductsSku = try Fixtures.fixture(name: Fixtures.deleteProductsSkuRequest, type: "json")
         let request = try decoder.decode(APIGatewayV2Request.self, from: deleteProductsSku)
         let apiResponse: APIGatewayV2Response = try await Lambda.test(BreezeLambdaAPI<Product>.self, with: request)
         let response: BreezeEmptyResponse = try apiResponse.decodeBody()
+        XCTAssertEqual(apiResponse.statusCode, .ok)
+        XCTAssertNotNil(response)
+    }
+    
+    func test_delete_whenInvalidRequest_thenError() async throws {
+        setEnvironmentVar(name: "_HANDLER", value: "build/Products.delete", overwrite: true)
+        BreezeDynamoDBServiceMock.keyedResponse = Fixtures.product2023
+        let deleteProductsSku = try Fixtures.fixture(name: Fixtures.getInvalidRequest, type: "json")
+        let request = try decoder.decode(APIGatewayV2Request.self, from: deleteProductsSku)
+        let apiResponse: APIGatewayV2Response = try await Lambda.test(BreezeLambdaAPI<Product>.self, with: request)
+        let response: APIGatewayV2Response.BodyError = try apiResponse.decodeBody()
+        XCTAssertEqual(apiResponse.statusCode, .forbidden)
+        XCTAssertEqual(response.error, "invalidRequest")
     }
 
     func test_delete_whenMissingItem_thenError() async throws {
         setEnvironmentVar(name: "_HANDLER", value: "build/Products.delete", overwrite: true)
-        BreezeDynamoDBServiceMock.keyedResponse = self.product2022
-        let deleteProductsSku = try fixture(name: deleteProductsSkuRequest, type: "json")
+        BreezeDynamoDBServiceMock.keyedResponse = Fixtures.product2022
+        let deleteProductsSku = try Fixtures.fixture(name: Fixtures.deleteProductsSkuRequest, type: "json")
         let request = try decoder.decode(APIGatewayV2Request.self, from: deleteProductsSku)
         let apiResponse: APIGatewayV2Response = try await Lambda.test(BreezeLambdaAPI<Product>.self, with: request)
         let response: APIGatewayV2Response.BodyError = try apiResponse.decodeBody()
+        XCTAssertEqual(apiResponse.statusCode, .notFound)
         XCTAssertEqual(response.error, "invalidRequest")
     }
 
     func test_list() async throws {
         setEnvironmentVar(name: "_HANDLER", value: "build/Products.list", overwrite: true)
-        BreezeDynamoDBServiceMock.response = self.product2023
-        let listRequest = try fixture(name: getProductsRequest, type: "json")
+        BreezeDynamoDBServiceMock.response = Fixtures.product2023
+        let listRequest = try Fixtures.fixture(name: Fixtures.getProductsRequest, type: "json")
         let request = try decoder.decode(APIGatewayV2Request.self, from: listRequest)
         let apiResponse: APIGatewayV2Response = try await Lambda.test(BreezeLambdaAPI<Product>.self, with: request)
         let response: ListResponse<Product> = try apiResponse.decodeBody()
         let item = try XCTUnwrap(response.items.first)
+        XCTAssertEqual(apiResponse.statusCode, .ok)
         XCTAssertEqual(item.key, "2023")
         XCTAssertEqual(item.name, "Swift Serverless API with async/await! 🚀🥳")
-        XCTAssertEqual(item.description, "Swift Serverless API is MAGIC 🪄!")
+        XCTAssertEqual(item.description, "BreezeLambaAPI is magic 🪄!")
     }
 
     func test_list_whenError() async throws {
         setEnvironmentVar(name: "_HANDLER", value: "build/Products.list", overwrite: true)
         BreezeDynamoDBServiceMock.response = nil
-        let listRequest = try fixture(name: getProductsRequest, type: "json")
+        let listRequest = try Fixtures.fixture(name: Fixtures.getProductsRequest, type: "json")
         let request = try decoder.decode(APIGatewayV2Request.self, from: listRequest)
         let apiResponse: APIGatewayV2Response = try await Lambda.test(BreezeLambdaAPI<Product>.self, with: request)
         let response: APIGatewayV2Response.BodyError = try apiResponse.decodeBody()
+        XCTAssertEqual(apiResponse.statusCode, .forbidden)
         XCTAssertEqual(response.error, "invalidItem")
     }
 }

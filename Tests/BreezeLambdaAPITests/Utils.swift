@@ -18,9 +18,3 @@ func setEnvironmentVar(name: String, value: String, overwrite: Bool) {
     setenv(name, value, overwrite ? 1 : 0)
 }
 
-func fixture(name: String, type: String) throws -> Data {
-    guard let fixtureUrl = Bundle.module.url(forResource: name, withExtension: type, subdirectory: "Fixtures") else {
-        throw TestError.missingFixture
-    }
-    return try Data(contentsOf: fixtureUrl)
-}

@@ -16,8 +16,8 @@ import struct AWSLambdaEvents.APIGatewayV2Request
 import class Foundation.JSONDecoder
 
 extension APIGatewayV2Request {
-    public func pathParameter(_ param: String) -> Int? {
-        guard let value = pathParameters?[param] else {
+    public func queryStringParameter(_ param: String) -> Int? {
+        guard let value = queryStringParameters?[param] else {
             return nil
         }
         return Int(value)

@@ -69,8 +69,15 @@ public class BreezeLambdaAPI<T: BreezeCodable>: LambdaHandler {
             throw BreezeLambdaAPIError.invalidHandler
         }
         self.operation = operation
+        context.logger.info("operation: \(operation)")
         self.region = Self.currentRegion()
+        context.logger.info("region: \(region)")
         self.dbTimeout = LambdaInitializationContext.DynamoDB.dbTimeout
+        context.logger.info("dbTimeout: \(dbTimeout)")
+        self.tableName = try Self.tableName()
+        context.logger.info("tableName: \(tableName)")
+        self.keyName = try Self.keyName()
+        context.logger.info("keyName: \(keyName)")
 
         let lambdaRuntimeTimeout: TimeAmount = .seconds(dbTimeout)
         let timeout = HTTPClient.Configuration.Timeout(
@@ -86,21 +93,26 @@ public class BreezeLambdaAPI<T: BreezeCodable>: LambdaHandler {
 
         let awsClient = AWSClient(httpClientProvider: .shared(self.httpClient))
         self.db = SotoDynamoDB.DynamoDB(client: awsClient, region: self.region)
-        self.tableName = try Self.tableName()
-        self.keyName = try Self.keyName()
 
-        self.service = LambdaInitializationContext.DynamoDB.Service(
+        self.service = LambdaInitializationContext.DynamoDB.Service.init(
             db: self.db,
             tableName: self.tableName,
             keyName: self.keyName
         )
 
         context.terminator.register(name: "shutdown") { eventLoop in
+            context.logger.info("shutdown: started")
             let promise = eventLoop.makePromise(of: Void.self)
             Task {
-                try awsClient.syncShutdown()
-                try await self.httpClient.shutdown()
-                promise.succeed()
+                do {
+                    try awsClient.syncShutdown()
+                    try await self.httpClient.shutdown()
+                    promise.succeed()
+                    context.logger.info("shutdown: succeed")
+                } catch {
+                    promise.fail(error)
+                    context.logger.info("shutdown: fail")
+                }
             }
             return promise.futureResult
         }
