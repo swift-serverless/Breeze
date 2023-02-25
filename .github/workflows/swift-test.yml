@@ -1,0 +1,28 @@
+name: 'Run Swift Tests'
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+  pull_request:
+
+jobs:
+  swift-tests:
+    name: 'Swift Tests'
+    runs-on: ubuntu-latest
+    container: swift:5.7-jammy
+  
+     # Use the Bash shell regardless whether the GitHub Actions runner is ubuntu-latest, macos-latest, or windows-latest
+    defaults:
+      run:
+        shell: bash
+
+    steps:
+      # Checkout the repository to the GitHub Actions runner
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      # Run tests with Thread Sanitizer https://www.swift.org/blog/tsan-support-on-linux/
+      - name: Run tests with Thread Sanitizer
+        run: swift test --sanitize=thread
