@@ -17,7 +17,13 @@ import Logging
 
 enum LocalStackDynamoDB {
     
-    static let endpoint = "http://localstack:4566"
+    static var endpoint: String = {
+        if let localstack = getEnvironmentVar(name: "LOCALSTACK_ENDPOINT"),
+           !localstack.isEmpty {
+            return localstack
+        }
+        return "http://localhost:4566"
+    }()
 
     public static var logger: Logger = {
         if let loggingLevel = getEnvironmentVar(name: "AWS_LOG_LEVEL") {
