@@ -24,6 +24,7 @@ final class BreezeLambdaAPITests: XCTestCase {
     let decoder = JSONDecoder()
 
     override func setUpWithError() throws {
+        try super.setUpWithError()
         setEnvironmentVar(name: "LOCAL_LAMBDA_SERVER_ENABLED", value: "true", overwrite: true)
         setEnvironmentVar(name: "AWS_REGION", value: "eu-west-1", overwrite: true)
         setEnvironmentVar(name: "DYNAMO_DB_TABLE_NAME", value: "product-table", overwrite: true)
@@ -41,6 +42,7 @@ final class BreezeLambdaAPITests: XCTestCase {
         LambdaInitializationContext.DynamoDB.Service = BreezeDynamoDBService.self
         LambdaInitializationContext.DynamoDB.dbTimeout = 30
         BreezeDynamoDBServiceMock.reset()
+        try super.tearDownWithError()
     }
     
     func test_initWhenMissing_AWS_REGION_thenDefaultRegion() async throws {

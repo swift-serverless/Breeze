@@ -39,7 +39,6 @@ public extension BreezeDynamoDBService {
         item.createdAt = date.iso8601
         item.updatedAt = date.iso8601
         let input = DynamoDB.PutItemCodableInput(
-            conditionExpression: "attribute_not_exists(\(keyName))",
             item: item,
             tableName: tableName
         )
