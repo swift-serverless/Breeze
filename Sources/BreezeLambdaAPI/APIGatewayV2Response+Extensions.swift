@@ -18,24 +18,28 @@ import class Foundation.JSONEncoder
 
 extension APIGatewayV2Response {
     private static let encoder = JSONEncoder()
-
-    static let defaultHeaders = [
-        "Content-Type": "application/json",
-        // Security warning: XSS are enabled
-        "Access-Control-Allow-Origin": "*",
-        "Access-Control-Allow-Methods": "OPTIONS,GET,POST,PUT,DELETE",
-        "Access-Control-Allow-Credentials": "true",
-    ]
+    
+    /// defaultHeaders
+    /// Override the headers in APIGatewayV2Response
+    static var defaultHeaders = [ "Content-Type": "application/json" ]
 
     struct BodyError: Codable {
         let error: String
     }
-
+    
+    /// init
+    /// - Parameters:
+    ///   - error: Error
+    ///   - statusCode: HTTP Status Code
     init(with error: Error, statusCode: AWSLambdaEvents.HTTPResponseStatus) {
         let bodyError = BodyError(error: String(describing: error))
         self.init(with: bodyError, statusCode: statusCode)
     }
-
+    
+    /// init
+    /// - Parameters:
+    ///   - object: Encodable Object
+    ///   - statusCode: HTTP Status Code
     init<Output: Encodable>(with object: Output, statusCode: AWSLambdaEvents.HTTPResponseStatus) {
         var body = "{}"
         if let data = try? Self.encoder.encode(object) {

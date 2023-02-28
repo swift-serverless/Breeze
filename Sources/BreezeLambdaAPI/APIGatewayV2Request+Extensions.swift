@@ -16,6 +16,9 @@ import struct AWSLambdaEvents.APIGatewayV2Request
 import class Foundation.JSONDecoder
 
 extension APIGatewayV2Request {
+    /// queryStringParameter
+    /// - Parameter param: Query string parameter
+    /// - Returns: Query string Int value for parameter param if exists
     public func queryStringParameter(_ param: String) -> Int? {
         guard let value = queryStringParameters?[param] else {
             return nil
@@ -26,7 +29,9 @@ extension APIGatewayV2Request {
 
 extension APIGatewayV2Request {
     private static let decoder = JSONDecoder()
-
+    
+    /// Decodes the body of APIGatewayV2Request
+    /// - Returns: Codable Object
     public func bodyObject<T: Codable>() throws -> T {
         guard let body = self.body,
               let dataBody = body.data(using: .utf8)
