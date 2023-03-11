@@ -60,14 +60,20 @@ struct BreezeDynamoDBServiceMock: BreezeDynamoDBServing {
         return
     }
 
+    static var limit: Int?
+    static var exclusiveKey: String?
     func listItems<T: BreezeCodable>(key: String?, limit: Int?) async throws -> ListResponse<T> {
         guard let response = Self.response as? T else {
             throw BreezeLambdaAPIError.invalidItem
         }
-        return ListResponse(items: [response], lastEvaluatedKey: nil)
+        Self.limit = limit
+        Self.exclusiveKey = key
+        return ListResponse(items: [response], lastEvaluatedKey: key)
     }
 
     static func reset() {
+        Self.limit = nil
+        Self.exclusiveKey = nil
         Self.response = nil
         Self.keyedResponse = nil
     }

@@ -123,6 +123,7 @@ final class BreezeLambdaAPITests: XCTestCase {
         let apiResponse: APIGatewayV2Response = try await Lambda.test(BreezeLambdaAPI<Product>.self, with: request)
         let response: Product = try apiResponse.decodeBody()
         XCTAssertEqual(apiResponse.statusCode, .created)
+        XCTAssertEqual(apiResponse.headers, [ "Content-Type": "application/json" ])
         XCTAssertEqual(response.key, "2023")
         XCTAssertEqual(response.name, "Swift Serverless API with async/await! 🚀🥳")
         XCTAssertEqual(response.description, "BreezeLambaAPI is magic 🪄!")
@@ -136,6 +137,7 @@ final class BreezeLambdaAPITests: XCTestCase {
         let apiResponse: APIGatewayV2Response = try await Lambda.test(BreezeLambdaAPI<Product>.self, with: request)
         let response: APIGatewayV2Response.BodyError = try apiResponse.decodeBody()
         XCTAssertEqual(apiResponse.statusCode, .forbidden)
+        XCTAssertEqual(apiResponse.headers, [ "Content-Type": "application/json" ])
         XCTAssertEqual(response.error, "invalidRequest")
     }
     
@@ -147,6 +149,7 @@ final class BreezeLambdaAPITests: XCTestCase {
         let apiResponse: APIGatewayV2Response = try await Lambda.test(BreezeLambdaAPI<Product>.self, with: request)
         let response: APIGatewayV2Response.BodyError = try apiResponse.decodeBody()
         XCTAssertEqual(apiResponse.statusCode, .forbidden)
+        XCTAssertEqual(apiResponse.headers, [ "Content-Type": "application/json" ])
         XCTAssertEqual(response.error, "invalidRequest")
     }
 
@@ -158,6 +161,7 @@ final class BreezeLambdaAPITests: XCTestCase {
         let apiResponse: APIGatewayV2Response = try await Lambda.test(BreezeLambdaAPI<Product>.self, with: request)
         let response: Product = try apiResponse.decodeBody()
         XCTAssertEqual(apiResponse.statusCode, .ok)
+        XCTAssertEqual(apiResponse.headers, [ "Content-Type": "application/json" ])
         XCTAssertEqual(response.key, "2023")
         XCTAssertEqual(response.name, "Swift Serverless API with async/await! 🚀🥳")
         XCTAssertEqual(response.description, "BreezeLambaAPI is magic 🪄!")
@@ -171,6 +175,7 @@ final class BreezeLambdaAPITests: XCTestCase {
         let apiResponse: APIGatewayV2Response = try await Lambda.test(BreezeLambdaAPI<Product>.self, with: request)
         let response: APIGatewayV2Response.BodyError = try apiResponse.decodeBody()
         XCTAssertEqual(apiResponse.statusCode, .forbidden)
+        XCTAssertEqual(apiResponse.headers, [ "Content-Type": "application/json" ])
         XCTAssertEqual(response.error, "invalidRequest")
     }
 
@@ -182,6 +187,7 @@ final class BreezeLambdaAPITests: XCTestCase {
         let apiResponse: APIGatewayV2Response = try await Lambda.test(BreezeLambdaAPI<Product>.self, with: request)
         let response: APIGatewayV2Response.BodyError = try apiResponse.decodeBody()
         XCTAssertEqual(apiResponse.statusCode, .notFound)
+        XCTAssertEqual(apiResponse.headers, [ "Content-Type": "application/json" ])
         XCTAssertEqual(response.error, "invalidRequest")
     }
 
@@ -193,6 +199,7 @@ final class BreezeLambdaAPITests: XCTestCase {
         let apiResponse: APIGatewayV2Response = try await Lambda.test(BreezeLambdaAPI<Product>.self, with: request)
         let response: Product = try apiResponse.decodeBody()
         XCTAssertEqual(apiResponse.statusCode, .ok)
+        XCTAssertEqual(apiResponse.headers, [ "Content-Type": "application/json" ])
         XCTAssertEqual(response.key, "2023")
         XCTAssertEqual(response.name, "Swift Serverless API with async/await! 🚀🥳")
         XCTAssertEqual(response.description, "BreezeLambaAPI is magic 🪄!")
@@ -206,6 +213,7 @@ final class BreezeLambdaAPITests: XCTestCase {
         let apiResponse: APIGatewayV2Response = try await Lambda.test(BreezeLambdaAPI<Product>.self, with: request)
         let response: APIGatewayV2Response.BodyError = try apiResponse.decodeBody()
         XCTAssertEqual(apiResponse.statusCode, .forbidden)
+        XCTAssertEqual(apiResponse.headers, [ "Content-Type": "application/json" ])
         XCTAssertEqual(response.error, "invalidRequest")
     }
 
@@ -217,6 +225,7 @@ final class BreezeLambdaAPITests: XCTestCase {
         let apiResponse: APIGatewayV2Response = try await Lambda.test(BreezeLambdaAPI<Product>.self, with: request)
         let response: APIGatewayV2Response.BodyError = try apiResponse.decodeBody()
         XCTAssertEqual(apiResponse.statusCode, .notFound)
+        XCTAssertEqual(apiResponse.headers, [ "Content-Type": "application/json" ])
         XCTAssertEqual(response.error, "invalidRequest")
     }
 
@@ -228,6 +237,7 @@ final class BreezeLambdaAPITests: XCTestCase {
         let apiResponse: APIGatewayV2Response = try await Lambda.test(BreezeLambdaAPI<Product>.self, with: request)
         let response: BreezeEmptyResponse = try apiResponse.decodeBody()
         XCTAssertEqual(apiResponse.statusCode, .ok)
+        XCTAssertEqual(apiResponse.headers, [ "Content-Type": "application/json" ])
         XCTAssertNotNil(response)
     }
     
@@ -250,6 +260,7 @@ final class BreezeLambdaAPITests: XCTestCase {
         let apiResponse: APIGatewayV2Response = try await Lambda.test(BreezeLambdaAPI<Product>.self, with: request)
         let response: APIGatewayV2Response.BodyError = try apiResponse.decodeBody()
         XCTAssertEqual(apiResponse.statusCode, .notFound)
+        XCTAssertEqual(apiResponse.headers, [ "Content-Type": "application/json" ])
         XCTAssertEqual(response.error, "invalidRequest")
     }
 
@@ -261,7 +272,10 @@ final class BreezeLambdaAPITests: XCTestCase {
         let apiResponse: APIGatewayV2Response = try await Lambda.test(BreezeLambdaAPI<Product>.self, with: request)
         let response: ListResponse<Product> = try apiResponse.decodeBody()
         let item = try XCTUnwrap(response.items.first)
+        XCTAssertEqual(BreezeDynamoDBServiceMock.limit, 1)
+        XCTAssertEqual(BreezeDynamoDBServiceMock.exclusiveKey, "2023")
         XCTAssertEqual(apiResponse.statusCode, .ok)
+        XCTAssertEqual(apiResponse.headers, [ "Content-Type": "application/json" ])
         XCTAssertEqual(item.key, "2023")
         XCTAssertEqual(item.name, "Swift Serverless API with async/await! 🚀🥳")
         XCTAssertEqual(item.description, "BreezeLambaAPI is magic 🪄!")
@@ -275,6 +289,7 @@ final class BreezeLambdaAPITests: XCTestCase {
         let apiResponse: APIGatewayV2Response = try await Lambda.test(BreezeLambdaAPI<Product>.self, with: request)
         let response: APIGatewayV2Response.BodyError = try apiResponse.decodeBody()
         XCTAssertEqual(apiResponse.statusCode, .forbidden)
+        XCTAssertEqual(apiResponse.headers, [ "Content-Type": "application/json" ])
         XCTAssertEqual(response.error, "invalidItem")
     }
 }
