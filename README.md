@@ -75,7 +75,7 @@ let package = Package(
         .executable(name: "RestAPI", targets: ["RestAPI"]),
     ],
     dependencies: [
-        .package(path: "../../Breeze"),
+        .package(url: "https://github.com/swift-sprinter/Breeze.git", from: "0.1.0"),
     ],
     targets: [
         .executableTarget(
