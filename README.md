@@ -10,12 +10,14 @@ Serverless API using AWS APIGateway, Lambda, and DynamoDB in Swift is like a bre
 
 This package provides the code to build a Serverless REST API in Swift based on AWS Lambda, APIGateway and DynamoDB.
 
-The following diagram represents the infrastructure architecture:
+The following diagram represents the infrastructure architecture of a CRUD REST Serverless API:
 
 ![AWS Serverless Rest API](images/AWS-Serverless-REST-API.svg)
 
-With a single line of code, Breeze implements all the Lambdas required for the CRUD REST API interface.
-The CRUD REST API manages a Swift Codable struct on DynamoDB.
+The APIGateway exposes the API interface through endpoints and converts the HTTP requests to APIGatewayV2Request events for the Lambdas.
+Each Lambda receives events from the APIGateway, decodes the events to extract parameters, performs an operation on a DynamoDB table and returns a response payload to the APIGateway. DynamoDB will be accessed through the Lambdas to persist a key-value pair representing data. 
+
+With a single line of code, Breeze implements all the Lambdas required for the CRUD interface converting APIGatewayV2Request to an operation on a DynamoDB table and responding with APIGatewayV2Response to the APIGateway.
 
 # Usage
 
@@ -57,7 +59,6 @@ Each lambda will be initialized with a specific `_HANDLER` and it will run the c
 ## Lambda package with Swift Package Manager
 
 To package the Lambda is required to create a Swift Package using the following `Package.swift` file.
-The package needs to be built on `AmazonLinux2` before the deployment on AWS Lambda.
 
 ```swift
 // swift-tools-version:5.7
@@ -89,11 +90,13 @@ let package = Package(
 
 ```
 
+To be executed on a Lambda, the package needs to be built on `AmazonLinux2` and deployed.
+
 # Implementation Specs
 
 ## Lambda initialization
 
-During the initialization, the `BreezeLambdaAPI` reads the configuration from the following `Environment` variables:
+During the Lambda's initialization, the `BreezeLambdaAPI` reads the configuration from the following `Environment` variables:
 - `AWS_REGION`: AWS Region
 - `_HANDLER`: The handler name specifies the CRUD operation implemented by the Lambda using the following format `{executable_name}.{BreezeOperation}`
 
