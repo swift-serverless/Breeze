@@ -23,14 +23,14 @@ With a single line of code, Breeze implements all the Lambdas required for the C
 
 ## Lambda customisation
 
-Define a `Codable` struct or class conforming to `BreezeCodable` and pass it to `BreezeLambdaAPI` using the type placeholder.
+Define a `Codable` struct or class like the `Item` one's in the example and pass it to `BreezeLambdaAPI` using the type placeholder.
 
 ```swift
 import Foundation
 import BreezeLambdaAPI
 import BreezeDynamoDBService
 
-struct Product: Codable {
+struct Item: Codable {
     public var key: String
     public let name: String
     public let description: String
@@ -38,7 +38,7 @@ struct Product: Codable {
     public var updatedAt: String?
     
     enum CodingKeys: String, CodingKey {
-        case key = "sku"
+        case key
         case name
         case description
         case createdAt
@@ -46,13 +46,23 @@ struct Product: Codable {
     }
 }
 
-extension Product: BreezeCodable { }
+extension Item: BreezeCodable { }
 
-BreezeLambdaAPI<Product>.main()
+BreezeLambdaAPI<Item>.main()
+```
+
+It's required the `Codable` struct or class is to `BreezeCodable` protocol:
+
+```swift
+public protocol BreezeCodable: Codable {
+    var key: String { get set }
+    var createdAt: String? { get set }
+    var updatedAt: String? { get set }
+}
 ```
 
 The code above is the business logic required inside all the Lambdas.
-All you need to do is to decide the `BreezeCodable` struct to persist on DynamoDB.
+All you need to do is to decide the struct conforming `BreezeCodable` to persist on DynamoDB.
 
 Each lambda will be initialized with a specific `_HANDLER` and it will run the code to implement the required logic needed by one of the CRUD functions. The code needs to be packaged and deployed using the referenced architecture.
 
@@ -67,19 +77,19 @@ To package the Lambda is required to create a Swift Package using the following 
 import PackageDescription
 
 let package = Package(
-    name: "swift-breeze-rest-api",
+    name: "swift-breeze-item-api",
     platforms: [
         .macOS(.v13),
     ],
     products: [
-        .executable(name: "RestAPI", targets: ["RestAPI"]),
+        .executable(name: "ItemAPI", targets: ["ItemAPI"]),
     ],
     dependencies: [
         .package(url: "https://github.com/swift-sprinter/Breeze.git", from: "0.1.0"),
     ],
     targets: [
         .executableTarget(
-            name: "RestAPI",
+            name: "ItemAPI",
              dependencies: [
                 .product(name: "BreezeLambdaAPI", package: "Breeze"),
                 .product(name: "BreezeDynamoDBService", package: "Breeze"),
