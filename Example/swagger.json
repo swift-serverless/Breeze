@@ -1,0 +1,202 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "version": "2023-03-26T15:00:00Z",
+    "title": "swift-breeze-rest-item-api-dev",
+    "contact": {
+      "name": "Andrea Scuderi",
+      "url": "https://github.com/swift-sprinter/Breeze"
+    },
+    "license": {
+      "name": "Apache 2.0"
+    },
+    "description": "Items API - Breeze Demo"
+  },
+  "host": "<BASE_URL>",
+  "basePath": "/dev",
+  "schemes": [
+    "https"
+  ],
+  "paths": {
+    "/items": {
+      "get": {
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/item"
+              }
+            }
+          }
+        },
+        "description": "List items",
+        "operationId": "get-items"
+      },
+      "post": {
+        "responses": {
+          "201": {
+            "description": "Created",
+            "schema": {
+              "$ref": "#/definitions/item"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "in": "body",
+            "name": "body",
+            "schema": {
+              "$ref": "#/definitions/item"
+            }
+          }
+        ],
+        "description": "Create item",
+        "operationId": "post-item"
+      },
+      "put": {
+        "parameters": [
+          {
+            "in": "body",
+            "name": "body",
+            "schema": {
+              "$ref": "#/definitions/item"
+            },
+            "description": ""
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "$ref": "#/definitions/item"
+            }
+          }
+        },
+        "description": "Update item",
+        "operationId": "put-item"
+      },
+      "options": {
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "responses": {
+          "200": {
+            "description": "200 response",
+            "headers": {
+              "Access-Control-Allow-Origin": {
+                "type": "string"
+              },
+              "Access-Control-Allow-Methods": {
+                "type": "string"
+              },
+              "Access-Control-Allow-Headers": {
+                "type": "string"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/items/{itemKey}": {
+      "get": {
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "$ref": "#/definitions/item"
+            }
+          }
+        },
+        "parameters": [],
+        "description": "Get item",
+        "operationId": "get-item"
+      },
+      "delete": {
+        "responses": {
+          "204": {
+            "description": "No Content",
+            "schema": {
+              "type": "object",
+              "properties": {}
+            }
+          }
+        },
+        "parameters": [],
+        "description": "Delete item",
+        "operationId": "delete-item"
+      },
+      "options": {
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "responses": {
+          "200": {
+            "description": "200 response",
+            "headers": {
+              "Access-Control-Allow-Origin": {
+                "type": "string"
+              },
+              "Access-Control-Allow-Methods": {
+                "type": "string"
+              },
+              "Access-Control-Allow-Headers": {
+                "type": "string"
+              }
+            }
+          }
+        }
+      },
+      "parameters": [
+        {
+          "type": "string",
+          "name": "itemKey",
+          "in": "path",
+          "required": true
+        }
+      ]
+    }
+  },
+  "definitions": {
+    "item": {
+      "title": "item",
+      "type": "object",
+      "x-examples": {
+        "example-1": {
+          "itemKey": "3",
+          "name": "Book",
+          "description": "Book 3"
+        }
+      },
+      "properties": {
+        "itemKey": {
+          "type": "string"
+        },
+        "name": {
+          "type": "string"
+        },
+        "description": {
+          "type": "string"
+        },
+        "createdAt": {
+          "type": "string"
+        },
+        "updatedAt": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "itemKey",
+        "name",
+        "description"
+      ]
+    }
+  }
+}
