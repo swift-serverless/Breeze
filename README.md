@@ -1,8 +1,9 @@
 # Breeze
+![Platform Compatibility](https://img.shields.io/badge/Platform%20Compatibility-macOS%20%7C%20Linux-red)
+![Swift Compatibility](https://img.shields.io/badge/Swift%20Compatibility-5.7-red)
+![Breeze CI](https://github.com/swift-sprinter/Breeze/actions/workflows/swift-test.yml/badge.svg)
 
 ![Breeze](logo.png)
-
-[![Swift 5.7](https://img.shields.io/badge/Swift-5.7-blue.svg)](https://swift.org/download/) 
 
 Serverless API using AWS APIGateway, Lambda, and DynamoDB in Swift is like a breeze!
 
