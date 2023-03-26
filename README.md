@@ -51,7 +51,7 @@ extension Item: BreezeCodable { }
 BreezeLambdaAPI<Item>.main()
 ```
 
-It's required the `Codable` struct or class is to `BreezeCodable` protocol:
+It's required the `Codable` struct or class to conform to the `BreezeCodable` protocol:
 
 ```swift
 public protocol BreezeCodable: Codable {
@@ -158,7 +158,7 @@ Returns the `BreezeCodable` if persisted on DynamoDB.
 Gets the value of the `exclusiveStartKey` and `limit` from the `APIGatewayV2Request.pathParameters` dictionary and calls `listItems` on `BreezeDynamoDBService`.
 Returns the `ListResponse` containing the items if persisted on DynamoDB.
 
-```
+```swift
 struct ListResponse<T: Codable>: Codable {
     let items: [T]
     let lastEvaluatedKey: String?
