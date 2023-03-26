@@ -22,7 +22,6 @@ SWIFT_CONFIGURATION=release
 MOUNT_ROOT=$(shell pwd)
 DOCKER_BUILD_PATH=build
 DOCKER_PROJECT_PATH=BreezeItemAPI
-BREEZE_PATH=$(MOUNT_ROOT)/../Breeze
 LAMBDA_ARCHIVE_PATH=./$(DOCKER_BUILD_PATH)
 			
 docker_build:
@@ -32,7 +31,6 @@ archive_lambda: create_build_directory
 	docker run \
 		--rm \
 		--volume "$(MOUNT_ROOT)/:/src" \
-		--volume "$(BREEZE_PATH):/Breeze" \
 		--workdir "/src/$(DOCKER_PROJECT_PATH)" \
 		$(SWIFT_DOCKER_IMAGE) \
 		/bin/bash -c "swift package archive -c $(SWIFT_CONFIGURATION) --verbose --output-path /src/$(DOCKER_BUILD_PATH)"
@@ -41,7 +39,6 @@ build_lambda:
 	docker run \
 		--rm \
 		--volume "$(MOUNT_ROOT)/:/src" \
-		--volume "$(BREEZE_PATH):/Breeze" \
 		--workdir "/src/$(DOCKER_PROJECT_PATH)" \
 		$(SWIFT_DOCKER_IMAGE) \
 		/bin/bash -c "swift build -c $(SWIFT_CONFIGURATION) -Xswiftc -static-stdlib"
@@ -51,7 +48,6 @@ docker_bash:
 		-it \
 		--rm \
 		--volume "$(MOUNT_ROOT):/src" \
-		--volume "$(BREEZE_PATH):/Breeze" \
 		--workdir "/src/" \
 		$(SWIFT_DOCKER_IMAGE) \
 		/bin/bash
