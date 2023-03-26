@@ -1,8 +1,9 @@
 # Breeze
+![Platform Compatibility](https://img.shields.io/badge/Platform%20Compatibility-macOS%20%7C%20Linux-red)
+![Swift Compatibility](https://img.shields.io/badge/Swift%20Compatibility-5.7-red)
+![Breeze CI](https://github.com/swift-sprinter/Breeze/actions/workflows/swift-test.yml/badge.svg)
 
 ![Breeze](logo.png)
-
-[![Swift 5.7](https://img.shields.io/badge/Swift-5.7-blue.svg)](https://swift.org/download/) 
 
 Serverless API using AWS APIGateway, Lambda, and DynamoDB in Swift is like a breeze!
 
@@ -51,7 +52,7 @@ extension Item: BreezeCodable { }
 BreezeLambdaAPI<Item>.main()
 ```
 
-It's required the `Codable` struct or class is to `BreezeCodable` protocol:
+It's required the `Codable` struct or class to conform to the `BreezeCodable` protocol:
 
 ```swift
 public protocol BreezeCodable: Codable {
@@ -158,7 +159,7 @@ Returns the `BreezeCodable` if persisted on DynamoDB.
 Gets the value of the `exclusiveStartKey` and `limit` from the `APIGatewayV2Request.pathParameters` dictionary and calls `listItems` on `BreezeDynamoDBService`.
 Returns the `ListResponse` containing the items if persisted on DynamoDB.
 
-```
+```swift
 struct ListResponse<T: Codable>: Codable {
     let items: [T]
     let lastEvaluatedKey: String?
