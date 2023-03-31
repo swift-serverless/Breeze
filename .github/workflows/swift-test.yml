@@ -47,4 +47,4 @@ jobs:
       - name: Upload Code Coverage 
         uses: codecov/codecov-action@v3
         with:
-          files: ${{ github.workspace }}/codecov/lcov.info
+          files: ${{ github.workspace }}/lcov.info
