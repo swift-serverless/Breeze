@@ -1,7 +1,6 @@
 # Breeze
-![Platform Compatibility](https://img.shields.io/badge/Platform%20Compatibility-macOS%20%7C%20Linux-red)
-![Swift Compatibility](https://img.shields.io/badge/Swift%20Compatibility-5.7-red)
-![Breeze CI](https://github.com/swift-sprinter/Breeze/actions/workflows/swift-test.yml/badge.svg)
+[![](https://img.shields.io/endpoint?url=https%3A%2F%2Fswiftpackageindex.com%2Fapi%2Fpackages%2Fswift-sprinter%2FBreeze%2Fbadge%3Ftype%3Dswift-versions)](https://swiftpackageindex.com/swift-sprinter/Breeze)
+[![](https://img.shields.io/endpoint?url=https%3A%2F%2Fswiftpackageindex.com%2Fapi%2Fpackages%2Fswift-sprinter%2FBreeze%2Fbadge%3Ftype%3Dplatforms)](https://swiftpackageindex.com/swift-sprinter/Breeze)
 
 ![Breeze](logo.png)
 
