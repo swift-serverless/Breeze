@@ -24,4 +24,4 @@ test:
 coverage:
 	llvm-cov export $(SWIFT_BIN_PATH)/BreezePackageTests.xctest \
 		--instr-profile=$(SWIFT_BIN_PATH)/codecov/default.profdata \
-		--format=lcov > $(SWIFT_BIN_PATH)/lcov.info
+		--format=lcov > $(GITHUB_WORKSPACE)/lcov.info

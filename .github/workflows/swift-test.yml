@@ -44,9 +44,7 @@ jobs:
       - name: Coverage
         run: |
           make coverage
-      - name: set SWIFT_BIN_PATH
-        run: echo "SWIFT_BIN_PATH=$(echo swift build --show-bin-path)" >> $GITHUB_ENV
       - name: Upload Code Coverage 
         uses: codecov/codecov-action@v3
         with:
-          files: $(SWIFT_BIN_PATH)/codecov/lcov.info
+          files: ${{ github.workspace }}/codecov/lcov.info
