@@ -35,11 +35,4 @@ extension String {
         let formatter = DateFormatter.iso8061
         return formatter.date(from: self)
     }
-
-    var timeIntervalSince1970String: String? {
-        guard let timeInterval = self.iso8601?.timeIntervalSince1970 else {
-            return nil
-        }
-        return "\(timeInterval)"
-    }
 }
