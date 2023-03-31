@@ -35,9 +35,9 @@ jobs:
       # Checkout the repository to the GitHub Actions runner
       - name: Checkout
         uses: actions/checkout@v3
-      - name: Setup
+      - name: Setup 
         run:  |
-          yum -y update && yum -y install git make
+          yum -y update && yum -y install git make curl
       - name: Test
         run: |
           make test
