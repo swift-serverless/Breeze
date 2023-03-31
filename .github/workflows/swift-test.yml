@@ -18,7 +18,7 @@ jobs:
     strategy:
       matrix:
         image:
-          - swift:5.7.3
+          - swift:5.7.3-amazonlinux2
     services:
       localstack:
         image: localstack/localstack
@@ -35,6 +35,16 @@ jobs:
       # Checkout the repository to the GitHub Actions runner
       - name: Checkout
         uses: actions/checkout@v3
+      - name: Setup 
+        run:  |
+          yum -y update && yum -y install git make curl
       - name: Test
         run: |
-          swift test --sanitize=thread
+          make test
+      - name: Coverage
+        run: |
+          make coverage
+      - name: Upload Code Coverage 
+        uses: codecov/codecov-action@v3
+        with:
+          files: ${{ github.workspace }}/lcov.info

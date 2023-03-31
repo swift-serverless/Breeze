@@ -26,4 +26,8 @@ services:
 
   shell:
     <<: *common
+    depends_on:
+      - localstack
+    environment:
+      - LOCALSTACK_ENDPOINT=http://localstack:4566
     entrypoint: /bin/bash
