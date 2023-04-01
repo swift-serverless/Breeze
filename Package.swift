@@ -17,12 +17,17 @@ let package = Package(
             name: "BreezeLambdaAPI",
             targets: ["BreezeLambdaAPI"]
         ),
+        .plugin(
+            name: "GenerateBreezeProject",
+            targets: ["GenerateBreezeProject"]
+        )
     ],
     dependencies: [
         .package(url: "https://github.com/swift-server/swift-aws-lambda-runtime.git", from: "1.0.0-alpha.1"),
         .package(url: "https://github.com/swift-server/swift-aws-lambda-events.git", from: "0.1.0"),
         .package(url: "https://github.com/soto-project/soto.git", from: "6.0.0"),
         .package(url: "https://github.com/apple/swift-log.git", from: "1.0.0"),
+        .package(url: "https://github.com/apple/swift-argument-parser.git", from: "1.0.0")
     ],
     targets: [
         .target(
@@ -38,6 +43,24 @@ let package = Package(
                 .product(name: "AWSLambdaRuntime", package: "swift-aws-lambda-runtime"),
                 .product(name: "AWSLambdaEvents", package: "swift-aws-lambda-events"),
                 "BreezeDynamoDBService"
+            ]
+        ),
+        .plugin(
+            name: "GenerateBreezeProject",
+                capability: .command(
+                    intent: .custom(
+                        verb: "generate-breeze-project",
+                        description: "Generate Breeze Project"
+                    ),
+                    permissions: [
+                        .writeToPackageDirectory(reason: "Generate Breeze Project")
+                    ]
+                )
+        ),
+        .executableTarget(
+            name: "PluginExecutable",
+            dependencies: [
+                .product(name: "ArgumentParser", package: "swift-argument-parser")
             ]
         ),
         .testTarget(
