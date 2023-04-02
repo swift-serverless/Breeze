@@ -71,11 +71,4 @@ struct BreezeCommand: ParsableCommand {
         printTitle("✅ Project is ready at target-path")
         print("\(targetPath)")
     }
-    
-    private func resource(name: String, type: String) throws -> URL {
-        guard let resourceURL = Bundle.module.url(forResource: name, withExtension: type, subdirectory: "Resources") else {
-            throw BreezeCommandError.invalidConfig
-        }
-        return resourceURL
-    }
 }

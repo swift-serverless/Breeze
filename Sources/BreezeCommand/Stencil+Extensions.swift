@@ -20,7 +20,8 @@ extension FileManager {
     
     private var templatePath: String {
 #if os(macOS)
-        return Bundle.module.resourcePath?.appending("/Resources/Template/") ?? ""
+        let resourcePath = Bundle.module.url(forResource: "breeze", withExtension: "yml", subdirectory: "Resources")?.deletingLastPathComponent().path ?? ""
+        return resourcePath.appending("/Template/")
 #else
         return Bundle.module.resourcePath?.appending("/Template/") ?? ""
 #endif
@@ -29,6 +30,10 @@ extension FileManager {
     func applyStencils(targetPath: String, params: BreezeLambdaAPIConfig)
     throws {
         printTitle("📁 Generating project from template")
+        var isDirectory: ObjCBool = false
+        guard fileExists(atPath: templatePath, isDirectory: &isDirectory) else {
+            throw BreezeCommandError.invalidTemplateFolder
+        }
         let context = ["params" : params]
         let dirEnum = enumerator(atPath: templatePath)
         while let file = dirEnum?.nextObject() as? String {
