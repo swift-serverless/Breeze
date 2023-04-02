@@ -21,10 +21,6 @@ let package = Package(
             name: "BreezeLambdaAPI",
             targets: ["BreezeLambdaAPI"]
         ),
-        .plugin(
-            name: "GenerateBreezeProjectPlugin",
-            targets: ["GenerateBreezeProjectPlugin"]
-        )
     ],
     dependencies: [
         .package(url: "https://github.com/swift-server/swift-aws-lambda-runtime.git", from: "1.0.0-alpha.1"),
@@ -50,18 +46,6 @@ let package = Package(
                 .product(name: "AWSLambdaEvents", package: "swift-aws-lambda-events"),
                 "BreezeDynamoDBService"
             ]
-        ),
-        .plugin(
-            name: "GenerateBreezeProjectPlugin",
-                capability: .command(
-                    intent: .custom(
-                        verb: "generate-breeze-project",
-                        description: "Generate Breeze Project"
-                    ),
-                    permissions: [
-                        .writeToPackageDirectory(reason: "Generate Breeze Project")
-                    ]
-                )
         ),
         .executableTarget(
             name: "GenerateBreezeProjectCommand",
