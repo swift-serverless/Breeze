@@ -181,6 +181,15 @@
       }
     },
     {
+      "identity" : "swift-sls-adapter",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/swift-sprinter/swift-sls-adapter",
+      "state" : {
+        "revision" : "f6273cc834273290c1084378813ace64b6e60677",
+        "version" : "0.1.0"
+      }
+    },
+    {
       "identity" : "yams",
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/jpsim/Yams.git",
