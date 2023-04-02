@@ -15,7 +15,7 @@
 import Foundation
 import Yams
 
-struct GenerateBreezeProjectConfig: Codable {
+struct BreezeLambdaAPIConfig: Codable {
     let swiftVersion: String
     let swiftConfiguration: String
     let packageName: String
@@ -29,14 +29,14 @@ struct GenerateBreezeProjectConfig: Codable {
     let awsRegion: String
 }
 
-extension GenerateBreezeProjectConfig {
+extension BreezeLambdaAPIConfig {
     static let decoder = YAMLDecoder()
-    static func load(from url: URL) throws -> GenerateBreezeProjectConfig {
+    static func load(from url: URL) throws -> BreezeLambdaAPIConfig {
         let paramsYML = try Data(contentsOf: url)
         printTitle("⚙️ Loading configuration file")
         print("\(url.path)\n")
         let yml = String(data: paramsYML, encoding: .utf8) ?? ""
         print(yml)
-        return try decoder.decode(GenerateBreezeProjectConfig.self, from: paramsYML)
+        return try decoder.decode(BreezeLambdaAPIConfig.self, from: paramsYML)
     }
 }

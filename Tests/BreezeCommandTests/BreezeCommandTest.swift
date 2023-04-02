@@ -14,7 +14,7 @@
 
 import XCTest
 
-class GenerateBreezeProjectCommandTest: XCTestCase {
+class BreezeCommandTest: XCTestCase {
     
     let targetPath = ".build/temp"
     

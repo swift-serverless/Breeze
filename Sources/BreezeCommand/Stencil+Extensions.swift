@@ -26,7 +26,7 @@ extension FileManager {
 #endif
     }
     
-    func applyStencils(targetPath: String, params: GenerateBreezeProjectConfig)
+    func applyStencils(targetPath: String, params: BreezeLambdaAPIConfig)
     throws {
         printTitle("📁 Generating project from template")
         let context = ["params" : params]

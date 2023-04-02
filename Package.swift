@@ -11,7 +11,7 @@ let package = Package(
     products: [
         .executable(
             name: "breeze",
-            targets: ["GenerateBreezeProjectCommand"]
+            targets: ["BreezeCommand"]
         ),
         .library(
             name: "BreezeDynamoDBService",
@@ -48,7 +48,7 @@ let package = Package(
             ]
         ),
         .executableTarget(
-            name: "GenerateBreezeProjectCommand",
+            name: "BreezeCommand",
             dependencies: [
                 .product(name: "ArgumentParser", package: "swift-argument-parser"),
                 .product(name: "SLSAdapter", package: "swift-sls-adapter"),
@@ -69,8 +69,8 @@ let package = Package(
             dependencies: ["BreezeDynamoDBService"]
         ),
         .testTarget(
-            name: "GenerateBreezeProjectCommandTests",
-            dependencies: ["GenerateBreezeProjectCommand"],
+            name: "BreezeCommandTests",
+            dependencies: ["BreezeCommand"],
             resources: [.copy("Fixtures")]
         ),
     ]

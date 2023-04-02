@@ -17,7 +17,7 @@ import Foundation
 import SLSAdapter
 
 @main
-struct GenerateBreezeProjectCommand: ParsableCommand {
+struct BreezeCommand: ParsableCommand {
 
     @Option(name: .shortAndLong, help: "YML configurarion file")
     var configFile: String
@@ -31,10 +31,10 @@ struct GenerateBreezeProjectCommand: ParsableCommand {
     mutating func run() throws {
         let fileManager = FileManager.default
         guard !configFile.isEmpty else {
-            throw GenerateProjectError.invalidConfig
+            throw BreezeCommandError.invalidConfig
         }
         let url: URL = URL(fileURLWithPath: configFile)
-        let params = try GenerateBreezeProjectConfig.load(from: url)
+        let params = try BreezeLambdaAPIConfig.load(from: url)
         
         try fileManager.cleanTargetPath(targetPath, remove: forceOverwrite)
         try fileManager.applyStencils(targetPath: targetPath, params: params)
@@ -74,7 +74,7 @@ struct GenerateBreezeProjectCommand: ParsableCommand {
     
     private func resource(name: String, type: String) throws -> URL {
         guard let resourceURL = Bundle.module.url(forResource: name, withExtension: type, subdirectory: "Resources") else {
-            throw GenerateProjectError.invalidConfig
+            throw BreezeCommandError.invalidConfig
         }
         return resourceURL
     }

@@ -14,7 +14,7 @@
 
 import Foundation
 
-enum GenerateProjectError: Error, LocalizedError {
+enum BreezeCommandError: Error, LocalizedError {
     case invalidTemplateFolder
     case invalidConfig
     case cannotOverwriteTargetPath(String)

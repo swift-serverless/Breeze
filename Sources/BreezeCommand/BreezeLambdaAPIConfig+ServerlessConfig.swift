@@ -20,7 +20,7 @@ extension ServerlessConfig {
     
     private static let encoder = YAMLEncoder()
     
-    func writeSLS(params: GenerateBreezeProjectConfig, targetPath: String, ymlFileName: String) throws {
+    func writeSLS(params: BreezeLambdaAPIConfig, targetPath: String, ymlFileName: String) throws {
         let content = try Self.encoder.encode(self)
         Self.encoder.options = .init(sortKeys: true)
         let path = targetPath.appending("/").appending(ymlFileName)

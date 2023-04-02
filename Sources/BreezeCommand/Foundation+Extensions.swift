@@ -24,7 +24,7 @@ extension FileManager {
         }
         
         if fileExists(atPath: targetPath, isDirectory: &isDirectory) {
-            throw GenerateProjectError.cannotOverwriteTargetPath(targetPath)
+            throw BreezeCommandError.cannotOverwriteTargetPath(targetPath)
         }
         print("✅ Target path ready!\n")
     }
