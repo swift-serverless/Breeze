@@ -29,16 +29,6 @@ struct Fixtures {
         }
         return fixtureUrl
     }
-    
-    static func example(file: String) throws -> URL {
-        let values = file.split(separator: ".").map { String($0) }
-        guard let name = values.first,
-                let type = values.last,
-            let fixtureUrl = Bundle.module.url(forResource: name, withExtension: type, subdirectory: "Fixtures/Examples") else {
-            throw TestError.missingFixture
-        }
-        return fixtureUrl
-    }
 }
 
 enum TestError: Error {

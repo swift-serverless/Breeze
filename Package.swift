@@ -54,8 +54,7 @@ let package = Package(
                 .product(name: "SLSAdapter", package: "swift-sls-adapter"),
                 .product(name: "Stencil", package: "Stencil")
             ],
-            resources: [.copy("Resources"),
-                        .copy("Template")]
+            resources: [.copy("Resources")]
         ),
         .testTarget(
             name: "BreezeLambdaAPITests",

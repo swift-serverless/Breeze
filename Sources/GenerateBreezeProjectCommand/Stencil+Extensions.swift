@@ -18,12 +18,17 @@ import PathKit
 
 extension FileManager {
     
+    private var templatePath: String {
+#if os(macOS)
+        return Bundle.module.resourcePath?.appending("/Resources/Template/") ?? ""
+#else
+        return Bundle.module.resourcePath?.appending("/Template/") ?? ""
+#endif
+    }
+    
     func applyStencils(targetPath: String, params: GenerateBreezeProjectConfig)
     throws {
         printTitle("📁 Generating project from template")
-        guard let templatePath = Bundle.module.resourcePath?.appending("/Template/") else {
-            throw GenerateProjectError.invalidTemplateFolder
-        }
         let context = ["params" : params]
         let dirEnum = enumerator(atPath: templatePath)
         while let file = dirEnum?.nextObject() as? String {
