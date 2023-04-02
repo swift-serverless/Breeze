@@ -9,6 +9,10 @@ let package = Package(
         .macOS(.v13),
     ],
     products: [
+        .executable(
+            name: "breeze",
+            targets: ["GenerateBreezeProjectCommand"]
+        ),
         .library(
             name: "BreezeDynamoDBService",
             targets: ["BreezeDynamoDBService"]
@@ -18,8 +22,8 @@ let package = Package(
             targets: ["BreezeLambdaAPI"]
         ),
         .plugin(
-            name: "GenerateBreezeProject",
-            targets: ["GenerateBreezeProject"]
+            name: "GenerateBreezeProjectPlugin",
+            targets: ["GenerateBreezeProjectPlugin"]
         )
     ],
     dependencies: [
@@ -27,7 +31,9 @@ let package = Package(
         .package(url: "https://github.com/swift-server/swift-aws-lambda-events.git", from: "0.1.0"),
         .package(url: "https://github.com/soto-project/soto.git", from: "6.0.0"),
         .package(url: "https://github.com/apple/swift-log.git", from: "1.0.0"),
-        .package(url: "https://github.com/apple/swift-argument-parser.git", from: "1.0.0")
+        .package(url: "https://github.com/apple/swift-argument-parser.git", from: "1.0.0"),
+        .package(url: "https://github.com/stencilproject/Stencil.git", from: "0.15.1"),
+        .package(path: "../swift-sls-adapter")
     ],
     targets: [
         .target(
@@ -46,7 +52,7 @@ let package = Package(
             ]
         ),
         .plugin(
-            name: "GenerateBreezeProject",
+            name: "GenerateBreezeProjectPlugin",
                 capability: .command(
                     intent: .custom(
                         verb: "generate-breeze-project",
@@ -58,10 +64,14 @@ let package = Package(
                 )
         ),
         .executableTarget(
-            name: "PluginExecutable",
+            name: "GenerateBreezeProjectCommand",
             dependencies: [
-                .product(name: "ArgumentParser", package: "swift-argument-parser")
-            ]
+                .product(name: "ArgumentParser", package: "swift-argument-parser"),
+                .product(name: "SLSAdapter", package: "swift-sls-adapter"),
+                .product(name: "Stencil", package: "Stencil")
+            ],
+            resources: [.copy("Resources"),
+                        .copy("Template")]
         ),
         .testTarget(
             name: "BreezeLambdaAPITests",
@@ -74,6 +84,11 @@ let package = Package(
         .testTarget(
             name: "BreezeDynamoDBServiceTests",
             dependencies: ["BreezeDynamoDBService"]
+        ),
+        .testTarget(
+            name: "GenerateBreezeProjectCommandTests",
+            dependencies: ["GenerateBreezeProjectCommand"],
+            resources: [.copy("Fixtures")]
         ),
     ]
 )

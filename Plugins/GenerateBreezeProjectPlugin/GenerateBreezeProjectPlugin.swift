@@ -16,9 +16,25 @@ import Foundation
 import PackagePlugin
 
 @main
-struct GenerateBreezeProject: CommandPlugin {
+struct GenerateBreezeProjectPlugin: CommandPlugin {
     func performCommand(context: PluginContext, arguments: [String]) async throws {
-        print("BreezeProject")
+        
+        print(arguments)
+        
+        var targetsToProcess: [Target] = context.package.targets
+        
+        var argExtractor = ArgumentExtractor(arguments)
+        
+        let selectedTargets = argExtractor.extractOption(named: "target")
+        
+        if selectedTargets.isEmpty == false {
+            targetsToProcess = context.package.targets.filter { selectedTargets.contains($0.name) }.map { $0 }
+        }
+        
+        for target in targetsToProcess {
+            guard let target = target as? SourceModuleTarget,
+                let directory = URL(string: target.directory.string) else { continue }
+            print(directory)
+        }
     }
 }
-

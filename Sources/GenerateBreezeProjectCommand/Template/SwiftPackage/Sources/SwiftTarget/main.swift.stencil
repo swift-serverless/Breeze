@@ -1,4 +1,4 @@
-//    Copyright 2023 (c) Andrea Scuderi - https://github.com/swift-sprinter
+//    Copyright 2020 (c) Andrea Scuderi - https://github.com/swift-sprinter
 //
 //    Licensed under the Apache License, Version 2.0 (the "License");
 //    you may not use this file except in compliance with the License.
@@ -12,12 +12,26 @@
 //    See the License for the specific language governing permissions and
 //    limitations under the License.
 
-import ArgumentParser
 import Foundation
+import BreezeLambdaAPI
+import BreezeDynamoDBService
 
-@main
-struct PluginExecutable: ParsableCommand {
-    func run() throws {
-        print("PluginExecutable")
+struct {{ params.itemCodable }}: Codable {
+    public var key: String
+    public let name: String
+    public let description: String
+    public var createdAt: String?
+    public var updatedAt: String?
+    
+    enum CodingKeys: String, CodingKey {
+        case key = "{{ params.itemKey }}"
+        case name
+        case description
+        case createdAt
+        case updatedAt
     }
 }
+
+extension {{ params.itemCodable }}: BreezeCodable { }
+
+BreezeLambdaAPI<{{ params.itemCodable }}>.main()
