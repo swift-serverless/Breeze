@@ -1,11 +1,12 @@
+service: swift-breeze-rest-item-api
+awsRegion: us_east_1
 swiftVersion: 5.7.3
 swiftConfiguration: release
 packageName: BreezeItemAPI
-targetName: ItemAPI
-itemCodable: Item
-itemKey: itemKey
 buildPath: build
-httpAPIPath: /items
-dynamoDBTableNamePrefix: items
-service: swift-breeze-rest-item-api
-awsRegion: us_east_1
+breezeLambdaAPI:
+    targetName: ItemAPI
+    itemCodable: Item
+    itemKey: itemKey
+    httpAPIPath: /items
+    dynamoDBTableNamePrefix: items

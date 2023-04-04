@@ -12,16 +12,16 @@
 #    See the License for the specific language governing permissions and
 #    limitations under the License.
 
-SWIFT_VERSION={{ params.swiftVersion }}
+SWIFT_VERSION={{ config.swiftVersion }}
 
 SWIFT_DOCKER_IMAGE=swift-amazonlinux2-builder:$(SWIFT_VERSION)
-SWIFT_CONFIGURATION={{ params.swiftConfiguration }}
+SWIFT_CONFIGURATION={{ config.swiftConfiguration }}
 
 # Internals
 
 MOUNT_ROOT=$(shell pwd)
-DOCKER_BUILD_PATH={{ params.buildPath }}
-DOCKER_PROJECT_PATH={{ params.packageName }}
+DOCKER_BUILD_PATH={{ config.buildPath }}
+DOCKER_PROJECT_PATH={{ config.packageName }}
 LAMBDA_ARCHIVE_PATH=./$(DOCKER_BUILD_PATH)
 			
 docker_build:

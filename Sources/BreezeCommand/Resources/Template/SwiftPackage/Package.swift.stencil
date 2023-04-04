@@ -4,7 +4,7 @@
 import PackageDescription
 
 let package = Package(
-    name: "{{ params.packageName }}",
+    name: "{{ config.packageName }}",
     platforms: [
         .macOS(.v13),
     ],

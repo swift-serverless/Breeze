@@ -27,14 +27,16 @@ extension FileManager {
 #endif
     }
     
-    func applyStencils(targetPath: String, params: BreezeLambdaAPIConfig)
+    func applyStencils(targetPath: String, config: BreezeConfig)
     throws {
         printTitle("📁 Generating project from template")
         var isDirectory: ObjCBool = false
         guard fileExists(atPath: templatePath, isDirectory: &isDirectory) else {
             throw BreezeCommandError.invalidTemplateFolder
         }
-        let context = ["params" : params]
+        let params = config.breezeLambdaAPI
+        let context: [String : Any] = ["config" : config,
+                                       "params" : params]
         let dirEnum = enumerator(atPath: templatePath)
         while let file = dirEnum?.nextObject() as? String {
             if file.hasSuffix(".stencil") {
@@ -45,7 +47,7 @@ extension FileManager {
             }
         }
         try move(targetPath: targetPath, at: "/SwiftPackage/Sources/SwiftTarget", to: "/SwiftPackage/Sources/\(params.targetName)")
-        try move(targetPath: targetPath, at: "/SwiftPackage", to: "/\(params.packageName)")
+        try move(targetPath: targetPath, at: "/SwiftPackage", to: "/\(config.packageName)")
     }
     
     func applyStencil(stencilURL: URL, targetPath: String, context: [String: Any]) throws {
@@ -57,7 +59,7 @@ extension FileManager {
         let path = targetPath.appending("/").appending(stencil.replacingOccurrences(of: ".stencil", with: ""))
         let destination = URL(fileURLWithPath: path)
         try package.data(using: .utf8)?.write(to: destination)
-        print("📝 \(destination.path)")
+        print("📄 \(destination.path)")
         if destination.pathExtension == "sh" {
             try setAttributes([FileAttributeKey.posixPermissions: 0o755], ofItemAtPath: path)
         }

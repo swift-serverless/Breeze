@@ -15,28 +15,32 @@
 import Foundation
 import Yams
 
-struct BreezeLambdaAPIConfig: Codable {
+struct BreezeConfig: Codable {
+    let service: String
+    let awsRegion: String
     let swiftVersion: String
     let swiftConfiguration: String
     let packageName: String
+    let buildPath: String
+    let breezeLambdaAPI: BreezeLambdaAPIConfig
+}
+
+struct BreezeLambdaAPIConfig: Codable {
     let targetName: String
     let itemCodable: String
     let itemKey: String
-    let buildPath: String
     let httpAPIPath: String
     let dynamoDBTableNamePrefix: String
-    let service: String
-    let awsRegion: String
 }
 
-extension BreezeLambdaAPIConfig {
+extension BreezeConfig {
     static let decoder = YAMLDecoder()
-    static func load(from url: URL) throws -> BreezeLambdaAPIConfig {
+    static func load(from url: URL) throws -> BreezeConfig {
         let paramsYML = try Data(contentsOf: url)
         printTitle("⚙️ Loading configuration file")
         print("\(url.path)\n")
         let yml = String(data: paramsYML, encoding: .utf8) ?? ""
         print(yml)
-        return try decoder.decode(BreezeLambdaAPIConfig.self, from: paramsYML)
+        return try decoder.decode(BreezeConfig.self, from: paramsYML)
     }
 }

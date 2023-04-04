@@ -34,36 +34,37 @@ struct BreezeCommand: ParsableCommand {
             throw BreezeCommandError.invalidConfig
         }
         let url: URL = URL(fileURLWithPath: configFile)
-        let params = try BreezeLambdaAPIConfig.load(from: url)
+        let config = try BreezeConfig.load(from: url)
+        let params = config.breezeLambdaAPI
         
         try fileManager.cleanTargetPath(targetPath, remove: forceOverwrite)
-        try fileManager.applyStencils(targetPath: targetPath, params: params)
+        try fileManager.applyStencils(targetPath: targetPath, config: config)
         
         let serverlessConfig = try ServerlessConfig.dynamoDBLambdaAPI(
-            service: params.service,
+            service: config.service,
             dynamoDBKey: params.itemKey,
             dynamoDBTableNamePrefix: params.dynamoDBTableNamePrefix,
             httpAPIPath: params.httpAPIPath,
-            region: Region(rawValue: params.awsRegion) ?? .us_east_1,
+            region: Region(rawValue: config.awsRegion) ?? .us_east_1,
             runtime: .providedAl2,
             architecture: .arm64,
             memorySize: 256,
             executable: params.targetName,
-            artifact: "\(params.buildPath)/\(params.targetName)/\(params.targetName).zip"
+            artifact: "\(config.buildPath)/\(params.targetName)/\(params.targetName).zip"
         )
         try serverlessConfig.writeSLS(params: params, targetPath: targetPath, ymlFileName: "serverless.yml")
         
         let serverlessConfig_x86_64 = try ServerlessConfig.dynamoDBLambdaAPI(
-            service: params.service,
+            service: config.service,
             dynamoDBKey: params.itemKey,
             dynamoDBTableNamePrefix: params.dynamoDBTableNamePrefix,
             httpAPIPath: params.httpAPIPath,
-            region: Region(rawValue: params.awsRegion) ?? .us_east_1,
+            region: Region(rawValue: config.awsRegion) ?? .us_east_1,
             runtime: .provided,
             architecture: .x86_64,
             memorySize: 256,
-            executable: params.packageName,
-            artifact: "\(params.buildPath)/\(params.targetName)/\(params.targetName).zip"
+            executable: config.packageName,
+            artifact: "\(config.buildPath)/\(params.targetName)/\(params.targetName).zip"
         )
         try serverlessConfig_x86_64.writeSLS(params: params, targetPath: targetPath, ymlFileName: "serverless-x86_64.yml")
         print("")
