@@ -51,6 +51,14 @@ functions:
     - httpApi:
         path: /items
         method: put
+  readItemAPI:
+    handler: read
+    memorySize: 256
+    description: '[${sls:stage}] get /items/{itemKey}'
+    events:
+    - httpApi:
+        path: /items/{itemKey}
+        method: get
   deleteItemAPI:
     handler: delete
     memorySize: 256
@@ -67,14 +75,6 @@ functions:
     - httpApi:
         path: /items
         method: post
-  readItemAPI:
-    handler: read
-    memorySize: 256
-    description: '[${sls:stage}] get /items/{itemKey}'
-    events:
-    - httpApi:
-        path: /items/{itemKey}
-        method: get
   listItemAPI:
     handler: list
     memorySize: 256
@@ -86,13 +86,13 @@ functions:
 resources:
   Resources:
     ItemAPITable:
+      Type: AWS::DynamoDB::Table
       Properties:
-        AttributeDefinitions:
-        - AttributeName: ${self:custom.keyName}
-          AttributeType: S
         KeySchema:
         - AttributeName: ${self:custom.keyName}
           KeyType: HASH
-        BillingMode: PAY_PER_REQUEST
         TableName: ${self:custom.tableName}
-      Type: AWS::DynamoDB::Table
+        AttributeDefinitions:
+        - AttributeType: S
+          AttributeName: ${self:custom.keyName}
+        BillingMode: PAY_PER_REQUEST

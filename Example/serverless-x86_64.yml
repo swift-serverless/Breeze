@@ -12,8 +12,8 @@ provider:
     cors: true
   architecture: x86_64
   environment:
-    DYNAMO_DB_TABLE_NAME: ${self:custom.tableName}
     DYNAMO_DB_KEY: ${self:custom.keyName}
+    DYNAMO_DB_TABLE_NAME: ${self:custom.tableName}
   versionFunctions: true
   iam:
     role:
@@ -35,7 +35,7 @@ provider:
         - dynamodb:DescribeTable
         Resource:
         - Fn::GetAtt:
-          - BreezeItemAPITable
+          - ItemAPITable
           - Arn
 package:
   artifact: build/ItemAPI/ItemAPI.zip
@@ -43,7 +43,7 @@ custom:
   tableName: items-table-${sls:stage}
   keyName: itemKey
 functions:
-  deleteBreezeItemAPI:
+  deleteItemAPI:
     handler: delete
     memorySize: 256
     description: '[${sls:stage}] delete /items/{itemKey}'
@@ -51,23 +51,7 @@ functions:
     - httpApi:
         path: /items/{itemKey}
         method: delete
-  listBreezeItemAPI:
-    handler: list
-    memorySize: 256
-    description: '[${sls:stage}] get /items'
-    events:
-    - httpApi:
-        path: /items
-        method: get
-  readBreezeItemAPI:
-    handler: read
-    memorySize: 256
-    description: '[${sls:stage}] get /items/{itemKey}'
-    events:
-    - httpApi:
-        path: /items/{itemKey}
-        method: get
-  createBreezeItemAPI:
+  createItemAPI:
     handler: create
     memorySize: 256
     description: '[${sls:stage}] post /items'
@@ -75,7 +59,7 @@ functions:
     - httpApi:
         path: /items
         method: post
-  updateBreezeItemAPI:
+  updateItemAPI:
     handler: update
     memorySize: 256
     description: '[${sls:stage}] put /items'
@@ -83,16 +67,32 @@ functions:
     - httpApi:
         path: /items
         method: put
+  readItemAPI:
+    handler: read
+    memorySize: 256
+    description: '[${sls:stage}] get /items/{itemKey}'
+    events:
+    - httpApi:
+        path: /items/{itemKey}
+        method: get
+  listItemAPI:
+    handler: list
+    memorySize: 256
+    description: '[${sls:stage}] get /items'
+    events:
+    - httpApi:
+        path: /items
+        method: get
 resources:
   Resources:
-    BreezeItemAPITable:
+    ItemAPITable:
+      Type: AWS::DynamoDB::Table
       Properties:
         AttributeDefinitions:
         - AttributeType: S
           AttributeName: ${self:custom.keyName}
-        TableName: ${self:custom.tableName}
-        BillingMode: PAY_PER_REQUEST
         KeySchema:
-        - AttributeName: ${self:custom.keyName}
-          KeyType: HASH
-      Type: AWS::DynamoDB::Table
+        - KeyType: HASH
+          AttributeName: ${self:custom.keyName}
+        BillingMode: PAY_PER_REQUEST
+        TableName: ${self:custom.tableName}

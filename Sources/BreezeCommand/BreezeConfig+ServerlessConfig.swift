@@ -22,7 +22,6 @@ extension ServerlessConfig {
     
     func writeSLS(params: BreezeLambdaAPIConfig, targetPath: String, ymlFileName: String) throws {
         let content = try Self.encoder.encode(self)
-        Self.encoder.options = .init(sortKeys: true)
         let path = targetPath.appending("/").appending(ymlFileName)
         let destination = URL(fileURLWithPath: path)
         try content.data(using: .utf8)?.write(to: destination)

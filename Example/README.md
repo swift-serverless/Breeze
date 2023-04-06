@@ -32,8 +32,8 @@ The API implements the following schema:
     -> POST - Create Item
     -> PUT - Update Item
 - /items/{itemKey}
-    -> DELETE - Delete Product
-    -> GET - Get Product
+    -> DELETE - Delete Item
+    -> GET - Get Item
 ```
 
 The full definition is included in [swagger.json](swagger.json).

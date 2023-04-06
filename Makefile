@@ -36,6 +36,9 @@ install_yq:
 generate_temp:
 	swift run breeze -c ./Sources/BreezeCommand/Resources/breeze.yml -t $(BUILD_TEMP) -f true
 
+generate_example:
+	swift run breeze -c ./Sources/BreezeCommand/Resources/breeze.yml -t $(EXAMPLE_PATH) -f true
+
 compare_breeze_output_with_example: install_yq generate_temp
 	bash -c "diff <(yq -P 'sort_keys(..)' $(EXAMPLE_PATH)/serverless.yml) <(yq -P 'sort_keys(..)' $(BUILD_TEMP)/serverless.yml)"
 	bash -c "diff <(yq -P 'sort_keys(..)' $(EXAMPLE_PATH)/serverless-x86_64.yml) <(yq -P 'sort_keys(..)' $(BUILD_TEMP)/serverless-x86_64.yml)"

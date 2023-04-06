@@ -3,15 +3,15 @@ make cp_lambda_to_sls_build_local
 BUILD_ARCH=`uname -m`
 if [ $BUILD_ARCH = "arm64" ];
 then
-    serverless deploy -f create{{ config.packageName }}
-    serverless deploy -f read{{ config.packageName }}
-    serverless deploy -f update{{ config.packageName }}
-    serverless deploy -f delete{{ config.packageName }}
-    serverless deploy -f list{{ config.packageName }}
+    serverless deploy -f create{{ params.targetName }}
+    serverless deploy -f read{{ params.targetName }}
+    serverless deploy -f update{{ params.targetName }}
+    serverless deploy -f delete{{ params.targetName }}
+    serverless deploy -f list{{ params.targetName }}
 else
-    serverless deploy -f create{{ config.packageName }} -c serverless-x86_64.yml
-    serverless deploy -f read{{ config.packageName }} -c serverless-x86_64.yml
-    serverless deploy -f update{{ config.packageName }} -c serverless-x86_64.yml
-    serverless deploy -f delete{{ config.packageName }} -c serverless-x86_64.yml
-    serverless deploy -f list{{ config.packageName }} -c serverless-x86_64.yml
+    serverless deploy -f create{{ params.targetName }} -c serverless-x86_64.yml
+    serverless deploy -f read{{ params.targetName }} -c serverless-x86_64.yml
+    serverless deploy -f update{{ params.targetName }} -c serverless-x86_64.yml
+    serverless deploy -f delete{{ params.targetName }} -c serverless-x86_64.yml
+    serverless deploy -f list{{ params.targetName }} -c serverless-x86_64.yml
 fi

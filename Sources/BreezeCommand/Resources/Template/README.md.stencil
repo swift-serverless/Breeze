@@ -32,8 +32,8 @@ The API implements the following schema:
     -> POST - Create {{ params.itemCodable }}
     -> PUT - Update {{ params.itemCodable }}
 - {{ params.httpAPIPath }}/{{"{"}}{{ params.itemKey }}{{"}"}}
-    -> DELETE - Delete Product
-    -> GET - Get Product
+    -> DELETE - Delete {{ params.itemCodable }}
+    -> GET - Get {{ params.itemCodable }}
 ```
 
 The full definition is included in [swagger.json](swagger.json).

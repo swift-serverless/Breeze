@@ -63,7 +63,7 @@ struct BreezeCommand: ParsableCommand {
             runtime: .provided,
             architecture: .x86_64,
             memorySize: 256,
-            executable: config.packageName,
+            executable: params.targetName,
             artifact: "\(config.buildPath)/\(params.targetName)/\(params.targetName).zip"
         )
         try serverlessConfig_x86_64.writeSLS(params: params, targetPath: targetPath, ymlFileName: "serverless-x86_64.yml")
