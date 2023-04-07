@@ -23,6 +23,20 @@ struct BreezeConfig: Codable {
     let packageName: String
     let buildPath: String
     let breezeLambdaAPI: BreezeLambdaAPIConfig
+    let cors: Bool
+    let authorizer: BreezeAuthorizer?
+}
+
+enum BreezeAuthorizerType: String, Codable {
+    case JWTAuthorizer
+    case customAuthorizer
+}
+
+struct BreezeAuthorizer: Codable {
+    let name: String
+    let type: BreezeAuthorizerType
+    let issuerUrl: String
+    let audience: [String]
 }
 
 struct BreezeLambdaAPIConfig: Codable {

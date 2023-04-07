@@ -185,8 +185,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/swift-sprinter/swift-sls-adapter",
       "state" : {
-        "revision" : "f6273cc834273290c1084378813ace64b6e60677",
-        "version" : "0.1.0"
+        "revision" : "afb5b2fdb7fdb8bb8771a4a1f4340cc459e6edbd",
+        "version" : "0.2.0"
       }
     },
     {

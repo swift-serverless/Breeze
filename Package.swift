@@ -29,7 +29,7 @@ let package = Package(
         .package(url: "https://github.com/apple/swift-log.git", from: "1.0.0"),
         .package(url: "https://github.com/apple/swift-argument-parser.git", from: "1.0.0"),
         .package(url: "https://github.com/stencilproject/Stencil.git", from: "0.15.1"),
-        .package(url: "https://github.com/swift-sprinter/swift-sls-adapter", from: "0.1.0")
+        .package(url: "https://github.com/swift-sprinter/swift-sls-adapter", from: "0.2.0")
     ],
     targets: [
         .target(

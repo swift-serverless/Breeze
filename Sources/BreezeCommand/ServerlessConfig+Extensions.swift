@@ -15,6 +15,17 @@
 import Foundation
 import SLSAdapter
 
+extension BreezeAuthorizer {
+    
+    var authorizers: YAMLContent {
+        .dictionary([name : .buildJWTAuthorizer(issuerUrl: issuerUrl, audience: audience)])
+    }
+    
+    var authorizer: YAMLContent {
+        .dictionary(["name" : .string(name)])
+    }
+}
+
 extension ServerlessConfig {
     
     struct Endpoint {
@@ -28,6 +39,8 @@ extension ServerlessConfig {
                                   dynamoDBTableNamePrefix: String,
                                   httpAPIPath: String,
                                   region: Region,
+                                  authorizer: BreezeAuthorizer?,
+                                  cors: Bool,
                                   runtime: Runtime,
                                   architecture: Architecture,
                                   memorySize: Int,
@@ -49,13 +62,14 @@ extension ServerlessConfig {
         )
         let environment = try YAMLContent(with: [environmentTableName: "${self:custom.tableName}",
                                                    environmentKeyName: "${self:custom.keyName}"])
+        
         let provider = Provider(
             name: .aws,
             region: region,
             runtime: runtime,
             environment: environment,
             architecture: architecture,
-            httpAPI: .init(payload: "2.0", cors: true),
+            httpAPI: .init(payload: "2.0", cors: cors, authorizers: authorizer?.authorizers),
             iam: iam
         )
         let custom = try YAMLContent(with: ["tableName": "\(dynamoDBTableNamePrefix)-table-${sls:stage}",
@@ -76,7 +90,7 @@ extension ServerlessConfig {
                 memorySize: memorySize,
                 runtime: nil,
                 package: nil,
-                event: .init(path: endpoint.path, method: endpoint.method)
+                event: .init(path: endpoint.path, method: endpoint.method, authorizer: authorizer?.authorizer)
             )
             functions["\(endpoint.handler)\(executable)"] = function
         }
