@@ -72,8 +72,13 @@ struct BreezeCommand: ParsableCommand {
         )
         try serverlessConfig_x86_64.writeSLS(params: params, targetPath: targetPath, ymlFileName: "serverless-x86_64.yml")
         print("")
-        breeze()
         printTitle("✅ Project is ready at target-path")
-        print("\(targetPath)")
+        print("\(targetPath)\n")
+        breeze()
+        print()
+        printTitle("💨 Use the following commands to build & deploy")
+        print("cd \(targetPath)")
+        print("./build.sh")
+        print("./deploy.sh")
     }
 }
