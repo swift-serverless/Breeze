@@ -9,7 +9,7 @@ provider:
   runtime: provided
   httpApi:
     payload: '2.0'
-    cors: true
+    cors: false
   architecture: x86_64
   environment:
     DYNAMO_DB_KEY: ${self:custom.keyName}
