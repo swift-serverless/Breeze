@@ -15,10 +15,22 @@
 import Foundation
 
 extension FileManager {
-    func cleanTargetPath(_ targetPath: String, remove: Bool) throws {
+    func cleanTargetPath(_ targetPath: String, remove: Bool, yes: Bool) throws {
         printTitle("🔎 Verifing target path")
         var isDirectory: ObjCBool = false
-        if remove, fileExists(atPath: targetPath, isDirectory: &isDirectory) {
+        
+        let directoryExists = fileExists(atPath: targetPath, isDirectory: &isDirectory)
+        if remove,
+           directoryExists,
+           !yes {
+            print("WARNING: The folder at path \(targetPath) will be removed. Do you want to continue? [yes/no]")
+            let readline = readLine()
+            if readline != "yes" {
+                throw BreezeCommandError.cannotOverwriteTargetPath(targetPath)
+            }
+        }
+        
+        if remove, directoryExists {
             try removeItem(at: URL(fileURLWithPath: targetPath))
             print("🧹 \(targetPath)\n")
         }

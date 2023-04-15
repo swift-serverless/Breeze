@@ -34,10 +34,10 @@ install_yq:
 	chmod a+x /usr/local/bin/yq
 
 generate_temp:
-	swift run breeze -c ./Sources/BreezeCommand/Resources/breeze.yml -t $(BUILD_TEMP) -f true
+	swift run breeze -c ./Sources/BreezeCommand/Resources/breeze.yml -t $(BUILD_TEMP) -f
 
 generate_example:
-	swift run breeze -c ./Sources/BreezeCommand/Resources/breeze.yml -t $(EXAMPLE_PATH) -f true
+	swift run breeze -c ./Sources/BreezeCommand/Resources/breeze.yml -t $(EXAMPLE_PATH) -f
 
 compare_breeze_output_with_example: install_yq generate_temp
 	bash -c "diff <(yq -P 'sort_keys(..)' $(EXAMPLE_PATH)/serverless.yml) <(yq -P 'sort_keys(..)' $(BUILD_TEMP)/serverless.yml)"

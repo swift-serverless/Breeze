@@ -120,15 +120,20 @@ swift run breeze --help
 output:
 
 ```bash
-USAGE: breeze-command --config-file <config-file> --target-path <target-path> [--force-overwrite <force-overwrite>]
+OVERVIEW: Breeze command line
+
+Generate the deployment of a Serverless API using Breeze.
+The command generates of the swift package, the `serverless.yml` file and the relevant commands in the target path to deploy the Lambda code on AWS using the Serverless Framework.
+
+USAGE: breeze --config-file <config-file> --target-path <target-path> [--force-overwrite] [-y]
 
 OPTIONS:
   -c, --config-file <config-file>
                           YML configurarion file
   -t, --target-path <target-path>
                           Target path
-  -f, --force-overwrite <force-overwrite>
-                          Force target path overwrite (default: false)
+  -f, --force-overwrite   Force target path overwrite
+  -y
   -h, --help              Show help information.
 ```
 

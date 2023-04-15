@@ -18,6 +18,12 @@ import SLSAdapter
 
 @main
 struct BreezeCommand: ParsableCommand {
+    
+    static let configuration: CommandConfiguration = CommandConfiguration(
+        commandName: "breeze",
+        abstract: "Breeze command line",
+        discussion: "Generate the deployment of a Serverless API using Breeze.\nThe command generates of the swift package, the `serverless.yml` file and the relevant commands in the target path to deploy the Lambda code on AWS using the Serverless Framework."
+    )
 
     @Option(name: .shortAndLong, help: "YML configurarion file")
     var configFile: String
@@ -25,8 +31,11 @@ struct BreezeCommand: ParsableCommand {
     @Option(name: .shortAndLong, help: "Target path")
     var targetPath: String
     
-    @Option(name: .shortAndLong, help: "Force target path overwrite")
+    @Flag(name: .shortAndLong, help: "Force target path overwrite")
     var forceOverwrite: Bool = false
+    
+    @Flag(name: .short)
+    var yes: Bool = false
     
     mutating func run() throws {
         let fileManager = FileManager.default
@@ -37,7 +46,7 @@ struct BreezeCommand: ParsableCommand {
         let config = try BreezeConfig.load(from: url)
         let params = config.breezeLambdaAPI
         
-        try fileManager.cleanTargetPath(targetPath, remove: forceOverwrite)
+        try fileManager.cleanTargetPath(targetPath, remove: forceOverwrite, yes: yes)
         try fileManager.applyStencils(targetPath: targetPath, config: config)
         
         let serverlessConfig = try ServerlessConfig.dynamoDBLambdaAPI(
