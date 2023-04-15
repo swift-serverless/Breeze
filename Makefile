@@ -34,7 +34,7 @@ install_yq:
 	chmod a+x /usr/local/bin/yq
 
 generate_temp:
-	swift run breeze -c ./Sources/BreezeCommand/Resources/breeze.yml -t $(BUILD_TEMP) -f
+	swift run breeze -c ./Sources/BreezeCommand/Resources/breeze.yml -t $(BUILD_TEMP) -f -y
 
 generate_example:
 	swift run breeze -c ./Sources/BreezeCommand/Resources/breeze.yml -t $(EXAMPLE_PATH) -f
