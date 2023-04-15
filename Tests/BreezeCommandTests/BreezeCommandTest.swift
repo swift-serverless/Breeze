@@ -103,7 +103,7 @@ class BreezeCommandTest: XCTestCase {
     
     func test_run_whenParametersAreSet_thenSuccess() throws {
         let configFile = try Fixtures.fixture(file: Fixtures.configFile).path
-        let output = try givenRunBreeze(args: "--config-file \(configFile) --target-path \(targetPath) --force-overwrite true")
+        let output = try givenRunBreeze(args: "--config-file \(configFile) --target-path \(targetPath) --force-overwrite -y")
         XCTAssertTrue(output.contains("✅ Project is ready at target-path"))
         
         let serverlessConfig = try loadServerlessConfig(targetPath: targetPath, fileName: "serverless")
@@ -115,7 +115,7 @@ class BreezeCommandTest: XCTestCase {
     
     func test_run_whenParametersAreSet_andSignInWithAppleConfig_thenSuccess() throws {
         let configFile = try Fixtures.fixture(file: Fixtures.configFileSignInWithApple).path
-        let output = try givenRunBreeze(args: "--config-file \(configFile) --target-path \(targetPath) --force-overwrite true")
+        let output = try givenRunBreeze(args: "--config-file \(configFile) --target-path \(targetPath) --force-overwrite -y")
         XCTAssertTrue(output.contains("✅ Project is ready at target-path"))
         
         let serverlessConfig = try loadServerlessConfig(targetPath: targetPath, fileName: "serverless")
@@ -127,7 +127,7 @@ class BreezeCommandTest: XCTestCase {
     
     func test_run_whenParametersAreSetAndForceOverrideIsFalse_thenErrorOnSecondRun() throws {
         let configFile = try Fixtures.fixture(file: Fixtures.configFile).path
-        let output = try givenRunBreeze(args: "--config-file \(configFile) --target-path \(targetPath) --force-overwrite true")
+        let output = try givenRunBreeze(args: "--config-file \(configFile) --target-path \(targetPath) --force-overwrite -y")
         XCTAssertTrue(output.contains("✅ Project is ready at target-path"))
         
         let outputWithoutForce = try givenRunBreeze(args: "--config-file \(configFile) --target-path \(targetPath)")
