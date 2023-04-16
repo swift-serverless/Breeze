@@ -1,11 +1,11 @@
-# Breeze Item API
+# Breeze {{ params.itemCodable }} API
 
 ## Serverless REST API wiht Breeze
 
-The example shows how to build a Rest API based on an `Item` swift struct.
+The example shows how to build a Rest API based on an `{{ params.itemCodable }}` swift struct.
 
 ```swift
-struct Item: Codable {
+struct {{ params.itemCodable }}: Codable {
     public var key: String
     public let name: String
     public let description: String
@@ -13,7 +13,7 @@ struct Item: Codable {
     public var updatedAt: String?
     
     enum CodingKeys: String, CodingKey {
-        case key = "itemKey"
+        case key = "{{ params.itemKey }}"
         case name
         case description
         case createdAt
@@ -21,19 +21,19 @@ struct Item: Codable {
     }
 }
 
-extension Item: BreezeCodable { }
+extension {{ params.itemCodable }}: BreezeCodable { }
 ```
 
 The API implements the following schema:
 
 ```
-- /items
-    -> GET - List Item
-    -> POST - Create Item
-    -> PUT - Update Item
-- /items/{itemKey}
-    -> DELETE - Delete Item
-    -> GET - Get Item
+- {{ params.httpAPIPath }}
+    -> GET - List {{ params.itemCodable }}
+    -> POST - Create {{ params.itemCodable }}
+    -> PUT - Update {{ params.itemCodable }}
+- {{ params.httpAPIPath }}/{{"{"}}{{ params.itemKey }}{{"}"}}
+    -> DELETE - Delete {{ params.itemCodable }}
+    -> GET - Get {{ params.itemCodable }}
 ```
 
 The full definition is included in [swagger.json](swagger.json).

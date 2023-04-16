@@ -9,6 +9,10 @@ let package = Package(
         .macOS(.v13),
     ],
     products: [
+        .executable(
+            name: "breeze",
+            targets: ["BreezeCommand"]
+        ),
         .library(
             name: "BreezeDynamoDBService",
             targets: ["BreezeDynamoDBService"]
@@ -23,6 +27,9 @@ let package = Package(
         .package(url: "https://github.com/swift-server/swift-aws-lambda-events.git", from: "0.1.0"),
         .package(url: "https://github.com/soto-project/soto.git", from: "6.0.0"),
         .package(url: "https://github.com/apple/swift-log.git", from: "1.0.0"),
+        .package(url: "https://github.com/apple/swift-argument-parser.git", from: "1.0.0"),
+        .package(url: "https://github.com/stencilproject/Stencil.git", from: "0.15.1"),
+        .package(url: "https://github.com/swift-sprinter/swift-sls-adapter", from: "0.2.0")
     ],
     targets: [
         .target(
@@ -40,6 +47,15 @@ let package = Package(
                 "BreezeDynamoDBService"
             ]
         ),
+        .executableTarget(
+            name: "BreezeCommand",
+            dependencies: [
+                .product(name: "ArgumentParser", package: "swift-argument-parser"),
+                .product(name: "SLSAdapter", package: "swift-sls-adapter"),
+                .product(name: "Stencil", package: "Stencil")
+            ],
+            resources: [.copy("Resources")]
+        ),
         .testTarget(
             name: "BreezeLambdaAPITests",
             dependencies: [
@@ -51,6 +67,11 @@ let package = Package(
         .testTarget(
             name: "BreezeDynamoDBServiceTests",
             dependencies: ["BreezeDynamoDBService"]
+        ),
+        .testTarget(
+            name: "BreezeCommandTests",
+            dependencies: ["BreezeCommand"],
+            resources: [.copy("Fixtures")]
         ),
     ]
 )

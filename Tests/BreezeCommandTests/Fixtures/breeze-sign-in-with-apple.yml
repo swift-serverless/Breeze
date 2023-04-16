@@ -1,0 +1,19 @@
+service: swift-breeze-rest-item-api
+awsRegion: us_east_1
+swiftVersion: 5.7.3
+swiftConfiguration: release
+packageName: BreezeItemAPI
+buildPath: build
+cors: false
+authorizer:
+        name: appleJWT
+        type: JWTAuthorizer
+        issuerUrl: https://appleid.apple.com
+        audience:
+            - APP_BUNDLE_IDENTIFIER
+breezeLambdaAPI:
+    targetName: ItemAPI
+    itemCodable: Item
+    itemKey: itemKey
+    httpAPIPath: /items
+    dynamoDBTableNamePrefix: items
