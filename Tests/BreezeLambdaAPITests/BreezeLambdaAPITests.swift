@@ -241,6 +241,18 @@ final class BreezeLambdaAPITests: XCTestCase {
         XCTAssertNotNil(response)
     }
     
+    func test_delete_whenRequestIsOutaded() async throws {
+        setEnvironmentVar(name: "_HANDLER", value: "build/Products.delete", overwrite: true)
+        BreezeDynamoDBServiceMock.keyedResponse = Fixtures.productUdated2023
+        let deleteProductsSku = try Fixtures.fixture(name: Fixtures.deleteProductsSkuRequest, type: "json")
+        let request = try decoder.decode(APIGatewayV2Request.self, from: deleteProductsSku)
+        let apiResponse: APIGatewayV2Response = try await Lambda.test(BreezeLambdaAPI<Product>.self, with: request)
+        let response: BreezeEmptyResponse = try apiResponse.decodeBody()
+        XCTAssertEqual(apiResponse.statusCode, .notFound)
+        XCTAssertEqual(apiResponse.headers, [ "Content-Type": "application/json" ])
+        XCTAssertNotNil(response)
+    }
+    
     func test_delete_whenInvalidRequest_thenError() async throws {
         setEnvironmentVar(name: "_HANDLER", value: "build/Products.delete", overwrite: true)
         BreezeDynamoDBServiceMock.keyedResponse = Fixtures.product2023

@@ -81,14 +81,23 @@ struct BreezeLambdaHandler<T: BreezeCodable> {
             return APIGatewayV2Response(with: error, statusCode: .notFound)
         }
     }
+    
+    struct SimpleItem: BreezeCodable {
+        var key: String
+        var createdAt: String?
+        var updatedAt: String?
+    }
 
     func deleteLambdaHandler(context: AWSLambdaRuntimeCore.LambdaContext, event: APIGatewayV2Request) async -> APIGatewayV2Response {
-        guard let key = event.pathParameters?[keyName] else {
+        guard let key = event.pathParameters?[keyName],
+              let createdAt = event.queryStringParameters?["createdAt"],
+              let updatedAt = event.queryStringParameters?["updatedAt"] else {
             let error = BreezeLambdaAPIError.invalidRequest
             return APIGatewayV2Response(with: error, statusCode: .forbidden)
         }
         do {
-            try await self.service.deleteItem(key: key)
+            let simpleItem = SimpleItem(key: key, createdAt: createdAt, updatedAt: updatedAt)
+            try await self.service.deleteItem(item: simpleItem)
             return APIGatewayV2Response(with: BreezeEmptyResponse(), statusCode: .ok)
         } catch {
             return APIGatewayV2Response(with: error, statusCode: .notFound)

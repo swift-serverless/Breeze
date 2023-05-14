@@ -56,6 +56,21 @@ final class BreezeDynamoDBServiceTests: XCTestCase {
         XCTAssertNotNil(value.updatedAt?.iso8601)
     }
     
+    func test_createItemDuplicate_shouldThrowConditionalCheckFailedException() async throws {
+        let value = try await sut.createItem(item: product2023)
+        XCTAssertEqual(value.key, product2023.key)
+        XCTAssertEqual(value.name, product2023.name)
+        XCTAssertEqual(value.description, product2023.description)
+        XCTAssertNotNil(value.createdAt?.iso8601)
+        XCTAssertNotNil(value.updatedAt?.iso8601)
+        do {
+            _ = try await sut.createItem(item: product2023)
+            XCTFail("It should throw conditionalCheckFailedException")
+        } catch {
+            XCTAssertNotNil(error)
+        }
+    }
+    
     func test_readItem() async throws {
         let cretedItem = try await sut.createItem(item: product2023)
         let readedItem: Product = try await sut.readItem(key: "2023")
@@ -89,10 +104,35 @@ final class BreezeDynamoDBServiceTests: XCTestCase {
         XCTAssertNotEqual(value.updatedAt?.iso8601, newValue.updatedAt?.iso8601)
     }
     
+    func test_updateItem_whenItemHasChanged_shouldThrowConditionalCheckFailedException() async throws {
+        var value = try await sut.createItem(item: product2023)
+        value.name = "New Name"
+        value.description = "New Description"
+        let newValue = try await sut.updateItem(item: value)
+        XCTAssertEqual(value.key, newValue.key)
+        XCTAssertEqual(value.name, newValue.name)
+        XCTAssertEqual(value.description, newValue.description)
+        XCTAssertEqual(value.createdAt?.iso8601, newValue.createdAt?.iso8601)
+        XCTAssertNotEqual(value.updatedAt?.iso8601, newValue.updatedAt?.iso8601)
+        do {
+            let _: Product = try await sut.updateItem(item: product2023)
+            XCTFail("It should throw conditionalCheckFailedException")
+        } catch {
+            XCTAssertNotNil(error)
+        }
+        
+        do {
+            let _: Product = try await sut.updateItem(item: product2022)
+            XCTFail("It should throw conditionalCheckFailedException")
+        } catch {
+            XCTAssertNotNil(error)
+        }
+    }
+    
     func test_deleteItem() async throws {
         let value = try await sut.createItem(item: product2023)
         XCTAssertEqual(value.key, "2023")
-        try await sut.deleteItem(key: "2023")
+        try await sut.deleteItem(item: value)
         let readedItem: Product? = try? await sut.readItem(key: "2023")
         XCTAssertNil(readedItem)
     }
@@ -100,7 +140,7 @@ final class BreezeDynamoDBServiceTests: XCTestCase {
     func test_deleteItem_whenItemIsMissing() async throws {
         let value = try await sut.createItem(item: product2023)
         XCTAssertEqual(value.key, "2023")
-        try await sut.deleteItem(key: "2022")
+        try await sut.deleteItem(item: value)
     }
     
     func test_listItem() async throws {

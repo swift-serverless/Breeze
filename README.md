@@ -69,6 +69,12 @@ All you need to do is to decide the struct conforming `BreezeCodable` to persist
 
 Each lambda will be initialized with a specific `_HANDLER` and it will run the code to implement the required logic needed by one of the CRUD functions. The code needs to be packaged and deployed using the referenced architecture.
 
+### Optimistic locking
+
+Optimistic locking is a strategy to ensure that the BreezeCodable Item is not updated by another request before updating or deleting it.
+The fields `updatedAt` and `createdAt` are used to implement optimistic locking.
+Refer to the [DynamoDB documentation](https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/DynamoDBMapper.OptimisticLocking.html) for more details.
+
 ## Lambda package with Swift Package Manager
 
 To package the Lambda is required to create a Swift Package using the following `Package.swift` file.
@@ -88,7 +94,7 @@ let package = Package(
         .executable(name: "ItemAPI", targets: ["ItemAPI"]),
     ],
     dependencies: [
-        .package(url: "https://github.com/swift-sprinter/Breeze.git", from: "0.1.0"),
+        .package(url: "https://github.com/swift-sprinter/Breeze.git", from: "0.3.0"),
     ],
     targets: [
         .executableTarget(
@@ -146,7 +152,7 @@ OPTIONS:
 Define a configuration file with the following format:
 ```yml
 service: swift-breeze-rest-item-api
- awsRegion: us_east_1
+ awsRegion: us-east-1
  swiftVersion: 5.7.3
  swiftConfiguration: release
  packageName: BreezeItemAPI
@@ -199,7 +205,7 @@ output:
 /Users/andreascuderi/Documents/workspace/Breeze/Sources/BreezeCommand/Resources/breeze.yml
 
 service: swift-breeze-rest-item-api
-awsRegion: us_east_1
+awsRegion: us-east-1
 swiftVersion: 5.7.3
 swiftConfiguration: release
 packageName: BreezeItemAPI
@@ -303,12 +309,12 @@ Returns the updated `BreezeCodable`.
 
 - `delete`
 
-Gets the value of the `BreezeCodable.key` from the `APIGatewayV2Request.pathParameters` dictionary and calls `deleteItem` on `BreezeDynamoDBService`.
+Gets the value of the `BreezeCodable.key` from the `APIGatewayV2Request.pathParameters` dictionary, the value of `updatedAt` and `createdAt` from `APIGatewayV2Request.queryStringParameters` dictionary and calls `deleteItem` on `BreezeDynamoDBService`.
 Returns the `BreezeCodable` if persisted on DynamoDB.
 
 - `list`
 
-Gets the value of the `exclusiveStartKey` and `limit` from the `APIGatewayV2Request.pathParameters` dictionary and calls `listItems` on `BreezeDynamoDBService`.
+Gets the value of the `exclusiveStartKey` and `limit` from the `APIGatewayV2Request.queryStringParameters` dictionary and calls `listItems` on `BreezeDynamoDBService`.
 Returns the `ListResponse` containing the items if persisted on DynamoDB.
 
 ```swift

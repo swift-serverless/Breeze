@@ -20,6 +20,6 @@ public protocol BreezeDynamoDBServing {
     func createItem<Item: BreezeCodable>(item: Item) async throws -> Item
     func readItem<Item: BreezeCodable>(key: String) async throws -> Item
     func updateItem<Item: BreezeCodable>(item: Item) async throws -> Item
-    func deleteItem(key: String) async throws
+    func deleteItem<Item: BreezeCodable>(item: Item) async throws
     func listItems<Item: BreezeCodable>(key: String?, limit: Int?) async throws -> ListResponse<Item>
 }
