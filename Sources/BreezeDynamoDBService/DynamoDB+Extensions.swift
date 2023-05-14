@@ -22,8 +22,8 @@ import SotoDynamoDB
 
 extension DynamoDB {
     struct ConditionalUpdateItemCodableInput<T: Encodable & Sendable>: AWSEncodableShape {
-        let additionalAttributeNames: [String: String]?
-        let additionalAttributeValues: [String: AttributeValue]?
+        let additionalAttributeNames: [String: String]
+        let additionalAttributeValues: [String: AttributeValue]
         let conditionExpression: String?
         let expressionAttributeNames: [String: String]?
         let key: [String]
@@ -34,7 +34,7 @@ extension DynamoDB {
         let updateExpression: String?
         let updateItem: T
 
-        init(additionalAttributeNames: [String: String]? = nil, additionalAttributeValues: [String: AttributeValue]? = nil, conditionExpression: String? = nil, expressionAttributeNames: [String: String]? = nil, key: [String], returnConsumedCapacity: ReturnConsumedCapacity? = nil, returnItemCollectionMetrics: ReturnItemCollectionMetrics? = nil, returnValues: ReturnValue? = nil, tableName: String, updateExpression: String? = nil, updateItem: T) {
+        init(additionalAttributeNames: [String: String], additionalAttributeValues: [String: AttributeValue], conditionExpression: String? = nil, expressionAttributeNames: [String: String]? = nil, key: [String], returnConsumedCapacity: ReturnConsumedCapacity? = nil, returnItemCollectionMetrics: ReturnItemCollectionMetrics? = nil, returnValues: ReturnValue? = nil, tableName: String, updateExpression: String? = nil, updateItem: T) {
             self.additionalAttributeNames = additionalAttributeNames
             self.additionalAttributeValues = additionalAttributeValues
             self.conditionExpression = conditionExpression
@@ -55,30 +55,12 @@ extension DynamoDB {
                 key[$0] = item[$0]!
                 item[$0] = nil
             }
-            let expressionAttributeNames: [String: String]
-            if let names = self.expressionAttributeNames, self.updateExpression != nil {
-                expressionAttributeNames = names
-            } else if let additionalAttributeNames {
-                let tmpAttributeNames: [String: String] = .init(item.keys.map { ("#\($0)", $0) }) { first, _ in return first }
-                expressionAttributeNames = tmpAttributeNames.merging(additionalAttributeNames, uniquingKeysWith: { _, new in new })
-            } else {
-                expressionAttributeNames = .init(item.keys.map { ("#\($0)", $0) }) { first, _ in return first }
-            }
-
-            let expressionAttributeValues: [String: AttributeValue]
-            if let additionalAttributeValues {
-                let tmpExpressionAttributeValues: [String: AttributeValue] = .init(item.map { (":\($0.key)", $0.value) }) { first, _ in return first }
-                expressionAttributeValues = tmpExpressionAttributeValues.merging(additionalAttributeValues, uniquingKeysWith: { _, new in new })
-            } else {
-                expressionAttributeValues = .init(item.map { (":\($0.key)", $0.value) }) { first, _ in return first }
-            }
-            let updateExpression: String
-            if let inputUpdateExpression = self.updateExpression {
-                updateExpression = inputUpdateExpression
-            } else {
-                let expressions = item.keys.map { "#\($0) = :\($0)" }
-                updateExpression = "SET \(expressions.joined(separator: ","))"
-            }
+            let tmpAttributeNames: [String: String] = .init(item.keys.map { ("#\($0)", $0) }) { first, _ in return first }
+            let expressionAttributeNames = tmpAttributeNames.merging(additionalAttributeNames, uniquingKeysWith: { _, new in new })
+            let tmpExpressionAttributeValues: [String: AttributeValue] = .init(item.map { (":\($0.key)", $0.value) }) { first, _ in return first }
+            let expressionAttributeValues = tmpExpressionAttributeValues.merging(additionalAttributeValues, uniquingKeysWith: { _, new in new })
+            let expressions = item.keys.map { "#\($0) = :\($0)" }
+            let updateExpression = "SET \(expressions.joined(separator: ","))"
             return DynamoDB.UpdateItemInput(
                 conditionExpression: self.conditionExpression,
                 expressionAttributeNames: expressionAttributeNames,

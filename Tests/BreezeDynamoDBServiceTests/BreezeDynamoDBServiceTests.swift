@@ -137,10 +137,61 @@ final class BreezeDynamoDBServiceTests: XCTestCase {
         XCTAssertNil(readedItem)
     }
     
-    func test_deleteItem_whenItemIsMissing() async throws {
-        let value = try await sut.createItem(item: product2023)
+    func test_deleteItem_whenItemIsMissing_thenShouldThrow() async throws {
+        do {
+            try await sut.deleteItem(item: product2022)
+            XCTFail("It should throw ServiceError.missingParameters")
+        } catch {
+            XCTAssertNotNil(error)
+        }
+    }
+    
+    func test_deleteItem_whenMissingUpdatedAt_thenShouldThrow() async throws {
+        var value = try await sut.createItem(item: product2023)
         XCTAssertEqual(value.key, "2023")
-        try await sut.deleteItem(item: value)
+        value.updatedAt = nil
+        do {
+            try await sut.deleteItem(item: value)
+            XCTFail("It should throw ServiceError.missingParameters")
+        } catch {
+            XCTAssertNotNil(error)
+        }
+    }
+    
+    func test_deleteItem_whenMissingCreatedAt_thenShouldThrow() async throws {
+        var value = try await sut.createItem(item: product2023)
+        XCTAssertEqual(value.key, "2023")
+        value.createdAt = nil
+        do {
+            try await sut.deleteItem(item: value)
+            XCTFail("It should throw ServiceError.missingParameters")
+        } catch {
+            XCTAssertNotNil(error)
+        }
+    }
+    
+    func test_deleteItem_whenOutdatedUpdatedAt_thenShouldThrow() async throws {
+        var value = try await sut.createItem(item: product2023)
+        XCTAssertEqual(value.key, "2023")
+        value.updatedAt = Date().iso8601
+        do {
+            try await sut.deleteItem(item: value)
+            XCTFail("It should throw ServiceError.missingParameters")
+        } catch {
+            XCTAssertNotNil(error)
+        }
+    }
+    
+    func test_deleteItem_whenOutdatedCreatedAt_thenShouldThrow() async throws {
+        var value = try await sut.createItem(item: product2023)
+        XCTAssertEqual(value.key, "2023")
+        value.createdAt = Date().iso8601
+        do {
+            try await sut.deleteItem(item: value)
+            XCTFail("It should throw ServiceError.missingParameters")
+        } catch {
+            XCTAssertNotNil(error)
+        }
     }
     
     func test_listItem() async throws {
