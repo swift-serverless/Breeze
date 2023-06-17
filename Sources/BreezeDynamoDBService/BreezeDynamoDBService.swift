@@ -61,19 +61,23 @@ public extension BreezeDynamoDBService {
         return item
     }
 
+    private struct AdditionalAttributes: Encodable {
+        let oldUpdatedAt: String
+    }
+    
     func updateItem<T: BreezeCodable>(item: T) async throws -> T {
         var item = item
         let oldUpdatedAt = item.updatedAt ?? ""
         let date = Date()
         item.updatedAt = date.iso8601
-        let input = try DynamoDB.ConditionalUpdateItemCodableInput(
-            additionalAttributeNames: ["#keyName": keyName],
-            additionalAttributeValues: [":oldUpdatedAt" : .s(oldUpdatedAt)],
-            conditionExpression: "attribute_exists(#keyName) AND #updatedAt = :oldUpdatedAt AND #createdAt = :createdAt",
+        let attributes = AdditionalAttributes(oldUpdatedAt: oldUpdatedAt)
+        let input = try DynamoDB.UpdateItemCodableInput(
+            additionalAttributes: attributes,
+            conditionExpression: "attribute_exists(#\(keyName)) AND #updatedAt = :oldUpdatedAt AND #createdAt = :createdAt",
             key: [keyName],
             tableName: tableName,
             updateItem: item
-        ).createUpdateItemInput()
+        )
         let _ = try await db.updateItem(input)
         return try await readItem(key: item.key)
     }

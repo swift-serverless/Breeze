@@ -5,8 +5,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/swift-server/async-http-client.git",
       "state" : {
-        "revision" : "333e60cc90f52973f7ee29cd8e3a7f6adfe79f4e",
-        "version" : "1.17.0"
+        "revision" : "78db67e5bf4a8543075787f228e8920097319281",
+        "version" : "1.18.0"
       }
     },
     {
@@ -32,8 +32,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/soto-project/soto.git",
       "state" : {
-        "revision" : "18184ba84e97e598ee6c5a7b803851e049e6eab5",
-        "version" : "6.6.0"
+        "branch" : "main",
+        "revision" : "edfafcfabbfe7bac6056016ff83d63aa51f785da"
       }
     },
     {
@@ -41,8 +41,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/soto-project/soto-core.git",
       "state" : {
-        "revision" : "3462ca704a43ded3b5a2903f5df3280dd5fa6b1f",
-        "version" : "6.5.0"
+        "branch" : "main",
+        "revision" : "44566ddab835d244c71398a911687ea75c72647f"
       }
     },
     {
@@ -118,15 +118,6 @@
       }
     },
     {
-      "identity" : "swift-crypto",
-      "kind" : "remoteSourceControl",
-      "location" : "https://github.com/apple/swift-crypto.git",
-      "state" : {
-        "revision" : "33a20e650c33f6d72d822d558333f2085effa3dc",
-        "version" : "2.5.0"
-      }
-    },
-    {
       "identity" : "swift-log",
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/apple/swift-log.git",
@@ -140,8 +131,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/apple/swift-metrics.git",
       "state" : {
-        "revision" : "e8bced74bc6d747745935e469f45d03f048d6cbd",
-        "version" : "2.3.4"
+        "revision" : "34025104068262db0cc998ace178975c5ff4f36b",
+        "version" : "2.4.0"
       }
     },
     {
@@ -167,8 +158,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/apple/swift-nio-http2.git",
       "state" : {
-        "revision" : "6d021a48483dbb273a9be43f65234bdc9185b364",
-        "version" : "1.26.0"
+        "revision" : "a8ccf13fa62775277a5d56844878c828bbb3be1a",
+        "version" : "1.27.0"
       }
     },
     {
