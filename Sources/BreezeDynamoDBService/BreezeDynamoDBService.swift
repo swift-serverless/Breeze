@@ -19,6 +19,7 @@ import SotoDynamoDB
 public class BreezeDynamoDBService: BreezeDynamoDBServing {
     enum ServiceError: Error {
         case notFound
+        case missingParameters
     }
 
     let db: DynamoDB
@@ -39,6 +40,8 @@ public extension BreezeDynamoDBService {
         item.createdAt = date.iso8601
         item.updatedAt = date.iso8601
         let input = DynamoDB.PutItemCodableInput(
+            conditionExpression: "attribute_not_exists(#keyName)",
+            expressionAttributeNames: ["#keyName": keyName],
             item: item,
             tableName: tableName
         )
@@ -58,12 +61,19 @@ public extension BreezeDynamoDBService {
         return item
     }
 
+    private struct AdditionalAttributes: Encodable {
+        let oldUpdatedAt: String
+    }
+    
     func updateItem<T: BreezeCodable>(item: T) async throws -> T {
         var item = item
+        let oldUpdatedAt = item.updatedAt ?? ""
         let date = Date()
         item.updatedAt = date.iso8601
-        let input = DynamoDB.UpdateItemCodableInput(
-            conditionExpression: "attribute_exists(createdAt)",
+        let attributes = AdditionalAttributes(oldUpdatedAt: oldUpdatedAt)
+        let input = try DynamoDB.UpdateItemCodableInput(
+            additionalAttributes: attributes,
+            conditionExpression: "attribute_exists(#\(keyName)) AND #updatedAt = :oldUpdatedAt AND #createdAt = :createdAt",
             key: [keyName],
             tableName: tableName,
             updateItem: item
@@ -72,9 +82,19 @@ public extension BreezeDynamoDBService {
         return try await readItem(key: item.key)
     }
 
-    func deleteItem(key: String) async throws {
+    func deleteItem<T: BreezeCodable>(item: T) async throws {
+        guard let updatedAt = item.updatedAt,
+              let createdAt = item.createdAt else {
+            throw ServiceError.missingParameters
+        }
+        
         let input = DynamoDB.DeleteItemInput(
-            key: [keyName: DynamoDB.AttributeValue.s(key)],
+            conditionExpression: "#updatedAt = :updatedAt AND #createdAt = :createdAt",
+            expressionAttributeNames: ["#updatedAt": "updatedAt",
+                                       "#createdAt" : "createdAt"],
+            expressionAttributeValues: [":updatedAt": .s(updatedAt),
+                                        ":createdAt" : .s(createdAt)],
+            key: [keyName: DynamoDB.AttributeValue.s(item.key)],
             tableName: tableName
         )
         let _ = try await db.deleteItem(input)

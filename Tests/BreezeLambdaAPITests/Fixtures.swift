@@ -38,7 +38,8 @@ struct Fixtures {
 
     // MARK: - Test Product
     static let product2022 = Product(key: "2022", name: "Swift Serverless API with async/await! 🚀🥳", description: "BreezeLambaAPI is magic 🪄!")
-    static let product2023 = Product(key: "2023", name: "Swift Serverless API with async/await! 🚀🥳", description: "BreezeLambaAPI is magic 🪄!")
+    static let product2023 = Product(key: "2023", name: "Swift Serverless API with async/await! 🚀🥳", description: "BreezeLambaAPI is magic 🪄!", createdAt: "2023-05-08T18:17:34.972Z", updatedAt: "2023-05-11T12:18:41.699Z")
+    static let productUdated2023 = Product(key: "2023", name: "Swift Serverless API with async/await! 🚀🥳 2", description: "BreezeLambaAPI is magic 🪄!", createdAt: "2023-05-08T18:17:34.972Z", updatedAt: "2023-05-12T00:00:00.000Z")
 
     // MARK: - Functions
     static func fixture(name: String, type: String) throws -> Data {

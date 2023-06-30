@@ -16,8 +16,12 @@
     "pathParameters": {
         "sku": "2023"
     },
+    "queryStringParameters": {
+        "createdAt": "2023-05-08T18:17:34.972Z",
+        "updatedAt": "2023-05-11T12:18:41.699Z"
+    },
     "rawPath": "/products/2023",
-    "rawQueryString": "",
+    "rawQueryString": "createdAt=2023-05-08T18:17:34.972Z&updatedAt=2023-05-11T12:18:41.699Z",
     "requestContext": {
         "accountId": "00000000000",
         "apiId": "br33z3ap10",

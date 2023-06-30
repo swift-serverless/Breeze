@@ -51,9 +51,11 @@ struct BreezeDynamoDBServiceMock: BreezeDynamoDBServing {
         return response
     }
 
-    func deleteItem(key: String) async throws {
+    func deleteItem<T: BreezeCodable>(item: T) async throws {
         guard let response = Self.keyedResponse,
-              response.key == key
+              response.key == item.key,
+              response.createdAt == item.createdAt,
+              response.updatedAt == item.updatedAt
         else {
             throw BreezeLambdaAPIError.invalidRequest
         }
