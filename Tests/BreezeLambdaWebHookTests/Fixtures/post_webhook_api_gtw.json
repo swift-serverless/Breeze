@@ -1,0 +1,39 @@
+{
+    "body": "body value",
+    "headers": {
+        "accept": "*/*",
+        "accept-encoding": "gzip, deflate, br",
+        "cache-control": "no-cache",
+        "content-length": "137",
+        "content-type": "application/json",
+        "host": "br33z3ap10.execute-api.eu-west-1.amazonaws.com",
+        "postman-token": "7005b89f-915e-4c30-9237-8832e7842f91",
+        "user-agent": "PostmanRuntime/7.31.0",
+        "x-amzn-trace-id": "Root=1-63f7d7e5-0381fae826a3075e05564773",
+        "x-forwarded-for": "140.228.54.79",
+        "x-forwarded-port": "443",
+        "x-forwarded-proto": "https"
+    },
+    "isBase64Encoded": false,
+    "rawPath": "/webhook",
+    "rawQueryString": "",
+    "requestContext": {
+        "accountId": "00000000000",
+        "apiId": "br33z3ap10",
+        "domainName": "br33z3ap10.execute-api.eu-west-1.amazonaws.com",
+        "domainPrefix": "br33z3ap10",
+        "http": {
+            "method": "POST",
+            "path": "/webhook",
+            "protocol": "HTTP/1.1",
+            "sourceIp": "140.228.54.79",
+            "userAgent": "PostmanRuntime/7.31.0"
+        },
+        "requestId": "Az6r9ijSDoEEJdQ=",
+        "stage": "$default",
+        "time": "23/Feb/2023:21:17:25 +0000",
+        "timeEpoch": 1677187045849
+    },
+    "routeKey": "POST /webhook",
+    "version": "2.0"
+}
