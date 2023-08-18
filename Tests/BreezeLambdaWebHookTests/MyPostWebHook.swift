@@ -19,12 +19,11 @@ import AWSLambdaEvents
 import AWSLambdaRuntimeCore
 
 class MyPostWebHook: BreezeLambdaWebHookHandler {
-    let handler: String?
-    let httpClient: AsyncHTTPClient.HTTPClient
     
-    required init(httpClient: AsyncHTTPClient.HTTPClient, handler: String?) {
-        self.httpClient = httpClient
-        self.handler = handler
+    let handlerContext: HandlerContext
+    
+    required init(handlerContext: HandlerContext) {
+        self.handlerContext = handlerContext
     }
     
     func handle(context: AWSLambdaRuntimeCore.LambdaContext, event: AWSLambdaEvents.APIGatewayV2Request) async -> AWSLambdaEvents.APIGatewayV2Response {

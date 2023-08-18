@@ -24,36 +24,40 @@ public extension LambdaInitializationContext {
     }
 }
 
-public class BreezeLambdaWebHook<T: Codable, Handler: BreezeLambdaWebHookHandler>: LambdaHandler {
+public struct HandlerContext {
+    public let handler: String?
+    public let httpClient: HTTPClient
+}
+
+public class BreezeLambdaWebHook<Handler: BreezeLambdaWebHookHandler>: LambdaHandler {
     public typealias Event = APIGatewayV2Request
     public typealias Output = APIGatewayV2Response
     
-    let timeout: Int64
-    let handler: String?
-    var httpClient: HTTPClient
+    let handlerContext: HandlerContext
 
     public required init(context: LambdaInitializationContext) async throws {
-        handler = Lambda.env("_HANDLER")
+        let handler = Lambda.env("_HANDLER")
         context.logger.info("handler: \(handler ?? "")")
-        self.timeout = LambdaInitializationContext.WebHook.timeout
 
         let timeout = HTTPClient.Configuration.Timeout(
-            connect: .seconds(timeout),
-            read: .seconds(timeout)
+            connect: .seconds(LambdaInitializationContext.WebHook.timeout),
+            read: .seconds(LambdaInitializationContext.WebHook.timeout)
         )
 
         let configuration = HTTPClient.Configuration(timeout: timeout)
-        self.httpClient = HTTPClient(
+        let httpClient = HTTPClient(
             eventLoopGroupProvider: .shared(context.eventLoop),
             configuration: configuration
         )
+        
+        handlerContext = HandlerContext(handler: handler, httpClient: httpClient)
 
         context.terminator.register(name: "shutdown") { eventLoop in
             context.logger.info("shutdown: started")
             let promise = eventLoop.makePromise(of: Void.self)
             Task {
                 do {
-                    try await self.httpClient.shutdown()
+                    try await self.handlerContext.httpClient.shutdown()
                     promise.succeed()
                     context.logger.info("shutdown: succeed")
                 } catch {
@@ -66,7 +70,7 @@ public class BreezeLambdaWebHook<T: Codable, Handler: BreezeLambdaWebHookHandler
     }
 
     public func handle(_ event: AWSLambdaEvents.APIGatewayV2Request, context: AWSLambdaRuntimeCore.LambdaContext) async throws -> AWSLambdaEvents.APIGatewayV2Response {
-        return await Handler(httpClient: httpClient, handler: handler).handle(context: context, event: event)
+        return await Handler(handlerContext: handlerContext).handle(context: context, event: event)
     }
 }
 
