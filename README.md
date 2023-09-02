@@ -111,11 +111,11 @@ let package = Package(
 
 To be executed on a Lambda, the package needs to be built on `AmazonLinux2` and deployed.
 
-# Deployment Example
+# Deployment Examples
 
 The API can be deployed on AWS in multiple ways.
 
-Refer to the [Example](Example) folder to explore a deployment example using the Serverless Framework.
+Refer to the [Examples/ItemAPI](Examples/ItemAPI) folder to explore a deployment example using the Serverless Framework.
 
 # Generate the deployment with the command line
 

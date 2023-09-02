@@ -1,42 +1,12 @@
-# Breeze Item API
+# Breeze WebHook
 
-## Serverless REST API wiht Breeze
+## Serverless WebHook with Breeze
 
-The example shows how to build a Rest API based on an `Item` swift struct.
+The example shows how to implement the following webhook with AsyncHTTPClient.
 
-```swift
-struct Item: Codable {
-    public var key: String
-    public let name: String
-    public let description: String
-    public var createdAt: String?
-    public var updatedAt: String?
-    
-    enum CodingKeys: String, CodingKey {
-        case key = "itemKey"
-        case name
-        case description
-        case createdAt
-        case updatedAt
-    }
-}
-
-extension Item: BreezeCodable { }
-```
-
-The API implements the following schema:
-
-```
-- /items
-    -> GET - List Item
-    -> POST - Create Item
-    -> PUT - Update Item
-- /items/{itemKey}
-    -> DELETE - Delete Item
-    -> GET - Get Item
-```
-
-The full definition is included in [swagger.json](swagger.json).
+- GetWebHook: A simple GET webhook.
+- PostWebHook: A simple POST webhook.
+- GitWebHook: A webhook ready to validate an event received from GitHub.
 
 ## Requirements
 

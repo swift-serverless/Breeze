@@ -1,5 +1,5 @@
 SWIFT_BIN_PATH = $(shell swift build --show-bin-path)
-EXAMPLE_PATH = ./Example
+EXAMPLE_PATH = ./Examples/ItemAPI
 BUILD_TEMP = .build/temp
 
 linux_test:
