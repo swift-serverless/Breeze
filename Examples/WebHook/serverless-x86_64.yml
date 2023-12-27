@@ -37,21 +37,21 @@ functions:
   getWebHook:
     handler: get-webhook
     memorySize: 256
-    description: '[${sls:stage}] get /webook'
+    description: '[${sls:stage}] get /webhook'
     package:
       artifact: build/WebHook/WebHook.zip
     events:
     - httpApi:
-        path: /webook
+        path: /webhook
         method: get
   githubWebHook:
     handler: github-webhook
     memorySize: 256
-    description: '[${sls:stage}] github /github-webhook'
+    description: '[${sls:stage}] post /github-webhook'
     package:
       artifact: build/GitHubWebHook/GitHubWebHook.zip
     environment:
-      WEBHOOK_SECRET: '${ssm:/dev/swift-breeze-webhook/webhook_secret}'
+      WEBHOOK_SECRET: '${ssm:/dev/swift-webhook/webhook_secret}'
     events:
     - httpApi:
         path: /github-webhook
