@@ -18,19 +18,19 @@ import PathKit
 
 extension FileManager {
     
-    private var templatePath: String {
+    private func templatePath(basePath: String) -> String {
 #if os(macOS)
         let resourcePath = Bundle.module.url(forResource: "breeze", withExtension: "yml", subdirectory: "Resources")?.deletingLastPathComponent().path ?? ""
-        return resourcePath.appending("/Template/")
+        return resourcePath.appending("/\(basePath)/Template/")
 #else
-        return Bundle.module.resourcePath?.appending("/Template/") ?? ""
+        return Bundle.module.resourcePath?.appending("/\(basePath)/Template/") ?? ""
 #endif
     }
     
-    func applyStencils(targetPath: String, config: BreezeConfig)
-    throws {
+    func applyStencils(targetPath: String, config: BreezeConfig) throws {
         printTitle("📁 Generating project from template")
         var isDirectory: ObjCBool = false
+        let templatePath = templatePath(basePath: "BreezeLambdaAPI")
         guard fileExists(atPath: templatePath, isDirectory: &isDirectory) else {
             throw BreezeCommandError.invalidTemplateFolder
         }
