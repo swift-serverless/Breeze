@@ -1,4 +1,4 @@
-service: swift-breeze-webhook
+service: swift-breeze-githubhook
 frameworkVersion: '3'
 configValidationMode: warn
 useDotenv: false
@@ -24,23 +24,15 @@ provider:
 package:
   individually: true
 functions:
-  postWebHook:
-    handler: post-webhook
+  githubWebHook:
+    handler: github-webhook
     memorySize: 256
-    description: '[${sls:stage}] post /webhook'
+    description: '[${sls:stage}] post /github-webhook'
     package:
-      artifact: build/WebHook/WebHook.zip
+      artifact: build/GitHubWebHook/GitHubWebHook.zip
+    environment:
+      WEBHOOK_SECRET: '${ssm:/dev/swift-breeze-webhook/webhook_secret}'
     events:
     - httpApi:
-        path: /webhook
+        path: /github-webhook
         method: post
-  getWebHook:
-    handler: get-webhook
-    memorySize: 256
-    description: '[${sls:stage}] get /webhook'
-    package:
-      artifact: build/WebHook/WebHook.zip
-    events:
-    - httpApi:
-        path: /webhook
-        method: get

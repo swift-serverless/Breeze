@@ -1,0 +1,2 @@
+make docker_build
+make archive_lambda

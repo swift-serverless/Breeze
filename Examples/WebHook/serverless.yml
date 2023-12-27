@@ -44,15 +44,3 @@ functions:
     - httpApi:
         path: /webhook
         method: get
-  githubWebHook:
-    handler: github-webhook
-    memorySize: 256
-    description: '[${sls:stage}] post /github-webhook'
-    package:
-      artifact: build/GitHubWebHook/GitHubWebHook.zip
-    environment:
-      WEBHOOK_SECRET: '${ssm:/dev/swift-webhook/webhook_secret}'
-    events:
-    - httpApi:
-        path: /github-webhook
-        method: post

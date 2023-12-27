@@ -4,20 +4,21 @@
 import PackageDescription
 
 let package = Package(
-    name: "BreezeWebHook",
+    name: "{{ config.packageName }}",
     platforms: [
         .macOS(.v13),
     ],
     products: [
-        .executable(name: "WebHook", targets: ["WebHook"]),
+        .executable(name: "{{ params.targetName }}", targets: ["{{ params.targetName }}"]),
     ],
     dependencies: [
+        .package(url: "https://github.com/apple/swift-crypto.git", from: "1.0.0"),
         .package(url: "https://github.com/swift-sprinter/Breeze.git", branch: "feature/web_hook"),
         //.package(url: "https://github.com/swift-sprinter/Breeze.git", from: "0.3.0")
     ],
     targets: [
         .executableTarget(
-            name: "WebHook",
+            name: "{{ params.targetName }}",
              dependencies: [
                 .product(name: "BreezeLambdaWebHook", package: "Breeze"),
             ]
