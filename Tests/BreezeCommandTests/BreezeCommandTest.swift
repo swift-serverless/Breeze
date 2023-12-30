@@ -21,12 +21,14 @@ class BreezeCommandTest: XCTestCase {
     
     let targetPath = ".build/temp"
     
-    func givenRunBreeze(args: String) throws -> String {
+    func givenRunBreeze(subcommand: String, args: String) throws -> String {
         
         let command = productsDirectory.appendingPathComponent("breeze")
         let process = Process()
         process.executableURL = command
-        process.arguments = args.arguments
+        var arguments = args.arguments
+        arguments.insert(subcommand, at: 0)
+        process.arguments = arguments
         let outputQueue = DispatchQueue(label: "output-queue")
 
         var outputData = Data()
@@ -77,33 +79,33 @@ class BreezeCommandTest: XCTestCase {
         }
     }
 
-    func test_run_whenMissingConfigFile_thenError() throws {
-        let output = try givenRunBreeze(args: "")
+    func test_generateLambdaAPI_run_whenMissingConfigFile_thenError() throws {
+        let output = try givenRunBreeze(subcommand: "generate-lambda-api", args: "")
         XCTAssertTrue(output.contains("Error: Missing expected argument '--config-file <config-file>'"))
     }
     
-    func test_run_whenMissingTargetPath_thenError() throws {
+    func test_generateLambdaAPI_run_whenMissingTargetPath_thenError() throws {
         let configFile = try Fixtures.fixture(file: Fixtures.configFile).path
-        let output = try givenRunBreeze(args: "--config-file \(configFile)")
+        let output = try givenRunBreeze(subcommand: "generate-lambda-api", args: "--config-file \(configFile)")
         XCTAssertTrue(output.contains("Error: Missing expected argument '--target-path <target-path>'"))
     }
     
-    func test_run_whenEmptyConfigFile_thenError() throws {
+    func test_generateLambdaAPI_run_whenEmptyConfigFile_thenError() throws {
         let configFile = try Fixtures.fixture(file: Fixtures.emptyConfigFile).path
-        let output = try givenRunBreeze(args: "--config-file \(configFile) --target-path \(targetPath)")
+        let output = try givenRunBreeze(subcommand: "generate-lambda-api", args: "--config-file \(configFile) --target-path \(targetPath)")
         XCTAssertTrue(output.contains("Error: typeMismatch(Yams.Node.Mapping, Swift.DecodingError.Context(codingPath: [], debugDescription: \"Expected to decode Mapping but found Node instead.\", underlyingError: nil))"))
     }
     
-    func test_run_whenInvalidConfigFile_thenError() throws {
+    func test_generateLambdaAPI_run_whenInvalidConfigFile_thenError() throws {
         let configFile = try Fixtures.fixture(file: Fixtures.invalidConfigFile).path
-        let output = try givenRunBreeze(args: "--config-file \(configFile) --target-path \(targetPath)")
+        let output = try givenRunBreeze(subcommand: "generate-lambda-api", args: "--config-file \(configFile) --target-path \(targetPath)")
         XCTAssertTrue(output.contains("Error: keyNotFound(CodingKeys(stringValue: \"itemCodable\", intValue: nil)"))
     }
 
     
-    func test_run_whenParametersAreSet_thenSuccess() throws {
+    func test_generateLambdaAPI_run_whenParametersAreSet_thenSuccess() throws {
         let configFile = try Fixtures.fixture(file: Fixtures.configFile).path
-        let output = try givenRunBreeze(args: "--config-file \(configFile) --target-path \(targetPath) --force-overwrite -y")
+        let output = try givenRunBreeze(subcommand: "generate-lambda-api", args: "--config-file \(configFile) --target-path \(targetPath) --force-overwrite -y")
         XCTAssertTrue(output.contains("✅ Project is ready at target-path"))
         
         let serverlessConfig = try loadServerlessConfig(targetPath: targetPath, fileName: "serverless")
@@ -113,9 +115,9 @@ class BreezeCommandTest: XCTestCase {
         try assertServerlessConfig(serverlessConfig: serverlessConfigX86, runtime: .provided, architecture: .x86_64)
     }
     
-    func test_run_whenParametersAreSet_andSignInWithAppleConfig_thenSuccess() throws {
+    func test_generateLambdaAPI_run_whenParametersAreSet_andSignInWithAppleConfig_thenSuccess() throws {
         let configFile = try Fixtures.fixture(file: Fixtures.configFileSignInWithApple).path
-        let output = try givenRunBreeze(args: "--config-file \(configFile) --target-path \(targetPath) --force-overwrite -y")
+        let output = try givenRunBreeze(subcommand: "generate-lambda-api", args: "--config-file \(configFile) --target-path \(targetPath) --force-overwrite -y")
         XCTAssertTrue(output.contains("✅ Project is ready at target-path"))
         
         let serverlessConfig = try loadServerlessConfig(targetPath: targetPath, fileName: "serverless")
@@ -125,12 +127,12 @@ class BreezeCommandTest: XCTestCase {
         try assertServerlessConfigWithJWT(serverlessConfig: serverlessConfigX86, runtime: .provided, architecture: .x86_64)
     }
     
-    func test_run_whenParametersAreSetAndForceOverrideIsFalse_thenErrorOnSecondRun() throws {
+    func test_generateLambdaAPI_run_whenParametersAreSetAndForceOverrideIsFalse_thenErrorOnSecondRun() throws {
         let configFile = try Fixtures.fixture(file: Fixtures.configFile).path
-        let output = try givenRunBreeze(args: "--config-file \(configFile) --target-path \(targetPath) --force-overwrite -y")
+        let output = try givenRunBreeze(subcommand: "generate-lambda-api", args: "--config-file \(configFile) --target-path \(targetPath) --force-overwrite -y")
         XCTAssertTrue(output.contains("✅ Project is ready at target-path"))
         
-        let outputWithoutForce = try givenRunBreeze(args: "--config-file \(configFile) --target-path \(targetPath)")
+        let outputWithoutForce = try givenRunBreeze(subcommand: "generate-lambda-api", args: "--config-file \(configFile) --target-path \(targetPath)")
         XCTAssertTrue(outputWithoutForce.contains("Error: TargetPath \(targetPath) cannot be overwritten"))
     }
     
