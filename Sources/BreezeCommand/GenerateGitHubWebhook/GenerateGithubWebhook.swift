@@ -16,7 +16,7 @@ import ArgumentParser
 import Foundation
 import SLSAdapter
 
-struct GenerateLambdaAPI: ParsableCommand {
+struct GenerateGithubWebhook: ParsableCommand {
     
     @OptionGroup var options: BreezeCommand.Options
     
@@ -27,51 +27,48 @@ struct GenerateLambdaAPI: ParsableCommand {
         }
         let url: URL = URL(fileURLWithPath: options.configFile)
         let config = try BreezeConfig.load(from: url)
-        guard let params = config.breezeLambdaAPI else {
-            print("GenerateLambdaAPI requires `breezeLambdaAPI` configuration.")
+        guard let params = config.breezeGithubWebhook else {
+            print("GenerateGitHubHook requires `breezeGithubWebhook` configuration.")
             throw BreezeCommandError.invalidConfig
         }
-        
         try fileManager.cleanTargetPath(options.targetPath, remove: options.forceOverwrite, yes: options.yes)
         let context: [String : Any] = ["config" : config,
                                        "params" : params]
         try fileManager.applyStencils(
-            basePath: "BreezeLambdaAPI",
+            basePath: "BreezeGithubWebhook",
             targetPath: options.targetPath,
             packageName: config.packageName,
             targetName: params.targetName,
             context: context
         )
-
-        let serverlessConfig = try ServerlessConfig.dynamoDBLambdaAPI(
+        let lambdasParams: [HttpAPILambdaParams] = [
+            HttpAPILambdaParams(
+                name: "githubWebHook",
+                handler: "github-webhook",
+                event: .init(path: params.httpPath, method: .post),
+                environment: YAMLContent.dictionary(
+                    ["WEBHOOK_SECRET": .string(params.secret)]
+                ),
+                artifact: "\(config.buildPath)/\(params.targetName)/\(params.targetName).zip"
+            )
+        ]
+        let serverlessConfig = try ServerlessConfig.webhookLambdaAPI(
             service: config.service,
-            dynamoDBKey: params.itemKey,
-            dynamoDBTableNamePrefix: params.dynamoDBTableNamePrefix,
-            httpAPIPath: params.httpAPIPath,
             region: Region(rawValue: config.awsRegion) ?? .us_east_1,
-            authorizer: config.authorizer,
-            cors: config.cors,
             runtime: .providedAl2,
             architecture: .arm64,
             memorySize: 256,
-            executable: params.targetName,
-            artifact: "\(config.buildPath)/\(params.targetName)/\(params.targetName).zip"
+            lambdasParams: lambdasParams
         )
         try serverlessConfig.writeSLS(targetPath: options.targetPath, ymlFileName: "serverless.yml")
         
-        let serverlessConfig_x86_64 = try ServerlessConfig.dynamoDBLambdaAPI(
+        let serverlessConfig_x86_64 = try ServerlessConfig.webhookLambdaAPI(
             service: config.service,
-            dynamoDBKey: params.itemKey,
-            dynamoDBTableNamePrefix: params.dynamoDBTableNamePrefix,
-            httpAPIPath: params.httpAPIPath,
             region: Region(rawValue: config.awsRegion) ?? .us_east_1,
-            authorizer: config.authorizer,
-            cors: config.cors,
-            runtime: .provided,
+            runtime: .providedAl2,
             architecture: .x86_64,
             memorySize: 256,
-            executable: params.targetName,
-            artifact: "\(config.buildPath)/\(params.targetName)/\(params.targetName).zip"
+            lambdasParams: lambdasParams
         )
         try serverlessConfig_x86_64.writeSLS(targetPath: options.targetPath, ymlFileName: "serverless-x86_64.yml")
         print("")

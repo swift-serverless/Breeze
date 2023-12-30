@@ -1,0 +1,11 @@
+service: swift-breeze-github-webhook
+awsRegion: us-east-1
+swiftVersion: 5.7.3
+swiftConfiguration: release
+packageName: BreezeGitHubWebHook
+buildPath: build
+cors: false
+breezeGithubWebhook:
+    targetName: GitHubWebHook
+    httpPath: /github-webhook
+    secret: ${ssm:/dev/swift-webhook/webhook_secret}

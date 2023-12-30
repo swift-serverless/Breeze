@@ -19,8 +19,8 @@ SWIFT_CONFIGURATION=release
 # Internals
 
 MOUNT_ROOT=$(shell pwd)
-DOCKER_BUILD_PATH=build
-DOCKER_PROJECT_PATH=BreezeGitHubHook
+DOCKER_BUILD_PATH={{ config.buildPath }}
+DOCKER_PROJECT_PATH={{ config.packageName }}
 LAMBDA_ARCHIVE_PATH=./$(DOCKER_BUILD_PATH)
 			
 docker_build:
