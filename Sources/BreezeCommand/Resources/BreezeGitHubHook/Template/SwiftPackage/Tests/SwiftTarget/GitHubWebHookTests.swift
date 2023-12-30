@@ -13,8 +13,18 @@
 //    limitations under the License.
 
 import Foundation
-import AWSLambdaEvents
-import AWSLambdaRuntimeCore
-import BreezeLambdaWebHook
+import XCTest
+@testable import GitHubWebHook
 
-BreezeLambdaWebHook<{{ params.targetName }}>.main()
+class GitHubWebHookTests: XCTestCase {
+    
+    func testVerifySignature() throws {
+        // https://docs.github.com/en/webhooks-and-events/webhooks/securing-your-webhooks
+        let key = "It's a Secret to Everybody"
+        let payload = "Hello, World!"
+        let signature = "sha256=757107ea0eb2509fc211221cce984b8a37570b6d7586c22c46f4379c8b043e17"
+        let validator = GitHubSignatureValidator(signature: signature, secret: key, payload: payload)
+        let isValid = try validator.isValid()
+        XCTAssertTrue(isValid)
+    }
+}

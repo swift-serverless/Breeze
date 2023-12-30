@@ -21,6 +21,15 @@ let package = Package(
             name: "{{ params.targetName }}",
              dependencies: [
                 .product(name: "BreezeLambdaWebHook", package: "Breeze"),
+                .product(name: "Crypto", package: "swift-crypto"),
+            ]
+        ),
+        .testTarget(
+            name: "{{ params.targetName }}Tests",
+            dependencies: [
+                .product(name: "BreezeLambdaWebHook", package: "Breeze"),
+                .product(name: "Crypto", package: "swift-crypto"),
+                "{{ params.targetName }}"
             ]
         )
     ]

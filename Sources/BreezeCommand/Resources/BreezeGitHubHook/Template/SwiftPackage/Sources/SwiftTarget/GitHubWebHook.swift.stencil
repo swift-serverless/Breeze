@@ -17,13 +17,13 @@ import AWSLambdaEvents
 import AWSLambdaRuntimeCore
 import BreezeLambdaWebHook
 
-enum GitHubWebHookError: Error {
+enum {{ params.targetName }}Error: Error {
     case invalidKey
     case invalidBody
     case invalidSignature
 }
 
-class GitHubWebHook: BreezeLambdaWebHookHandler {
+class {{ params.targetName }}: BreezeLambdaWebHookHandler {
     
     let handlerContext: HandlerContext
     
