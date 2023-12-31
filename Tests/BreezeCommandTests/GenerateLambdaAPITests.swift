@@ -17,95 +17,14 @@ import Yams
 import SLSAdapter
 import XCTest
 
-class BreezeCommandTest: XCTestCase {
+class GenerateLambdaAPITests: XCTestCase {
     
     let targetPath = ".build/temp"
-    
-    func givenRunBreeze(subcommand: String, args: String) throws -> String {
-        
-        let command = productsDirectory.appendingPathComponent("breeze")
-        let process = Process()
-        process.executableURL = command
-        var arguments = args.arguments
-        arguments.insert(subcommand, at: 0)
-        process.arguments = arguments
-        let outputQueue = DispatchQueue(label: "output-queue")
-
-        var outputData = Data()
-        var errorData = Data()
-
-        let outputPipe = Pipe()
-        process.standardOutput = outputPipe
-
-        let errorPipe = Pipe()
-        process.standardError = errorPipe
-
-        #if !os(Linux)
-        outputPipe.fileHandleForReading.readabilityHandler = { handler in
-            let data = handler.availableData
-            outputQueue.async {
-                outputData.append(data)
-            }
-        }
-
-        errorPipe.fileHandleForReading.readabilityHandler = { handler in
-            let data = handler.availableData
-            outputQueue.async {
-                errorData.append(data)
-            }
-        }
-        #endif
-        try process.run()
-        
-        #if os(Linux)
-        outputQueue.sync {
-            outputData = outputPipe.fileHandleForReading.readDataToEndOfFile()
-            errorData = errorPipe.fileHandleForReading.readDataToEndOfFile()
-        }
-        #endif
-        
-        process.waitUntilExit()
-    
-        #if !os(Linux)
-        outputPipe.fileHandleForReading.readabilityHandler = nil
-        errorPipe.fileHandleForReading.readabilityHandler = nil
-        #endif
-
-        return outputQueue.sync {
-            if process.terminationStatus != 0 {
-                return String(data: errorData, encoding: .utf8) ?? ""
-            }
-            return String(data: outputData, encoding: .utf8) ?? ""
-        }
-    }
-
-    func test_generateLambdaAPI_run_whenMissingConfigFile_thenError() throws {
-        let output = try givenRunBreeze(subcommand: "generate-lambda-api", args: "")
-        XCTAssertTrue(output.contains("Error: Missing expected argument '--config-file <config-file>'"))
-    }
-    
-    func test_generateLambdaAPI_run_whenMissingTargetPath_thenError() throws {
-        let configFile = try Fixtures.fixture(file: Fixtures.configFile).path
-        let output = try givenRunBreeze(subcommand: "generate-lambda-api", args: "--config-file \(configFile)")
-        XCTAssertTrue(output.contains("Error: Missing expected argument '--target-path <target-path>'"))
-    }
-    
-    func test_generateLambdaAPI_run_whenEmptyConfigFile_thenError() throws {
-        let configFile = try Fixtures.fixture(file: Fixtures.emptyConfigFile).path
-        let output = try givenRunBreeze(subcommand: "generate-lambda-api", args: "--config-file \(configFile) --target-path \(targetPath)")
-        XCTAssertTrue(output.contains("Error: typeMismatch(Yams.Node.Mapping, Swift.DecodingError.Context(codingPath: [], debugDescription: \"Expected to decode Mapping but found Node instead.\", underlyingError: nil))"))
-    }
-    
-    func test_generateLambdaAPI_run_whenInvalidConfigFile_thenError() throws {
-        let configFile = try Fixtures.fixture(file: Fixtures.invalidConfigFile).path
-        let output = try givenRunBreeze(subcommand: "generate-lambda-api", args: "--config-file \(configFile) --target-path \(targetPath)")
-        XCTAssertTrue(output.contains("Error: keyNotFound(CodingKeys(stringValue: \"itemCodable\", intValue: nil)"))
-    }
-
+    let subcommand = "generate-lambda-api"
     
     func test_generateLambdaAPI_run_whenParametersAreSet_thenSuccess() throws {
-        let configFile = try Fixtures.fixture(file: Fixtures.configFile).path
-        let output = try givenRunBreeze(subcommand: "generate-lambda-api", args: "--config-file \(configFile) --target-path \(targetPath) --force-overwrite -y")
+        let configFile = try Fixtures.fixture(file: Fixtures.configFileLambdaAPI).path
+        let output = try givenRunBreeze(subcommand: subcommand, args: "--config-file \(configFile) --target-path \(targetPath) --force-overwrite -y")
         XCTAssertTrue(output.contains("✅ Project is ready at target-path"))
         
         let serverlessConfig = try loadServerlessConfig(targetPath: targetPath, fileName: "serverless")
@@ -117,7 +36,7 @@ class BreezeCommandTest: XCTestCase {
     
     func test_generateLambdaAPI_run_whenParametersAreSet_andSignInWithAppleConfig_thenSuccess() throws {
         let configFile = try Fixtures.fixture(file: Fixtures.configFileSignInWithApple).path
-        let output = try givenRunBreeze(subcommand: "generate-lambda-api", args: "--config-file \(configFile) --target-path \(targetPath) --force-overwrite -y")
+        let output = try givenRunBreeze(subcommand: subcommand, args: "--config-file \(configFile) --target-path \(targetPath) --force-overwrite -y")
         XCTAssertTrue(output.contains("✅ Project is ready at target-path"))
         
         let serverlessConfig = try loadServerlessConfig(targetPath: targetPath, fileName: "serverless")
@@ -128,20 +47,12 @@ class BreezeCommandTest: XCTestCase {
     }
     
     func test_generateLambdaAPI_run_whenParametersAreSetAndForceOverrideIsFalse_thenErrorOnSecondRun() throws {
-        let configFile = try Fixtures.fixture(file: Fixtures.configFile).path
-        let output = try givenRunBreeze(subcommand: "generate-lambda-api", args: "--config-file \(configFile) --target-path \(targetPath) --force-overwrite -y")
+        let configFile = try Fixtures.fixture(file: Fixtures.configFileLambdaAPI).path
+        let output = try givenRunBreeze(subcommand: subcommand, args: "--config-file \(configFile) --target-path \(targetPath) --force-overwrite -y")
         XCTAssertTrue(output.contains("✅ Project is ready at target-path"))
         
-        let outputWithoutForce = try givenRunBreeze(subcommand: "generate-lambda-api", args: "--config-file \(configFile) --target-path \(targetPath)")
+        let outputWithoutForce = try givenRunBreeze(subcommand: subcommand, args: "--config-file \(configFile) --target-path \(targetPath)")
         XCTAssertTrue(outputWithoutForce.contains("Error: TargetPath \(targetPath) cannot be overwritten"))
-    }
-    
-    func loadServerlessConfig(targetPath: String, fileName: String) throws -> ServerlessConfig {
-        let decoder = YAMLDecoder()
-        let serverlessPath = targetPath.appending("/\(fileName).yml")
-        let serverlessYML = URL(fileURLWithPath: serverlessPath)
-        let data = try Data(contentsOf: serverlessYML)
-        return try decoder.decode(ServerlessConfig.self, from: data)
     }
     
     func assertServerlessConfig(serverlessConfig: ServerlessConfig, runtime: Runtime, architecture: Architecture) throws {
@@ -198,6 +109,7 @@ class BreezeCommandTest: XCTestCase {
         let tableName = try XCTUnwrap(properties.dictionary?["TableName"])
         let keySchema = try XCTUnwrap(properties.dictionary?["KeySchema"])
         let billingMode = try XCTUnwrap(properties.dictionary?["BillingMode"])
+        XCTAssertEqual(billingMode, .string("PAY_PER_REQUEST"))
         let attributeDefinitions = try XCTUnwrap(properties.dictionary?["AttributeDefinitions"])
         let attributeDefinition = try XCTUnwrap(attributeDefinitions.array?.first)
         XCTAssertEqual(tableName, .string("${self:custom.tableName}"))
@@ -265,6 +177,7 @@ class BreezeCommandTest: XCTestCase {
         let tableName = try XCTUnwrap(properties.dictionary?["TableName"])
         let keySchema = try XCTUnwrap(properties.dictionary?["KeySchema"])
         let billingMode = try XCTUnwrap(properties.dictionary?["BillingMode"])
+        XCTAssertEqual(billingMode, .string("PAY_PER_REQUEST"))
         let attributeDefinitions = try XCTUnwrap(properties.dictionary?["AttributeDefinitions"])
         let attributeDefinition = try XCTUnwrap(attributeDefinitions.array?.first)
         XCTAssertEqual(tableName, .string("${self:custom.tableName}"))
@@ -273,23 +186,5 @@ class BreezeCommandTest: XCTestCase {
         XCTAssertEqual(attributeDefinition.dictionary?["AttributeName"], .string("${self:custom.keyName}"))
         XCTAssertEqual(keySchema.array?.first?.dictionary?["KeyType"], .string("HASH"))
         XCTAssertEqual(keySchema.array?.first?.dictionary?["AttributeName"], .string("${self:custom.keyName}"))
-    }
-    
-    var productsDirectory: URL {
-#if os(macOS)
-        for bundle in Bundle.allBundles where bundle.bundlePath.hasSuffix(".xctest") {
-            return bundle.bundleURL.deletingLastPathComponent()
-        }
-        fatalError("couldn't find the products directory")
-#else
-    return Bundle.main.bundleURL
-#endif
-    }
-    
-}
-
-extension String {
-    fileprivate var arguments: [String] {
-        split(separator: " ").map { String($0) }
     }
 }
