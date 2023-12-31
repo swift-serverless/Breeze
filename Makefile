@@ -1,5 +1,6 @@
 SWIFT_BIN_PATH = $(shell swift build --show-bin-path)
 EXAMPLE_PATH = ./Examples/ItemAPI
+EXAMPLE_GITHUB_WEBHOOK_PATH = ./Examples/GitHubWebhook
 BUILD_TEMP = .build/temp
 
 linux_test:
@@ -34,10 +35,13 @@ install_yq:
 	chmod a+x /usr/local/bin/yq
 
 generate_temp:
-	swift run breeze -c ./Sources/BreezeCommand/Resources/breeze.yml -t $(BUILD_TEMP) -f -y
-
+	swift run breeze generate-lambda-api -c ./Sources/BreezeCommand/Resources/breeze.yml -t $(BUILD_TEMP) -f -y
+ 
 generate_example:
-	swift run breeze -c ./Sources/BreezeCommand/Resources/breeze.yml -t $(EXAMPLE_PATH) -f
+	swift run breeze generate-lambda-api -c ./Sources/BreezeCommand/Resources/breeze.yml -t $(EXAMPLE_PATH) -f
+
+generate_github_weboook_example:
+	swift run breeze generate-github-webhook -c ./Sources/BreezeCommand/Resources/breeze-github-webhook.yml -t $(EXAMPLE_GITHUB_WEBHOOK_PATH) -f
 
 compare_breeze_output_with_example: install_yq generate_temp
 	bash -c "diff <(yq -P 'sort_keys(..)' $(EXAMPLE_PATH)/serverless.yml) <(yq -P 'sort_keys(..)' $(BUILD_TEMP)/serverless.yml)"

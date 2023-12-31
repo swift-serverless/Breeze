@@ -4,7 +4,7 @@
 
 The example shows how to implement the following webhook with AsyncHTTPClient.
 
-- GitWebHook: A webhook ready to validate an event received from GitHub.
+- GitHub Webhook: A webhook ready to validate and process an event received from GitHub.
 
 ## Requirements
 

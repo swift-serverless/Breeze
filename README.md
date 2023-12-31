@@ -38,15 +38,21 @@ AWS Serverless REST API based on APIGateway, Lambda, DynamoDB
 
 - Specs: [Docs/GenerateLambdaAPI.md](Docs/GenerateLambdaAPI.md)
 
-- Command Line help: `breeze generate-lambda-api --help`
+- Command Line help: `swift run breeze generate-lambda-api --help`
 
 - Talk @NSLondon: [Serverles in Swift like a Breeze](https://youtu.be/D4qSv_fhQIo?si=WnsTlYbUjHs9DYHF)
 
 - Slide: [Slides](https://www.slideshare.net/AndreaScuderi6/serverless-in-swift-like-a-breeze)
 
-### GitHub Web-Hook
+### GitHub Webhook
 
-A GitHub web-hook with signature verification based on APIGateway Lambda.
+A GitHub Webhook with signature verification based on APIGateway and Lambda.
+
+![AWS Serverless Github Webhook](/images/AWS-Serverless-Github-Webhook.svg)
+
+- Specs: [Docs/GenerateGithubWebhook.md](Docs/GenerateGithubWebhook.md)
+
+- Command Line help: `swift run breeze generate-github-webhook --help`
 
 ### Web-hook
 
@@ -55,7 +61,7 @@ A Serveless web-hook based on APIGateway and Lambda with POST and GET endpoints.
 ## Usage
 
 ```bash
-swift run breeze
+swift run breeze --help
 ```
 
 output:
@@ -64,9 +70,8 @@ output:
 OVERVIEW: Breeze command line
 
 Generate the deployment of a Serverless project using Breeze.
-The command generates of the swift package, the `serverless.yml` file and the
-relevant commands in the target path to deploy the Lambda code on AWS using the
-Serverless Framework.
+The command generates of the swift package, the `serverless.yml` file and the relevant commands in the target path to deploy
+the Lambda code on AWS using the Serverless Framework.
 
 USAGE: breeze <subcommand>
 
@@ -75,6 +80,7 @@ OPTIONS:
 
 SUBCOMMANDS:
   generate-lambda-api
+  generate-github-webhook
 
   See 'breeze help <subcommand>' for detailed help.
 ```

@@ -4,7 +4,7 @@
 import PackageDescription
 
 let package = Package(
-    name: "BreezeGitHubHook",
+    name: "BreezeGitHubWebHook",
     platforms: [
         .macOS(.v13),
     ],

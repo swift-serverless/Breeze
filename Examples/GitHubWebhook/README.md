@@ -1,10 +1,10 @@
-# Breeze GitHubHook
+# Breeze Github Webhook
 
-## Serverless GitHubHook with Breeze
+## Serverless GitHub WebHook with Breeze
 
 The example shows how to implement the following webhook with AsyncHTTPClient.
 
-- GitHubHook: A webhook ready to validate an event received from GitHub.
+- GitHub Webhook: A webhook ready to validate and process an event received from GitHub.
 
 ## Requirements
 
