@@ -38,7 +38,8 @@ struct BreezeCommand: ParsableCommand {
         discussion: "Generate the deployment of a Serverless project using Breeze.\nThe command generates of the swift package, the `serverless.yml` file and the relevant commands in the target path to deploy the Lambda code on AWS using the Serverless Framework.",
         subcommands: [
             GenerateLambdaAPI.self,
-            GenerateGithubWebhook.self
+            GenerateGithubWebhook.self,
+            GenerateWebhook.self
         ]
     )
 }

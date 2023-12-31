@@ -17,4 +17,4 @@ import AWSLambdaEvents
 import AWSLambdaRuntimeCore
 import BreezeLambdaWebHook
 
-BreezeLambdaWebHook<WebHook>.main()
+BreezeLambdaWebHook<{{ params.targetName }}>.main()

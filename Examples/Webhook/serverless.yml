@@ -24,16 +24,6 @@ provider:
 package:
   individually: true
 functions:
-  postWebHook:
-    handler: post-webhook
-    memorySize: 256
-    description: '[${sls:stage}] post /webhook'
-    package:
-      artifact: build/WebHook/WebHook.zip
-    events:
-    - httpApi:
-        path: /webhook
-        method: post
   getWebHook:
     handler: get-webhook
     memorySize: 256
@@ -44,3 +34,13 @@ functions:
     - httpApi:
         path: /webhook
         method: get
+  postWebHook:
+    handler: post-webhook
+    memorySize: 256
+    description: '[${sls:stage}] post /webhook'
+    package:
+      artifact: build/WebHook/WebHook.zip
+    events:
+    - httpApi:
+        path: /webhook
+        method: post

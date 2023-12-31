@@ -16,7 +16,7 @@ import ArgumentParser
 import Foundation
 import SLSAdapter
 
-struct GenerateGithubWebhook: ParsableCommand {
+struct GenerateWebhook: ParsableCommand {
     
     @OptionGroup var options: BreezeCommand.Options
     
@@ -27,15 +27,15 @@ struct GenerateGithubWebhook: ParsableCommand {
         }
         let url: URL = URL(fileURLWithPath: options.configFile)
         let config = try BreezeConfig.load(from: url)
-        guard let params = config.breezeGithubWebhook else {
-            print("GenerateGithubWebhook requires `breezeGithubWebhook` configuration.")
+        guard let params = config.breezeWebhook else {
+            print("GenerateWebhook requires `breezeWebhook` configuration.")
             throw BreezeCommandError.invalidConfig
         }
         try fileManager.cleanTargetPath(options.targetPath, remove: options.forceOverwrite, yes: options.yes)
         let context: [String : Any] = ["config" : config,
                                        "params" : params]
         try fileManager.applyStencils(
-            basePath: "BreezeGithubWebhook",
+            basePath: "BreezeWebhook",
             targetPath: options.targetPath,
             packageName: config.packageName,
             targetName: params.targetName,
@@ -43,12 +43,17 @@ struct GenerateGithubWebhook: ParsableCommand {
         )
         let lambdasParams: [HttpAPILambdaParams] = [
             HttpAPILambdaParams(
-                name: "githubWebHook",
-                handler: "github-webhook",
+                name: "postWebHook",
+                handler: "post-webhook",
                 event: .init(path: params.httpPath, method: .post),
-                environment: YAMLContent.dictionary(
-                    ["WEBHOOK_SECRET": .string(params.secret)]
-                ),
+                environment: nil,
+                artifact: "\(config.buildPath)/\(params.targetName)/\(params.targetName).zip"
+            ),
+            HttpAPILambdaParams(
+                name: "getWebHook",
+                handler: "get-webhook",
+                event: .init(path: params.httpPath, method: .get),
+                environment: nil,
                 artifact: "\(config.buildPath)/\(params.targetName)/\(params.targetName).zip"
             )
         ]
@@ -59,7 +64,7 @@ struct GenerateGithubWebhook: ParsableCommand {
             architecture: .arm64,
             memorySize: 256,
             cors: config.cors,
-            authorizer: nil,
+            authorizer: config.authorizer,
             lambdasParams: lambdasParams
         )
         try serverlessConfig.writeSLS(targetPath: options.targetPath, ymlFileName: "serverless.yml")
@@ -71,7 +76,7 @@ struct GenerateGithubWebhook: ParsableCommand {
             architecture: .x86_64,
             memorySize: 256,
             cors: config.cors,
-            authorizer: nil,
+            authorizer: config.authorizer,
             lambdasParams: lambdasParams
         )
         try serverlessConfig_x86_64.writeSLS(targetPath: options.targetPath, ymlFileName: "serverless-x86_64.yml")

@@ -48,15 +48,21 @@ AWS Serverless REST API based on APIGateway, Lambda, DynamoDB
 
 A GitHub Webhook with signature verification based on APIGateway and Lambda.
 
-![AWS Serverless Github Webhook](/images/AWS-Serverless-Github-Webhook.svg)
+![AWS Serverless GitHub Webhook](/images/AWS-Serverless-Github-Webhook.svg)
 
 - Specs: [Docs/GenerateGithubWebhook.md](Docs/GenerateGithubWebhook.md)
 
 - Command Line help: `swift run breeze generate-github-webhook --help`
 
-### Web-hook
+### GET/POST Webhook
 
-A Serveless web-hook based on APIGateway and Lambda with POST and GET endpoints.
+A Serveless Webhook based on APIGateway and Lambda with POST and GET endpoints.
+
+![AWS Serverless Webhook](/images/AWS-Serverless-Webhook.svg)
+
+- Specs: [Docs/GenerateWebhook.md](Docs/GenerateWebhook.md)
+
+- Command Line help: `swift run breeze generate-webhook --help`
 
 ## Usage
 
@@ -81,6 +87,7 @@ OPTIONS:
 SUBCOMMANDS:
   generate-lambda-api
   generate-github-webhook
+  generate-webhook
 
   See 'breeze help <subcommand>' for detailed help.
 ```

@@ -10,7 +10,7 @@ See official documentation about [GitHub Webhooks](https://docs.github.com/en/we
 
 ![AWS Serverless GitHub Webhook](../images/AWS-Serverless-Github-Webhook.svg)
 
-The generated template exposes a webhook to GitHub trhough the API Gateway, the lambda implements the logic to validate, decode and perform an action based on the received GitHub event. 
+The generated template exposes a webhook to GitHub through the API Gateway, the lambda implements the logic to validate, decode and perform an action based on the received GitHub event. 
 The lambda supports the `sha256` signature verification as described on the official documentation [validating-webhook-deliveries](https://docs.github.com/en/webhooks/using-webhooks/validating-webhook-deliveries)
 
 

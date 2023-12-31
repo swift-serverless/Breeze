@@ -24,6 +24,8 @@ extension ServerlessConfig {
         runtime: Runtime,
         architecture: Architecture,
         memorySize: Int,
+        cors: Bool,
+        authorizer: BreezeAuthorizer?,
         lambdasParams: [HttpAPILambdaParams]
     ) throws -> ServerlessConfig {
         let iam = Iam(
@@ -37,7 +39,7 @@ extension ServerlessConfig {
             runtime: runtime,
             environment: nil,
             architecture: architecture,
-            httpAPI: .init(payload: "2.0", cors: false),
+            httpAPI: .init(payload: "2.0", cors: cors, authorizers: authorizer?.authorizers),
             iam: iam
         )
         let package = Package(patterns: nil, individually: true)
