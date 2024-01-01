@@ -32,6 +32,7 @@ extension FileManager {
         var isDirectory: ObjCBool = false
         let templatePath = templatePath(basePath: basePath)
         guard fileExists(atPath: templatePath, isDirectory: &isDirectory) else {
+            print("Invalid templatePath: \(templatePath)")
             throw BreezeCommandError.invalidTemplateFolder
         }
         let dirEnum = enumerator(atPath: templatePath)

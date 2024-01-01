@@ -25,7 +25,6 @@ class GenerateWebhookTests: XCTestCase {
     func test_generateWebhook_run_whenParametersAreSet_thenSuccess() throws {
         let configFile = try Fixtures.fixture(file: Fixtures.configFileWebhook).path
         let output = try givenRunBreeze(subcommand: subcommand, args: "--config-file \(configFile) --target-path \(targetPath) --force-overwrite -y")
-        print(output)
         XCTAssertTrue(output.contains("✅ Project is ready at target-path"))
         
         let serverlessConfig = try loadServerlessConfig(targetPath: targetPath, fileName: "serverless")
@@ -38,7 +37,6 @@ class GenerateWebhookTests: XCTestCase {
     func test_generateWebhook_run_whenParametersAreSetAndForceOverrideIsFalse_thenErrorOnSecondRun() throws {
         let configFile = try Fixtures.fixture(file: Fixtures.configFileWebhook).path
         let output = try givenRunBreeze(subcommand: subcommand, args: "--config-file \(configFile) --target-path \(targetPath) --force-overwrite -y")
-        print(output)
         XCTAssertTrue(output.contains("✅ Project is ready at target-path"))
         
         let outputWithoutForce = try givenRunBreeze(subcommand: subcommand, args: "--config-file \(configFile) --target-path \(targetPath)")
