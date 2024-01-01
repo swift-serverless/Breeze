@@ -19,7 +19,7 @@ import XCTest
 
 class GenerateGithubWebhookTests: XCTestCase {
     
-    let targetPath = ".build/temp"
+    let targetPath = ".build/temp-github-webhook"
     let subcommand = "generate-github-webhook"
 
     func test_generateGithubWebhook_run_whenParametersAreSet_thenSuccess() throws {
