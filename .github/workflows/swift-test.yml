@@ -43,7 +43,9 @@ jobs:
           make test
       - name: Compare Output With Example
         run: |
-          make compare_breeze_output_with_example
+          make compare_breeze_lambda_api_output_with_example
+          make compare_breeze_github_weboook_output_with_example
+          make compare_breeze_weboook_output_with_example
       - name: Coverage
         run: |
           make coverage
