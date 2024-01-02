@@ -13,7 +13,6 @@ See official documentation about [GitHub Webhooks](https://docs.github.com/en/we
 The generated template exposes a webhook to GitHub through the API Gateway, the lambda implements the logic to validate, decode and perform an action based on the received GitHub event. 
 The lambda supports the `sha256` signature verification as described on the official documentation [validating-webhook-deliveries](https://docs.github.com/en/webhooks/using-webhooks/validating-webhook-deliveries)
 
-
 ## The command line tool
 
 ```bash
@@ -66,3 +65,24 @@ Configuration parameters:
     
 ### Using System Manager to store GitHub Secret
 The `sha256` secret can be securely stored on AWS using `System Manager` -> `Parameter Store`. The secret must be stored before deploying the project. In the example the `${ssm:/dev/swift-webhook/webhook_secret}` instructs Serverless framework to look for the value on the path `/dev/swift-webhook/webhook_secret`.
+
+## Lambda customisation
+
+Open the generated code, decode the GitHub payload and implement your custom business logic.
+
+```swift
+func handle(context: AWSLambdaRuntimeCore.LambdaContext, event: AWSLambdaEvents.APIGatewayV2Request) async -> AWSLambdaEvents.APIGatewayV2Response {
+        do {
+            context.logger.info("event: \(event)")
+            let payload = try validateGitHubSignature(context: context, event: event)
+            
+            // TODO: Decode the Github payload
+            
+            // TODO: Implement the business logic
+            
+            return APIGatewayV2Response(with: "{}", statusCode: .ok)
+        } catch {
+            return APIGatewayV2Response(with: error, statusCode: .badRequest)
+        }
+    }
+```
