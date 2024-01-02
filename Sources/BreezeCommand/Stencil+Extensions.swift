@@ -18,25 +18,23 @@ import PathKit
 
 extension FileManager {
     
-    private var templatePath: String {
+    private func templatePath(basePath: String) -> String {
 #if os(macOS)
         let resourcePath = Bundle.module.url(forResource: "breeze", withExtension: "yml", subdirectory: "Resources")?.deletingLastPathComponent().path ?? ""
-        return resourcePath.appending("/Template/")
+        return resourcePath.appending("/\(basePath)/Template/")
 #else
-        return Bundle.module.resourcePath?.appending("/Template/") ?? ""
+        return Bundle.module.resourcePath?.appending("/\(basePath)/Template/") ?? ""
 #endif
     }
     
-    func applyStencils(targetPath: String, config: BreezeConfig)
-    throws {
+    func applyStencils(basePath: String, targetPath: String, packageName: String, targetName: String, context: [String: Any]) throws {
         printTitle("📁 Generating project from template")
         var isDirectory: ObjCBool = false
+        let templatePath = templatePath(basePath: basePath)
         guard fileExists(atPath: templatePath, isDirectory: &isDirectory) else {
+            print("Invalid templatePath: \(templatePath)")
             throw BreezeCommandError.invalidTemplateFolder
         }
-        let params = config.breezeLambdaAPI
-        let context: [String : Any] = ["config" : config,
-                                       "params" : params]
         let dirEnum = enumerator(atPath: templatePath)
         while let file = dirEnum?.nextObject() as? String {
             if file.hasSuffix(".stencil") {
@@ -46,8 +44,9 @@ extension FileManager {
                 try applyStencil(stencilURL: stencilURL, targetPath: targetURL, context: context)
             }
         }
-        try move(targetPath: targetPath, at: "/SwiftPackage/Sources/SwiftTarget", to: "/SwiftPackage/Sources/\(params.targetName)")
-        try move(targetPath: targetPath, at: "/SwiftPackage", to: "/\(config.packageName)")
+        try move(targetPath: targetPath, at: "/SwiftPackage/Sources/SwiftTarget", to: "/SwiftPackage/Sources/\(targetName)")
+        try? move(targetPath: targetPath, at: "/SwiftPackage/Tests/SwiftTarget", to: "/SwiftPackage/Tests/\(targetName)Tests")
+        try move(targetPath: targetPath, at: "/SwiftPackage", to: "/\(packageName)")
     }
     
     func applyStencil(stencilURL: URL, targetPath: String, context: [String: Any]) throws {

@@ -16,7 +16,9 @@ import Foundation
 
 struct Fixtures {
     
-    static let configFile = "breeze.yml"
+    static let configFileLambdaAPI = "breeze.yml"
+    static let configFileGithubWebhook = "breeze-github-webhook.yml"
+    static let configFileWebhook = "breeze-webhook.yml"
     static let configFileSignInWithApple = "breeze-sign-in-with-apple.yml"
     static let emptyConfigFile = "empty.yml"
     static let invalidConfigFile = "invalid.yml"

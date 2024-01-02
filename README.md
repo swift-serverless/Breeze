@@ -7,121 +7,70 @@
 
 ![Breeze](logo.png)
 
-Serverless API using AWS APIGateway, Lambda, and DynamoDB in Swift is like a breeze!
+A Serverless API Template Generator for Server-Side Swift.
 
 ## Abstract
 
-This package provides the code to build a Serverless REST API in Swift based on AWS Lambda, APIGateway and DynamoDB.
+Breeze is a powerful tool designed to streamline the process of creating Serverless API templates in Swift.
 
-The following diagram represents the infrastructure architecture of a CRUD REST Serverless API:
+It eliminates the complexity of setting up a project from scratch, providing developers with code, scripts and configurations to adapt and customize.
+The tool is based on open-source code, allowing anyone the possibility to inspect, understand and improve the implementation.
 
-![AWS Serverless Rest API](images/AWS-Serverless-REST-API.svg)
+Breeze fundamental choices:
 
-The APIGateway exposes the API interface through endpoints and converts the HTTP requests to APIGatewayV2Request events for the Lambdas.
-Each Lambda receives events from the APIGateway, decodes the events to extract parameters, operates on a DynamoDB table and returns a response payload to the APIGateway. DynamoDB will be accessed through the Lambdas to persist a key-value pair representing data. 
+- Serverless Architecture
+- Server-Side Swift code based on [SSWG SDKs](https://www.swift.org/sswg/)
+- Open-Source dependencies
+- Open to inspection, customisation and contribution
+- Infrastructure as a Code
+- Deployment scripts
 
-With a single line of code, Breeze implements all the Lambdas required for the CRUD interface converting APIGatewayV2Request to an operation on a DynamoDB table and responding with APIGatewayV2Response to the APIGateway.
+## Why Serverless?
 
-# Usage
+Serverless architecture has revolutionized the way developers approach application deployment. Serverless computing eliminates the complexities associated with traditional server management. This approach results in increased agility, reduced operational overhead, scalability and efficient resource utilization.
 
-## Lambda customisation
+## Why Swift?
 
-Define a `Codable` struct or class like the `Item` one's in the example and pass it to `BreezeLambdaAPI` using the type placeholder.
+Swift's concise syntax, strong type system, and performance optimizations contribute to faster development cycles and enhanced code maintainability. Leveraging Swift on the server side ensures a consistent and unified language experience for developers, fostering code sharing between client and server components.
 
-```swift
-import Foundation
-import BreezeLambdaAPI
-import BreezeDynamoDBService
+## Breeze Swift Templates
 
-struct Item: Codable {
-    public var key: String
-    public let name: String
-    public let description: String
-    public var createdAt: String?
-    public var updatedAt: String?
-    
-    enum CodingKeys: String, CodingKey {
-        case key
-        case name
-        case description
-        case createdAt
-        case updatedAt
-    }
-}
+The tool can generate the following available templates:
 
-extension Item: BreezeCodable { }
+### Serverless REST API
+AWS Serverless REST API based on APIGateway, Lambda, DynamoDB
 
-BreezeLambdaAPI<Item>.main()
-```
+![AWS Serverless Rest API](/images/AWS-Serverless-REST-API.svg)
 
-It's required the `Codable` struct or class to conform to the `BreezeCodable` protocol:
+- Specs: [Docs/GenerateLambdaAPI.md](Docs/GenerateLambdaAPI.md)
 
-```swift
-public protocol BreezeCodable: Codable {
-    var key: String { get set }
-    var createdAt: String? { get set }
-    var updatedAt: String? { get set }
-}
-```
+- Command Line help: `swift run breeze generate-lambda-api --help`
 
-The code above is the business logic required inside all the Lambdas.
-All you need to do is to decide the struct conforming `BreezeCodable` to persist on DynamoDB.
+- Talk @NSLondon: Serverless in Swift like a Breeze](https://youtu.be/D4qSv_fhQIo?si=WnsTlYbUjHs9DYHF)
 
-Each lambda will be initialized with a specific `_HANDLER` and it will run the code to implement the required logic needed by one of the CRUD functions. The code needs to be packaged and deployed using the referenced architecture.
+- Slide: [Slides](https://www.slideshare.net/AndreaScuderi6/serverless-in-swift-like-a-breeze)
 
-### Optimistic locking
+### GitHub Webhook
 
-Optimistic locking is a strategy to ensure that the BreezeCodable Item is not updated by another request before updating or deleting it.
-The fields `updatedAt` and `createdAt` are used to implement optimistic locking.
-Refer to the [DynamoDB documentation](https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/DynamoDBMapper.OptimisticLocking.html) for more details.
+A GitHub Webhook with signature verification based on APIGateway and Lambda.
 
-## Lambda package with Swift Package Manager
+![AWS Serverless GitHub Webhook](/images/AWS-Serverless-Github-Webhook.svg)
 
-To package the Lambda is required to create a Swift Package using the following `Package.swift` file.
+- Specs: [Docs/GenerateGithubWebhook.md](Docs/GenerateGithubWebhook.md)
 
-```swift
-// swift-tools-version:5.7
-// The swift-tools-version declares the minimum version of Swift required to build this package.
+- Command Line help: `swift run breeze generate-github-webhook --help`
 
-import PackageDescription
+### GET/POST Webhook
 
-let package = Package(
-    name: "swift-breeze-item-api",
-    platforms: [
-        .macOS(.v13),
-    ],
-    products: [
-        .executable(name: "ItemAPI", targets: ["ItemAPI"]),
-    ],
-    dependencies: [
-        .package(url: "https://github.com/swift-sprinter/Breeze.git", from: "0.2.0"),
-    ],
-    targets: [
-        .executableTarget(
-            name: "ItemAPI",
-             dependencies: [
-                .product(name: "BreezeLambdaAPI", package: "Breeze"),
-                .product(name: "BreezeDynamoDBService", package: "Breeze"),
-            ]
-        )
-    ]
-)
+A Serveless Webhook based on APIGateway and Lambda with POST and GET endpoints.
 
-```
+![AWS Serverless Webhook](/images/AWS-Serverless-Webhook.svg)
 
-To be executed on a Lambda, the package needs to be built on `AmazonLinux2` and deployed.
+- Specs: [Docs/GenerateWebhook.md](Docs/GenerateWebhook.md)
 
-# Deployment Example
+- Command Line help: `swift run breeze generate-webhook --help`
 
-The API can be deployed on AWS in multiple ways.
-
-Refer to the [Example](Example) folder to explore a deployment example using the Serverless Framework.
-
-# Generate the deployment with the command line
-
-The package contains a command line tool to generate the deployment of the swift package, the `serverless.yml` file and the relevant commands to deploy the Lambda code on AWS using the Serverless Framework.
-
-## The command line tool
+## Usage
 
 ```bash
 swift run breeze --help
@@ -129,199 +78,51 @@ swift run breeze --help
 
 output:
 
-```bash
+```
 OVERVIEW: Breeze command line
 
-Generate the deployment of a Serverless API using Breeze.
-The command generates of the swift package, the `serverless.yml` file and the relevant commands in the target path to deploy the Lambda code on AWS using the Serverless Framework.
+Generate the deployment of a Serverless project using Breeze.
+The command generates of the swift package, the `serverless.yml` file and the relevant commands in the target path to deploy
+the Lambda code on AWS using the Serverless Framework.
 
-USAGE: breeze --config-file <config-file> --target-path <target-path> [--force-overwrite] [-y]
+USAGE: breeze <subcommand>
 
 OPTIONS:
-  -c, --config-file <config-file>
-                          YML configurarion file
-  -t, --target-path <target-path>
-                          Target path
-  -f, --force-overwrite   Force target path overwrite
-  -y
   -h, --help              Show help information.
+
+SUBCOMMANDS:
+  generate-lambda-api
+  generate-github-webhook
+  generate-webhook
+
+  See 'breeze help <subcommand>' for detailed help.
 ```
 
-## Configuration file
+## Development Workflow
 
-Define a configuration file with the following format:
-```yml
-service: swift-breeze-rest-item-api
- awsRegion: us-east-1
- swiftVersion: 5.7.3
- swiftConfiguration: release
- packageName: BreezeItemAPI
- buildPath: build
- cors: false
- authorizer: #optional
-         name: appleJWT
-         type: JWTAuthorizer
-         issuerUrl: https://appleid.apple.com
-         audience:
-             - APP_BUNDLE_IDENTIFIER #Change this with the App BUNDLE_IDENTIFIER
- breezeLambdaAPI:
-     targetName: ItemAPI
-     itemCodable: Item
-     itemKey: itemKey
-     httpAPIPath: /items
-     dynamoDBTableNamePrefix: items
-```
+The workflow to develop Serverless in Swift using Breeze can be described by the following steps:
 
-Configuration parameters:
-- `awsRegion`: AWS Region
-- `swiftVersion`: Swift version
-- `swiftConfiguration`: Swift configuration (debug or release)
-- `packageName`: Swift Package name
-- `buildPath`: Swift Package build path where the Lambda executable will be generated
-- `cors`: Enable CORS (default: false)
-- `authorizer`: Optional. If defined, the API will be protected by the specified authorizer. The authorizer can be a custom one or a predefined one. `APP_BUNDLE_IDENTIFIER` is the App Bundle Identifier of the iOS App that will use the API.
-If you don't want to use a custom authorizer, remove the `authorizer` section.
-- `breezeLambdaAPI`: Breeze Lambda API configuration
-    - `targetName`: The name of the target that will be generated by the Swift Package Manager
-    - `itemCodable`: The name of the `Codable` struct or class that will be persisted on DynamoDB
-    - `itemKey`: The name of the key of the `Codable` struct or class that will be persisted on DynamoDB
-    - `httpAPIPath`: The path of the API
-    - `dynamoDBTableNamePrefix`: The prefix of the DynamoDB table name
+- Generate the project using the `breeze` command line tool
+  - Choose a Breeze template and follow the documentation
+  - Copy and adapt the template configuration file
+  - Generate the project
+- Customize the generated project adapting the code
+- Build the project using the `build.sh` script
+- Deploy the project using the `deploy.sh` script
+- Update the project when the code changes using the `update.sh` script
+- Remove the project if it's not needed anymore with `remove.sh` script
+
+## Requirements and Tools
+
+- Swift (Version >= 5.7)
+- [Docker](https://docs.docker.com/install/)
+- [Serverless Framework](https://www.serverless.com/framework/docs/getting-started/) version 3
+- Ensure your AWS Account has the right [credentials](https://www.serverless.com/framework/docs/providers/aws/guide/credentials/) to deploy a Serverless stack.
+- Ensure you can run `make`
+
+## Contributing
+
+Contributions are welcome! If you encounter any issues or have ideas for improvements, please open an issue or submit a pull request.
 
 
-## Run the command line tool:
 
-The following command will run using the example configuration file and generate the deployment files in the `.build/temp` folder.
-
-```bash
-swift run breeze -c Sources/BreezeCommand/Resources/breeze.yml -t .build/temp
-```
-
-output:
-
-```bash
-⚙️ Loading configuration file
-
-/Users/andreascuderi/Documents/workspace/Breeze/Sources/BreezeCommand/Resources/breeze.yml
-
-service: swift-breeze-rest-item-api
-awsRegion: us-east-1
-swiftVersion: 5.7.3
-swiftConfiguration: release
-packageName: BreezeItemAPI
-buildPath: build
-cors: false
-breezeLambdaAPI:
-    targetName: ItemAPI
-    itemCodable: Item
-    itemKey: itemKey
-    httpAPIPath: /items
-    dynamoDBTableNamePrefix: items
-
-🔎 Verifing target path
-
-🧹 .build/temp
-
-✅ Target path ready!
-
-📁 Generating project from template
-
-📄 /Users/andreascuderi/Documents/workspace/Breeze/.build/temp/SwiftPackage/Package.swift
-📄 /Users/andreascuderi/Documents/workspace/Breeze/.build/temp/SwiftPackage/Sources/SwiftTarget/main.swift
-📄 /Users/andreascuderi/Documents/workspace/Breeze/.build/temp/Dockerfile
-📄 /Users/andreascuderi/Documents/workspace/Breeze/.build/temp/remove.sh
-📄 /Users/andreascuderi/Documents/workspace/Breeze/.build/temp/.gitignore
-📄 /Users/andreascuderi/Documents/workspace/Breeze/.build/temp/deploy.sh
-📄 /Users/andreascuderi/Documents/workspace/Breeze/.build/temp/update.sh
-📄 /Users/andreascuderi/Documents/workspace/Breeze/.build/temp/Makefile
-📄 /Users/andreascuderi/Documents/workspace/Breeze/.build/temp/README.md
-📄 /Users/andreascuderi/Documents/workspace/Breeze/.build/temp/build.sh
-📄 /Users/andreascuderi/Documents/workspace/Breeze/.build/temp/swagger.json
-🛫 .build/temp/SwiftPackage/Sources/SwiftTarget
-🛬 .build/temp/SwiftPackage/Sources/ItemAPI
-🛫 .build/temp/SwiftPackage
-🛬 .build/temp/BreezeItemAPI
-📄 /Users/andreascuderi/Documents/workspace/Breeze/.build/temp/serverless.yml
-📄 /Users/andreascuderi/Documents/workspace/Breeze/.build/temp/serverless-x86_64.yml
-
-✅ Project is ready at target-path
-
-.build/temp
-
-🎵🎵🎵🎵🎵🎵🎵🎵🎵🎵🎵🎵🎵🎵🎵🎵🎵🎵🎵🎵🎵🎵🎵🎵🎵🎵🎵🎵🎵🎵🎵🎵🎵🎵🎵🎵🎵🎵🎵🎵🎵🎵🎵🎵
-🎵💨💨💨💨💨💨🎵🎵🎵🎵🎵🎵🎵🎵🎵🎵🎵🎵🎵🎵🎵🎵🎵🎵🎵🎵🎵🎵🎵🎵🎵🎵🎵🎵🎵🎵🎵🎵🎵🎵🎵🎵🎵
-🎵💨🎵🎵🎵🎵🎵💨🎵💨💨💨💨💨🎵🎵💨💨💨💨💨💨🎵💨💨💨💨💨💨🎵💨💨💨💨💨💨🎵💨💨💨💨💨💨🎵
-🎵💨🎵🎵🎵🎵🎵💨🎵💨🎵🎵🎵🎵💨🎵💨🎵🎵🎵🎵🎵🎵💨🎵🎵🎵🎵🎵🎵🎵🎵🎵🎵💨🎵🎵💨🎵🎵🎵🎵🎵🎵
-🎵💨💨💨💨💨💨🎵🎵💨🎵🎵🎵🎵💨🎵💨💨💨💨💨🎵🎵💨💨💨💨💨🎵🎵🎵🎵🎵💨🎵🎵🎵💨💨💨💨💨🎵🎵
-🎵💨🎵🎵🎵🎵🎵💨🎵💨💨💨💨💨🎵🎵💨🎵🎵🎵🎵🎵🎵💨🎵🎵🎵🎵🎵🎵🎵🎵💨🎵🎵🎵🎵💨🎵🎵🎵🎵🎵🎵
-🎵💨🎵🎵🎵🎵🎵💨🎵💨🎵🎵🎵💨🎵🎵💨🎵🎵🎵🎵🎵🎵💨🎵🎵🎵🎵🎵🎵🎵💨🎵🎵🎵🎵🎵💨🎵🎵🎵🎵🎵🎵
-🎵💨💨💨💨💨💨🎵🎵💨🎵🎵🎵🎵💨🎵💨💨💨💨💨💨🎵💨💨💨💨💨💨🎵💨💨💨💨💨💨🎵💨💨💨💨💨💨🎵
-🎵🎵🎵🎵🎵🎵🎵🎵🎵🎵🎵🎵🎵🎵🎵🎵🎵🎵🎵🎵🎵🎵🎵🎵🎵🎵🎵🎵🎵🎵🎵🎵🎵🎵🎵🎵🎵🎵🎵🎵🎵🎵🎵🎵
-
-💨 Use the following commands to build & deploy
-
-cd .build/temp
-./build.sh
-./deploy.sh
-```
-
-Follow the instructions to build and deploy the project. For more information about the deployment, please refer to the generated `README.md` file.
-
-# Implementation Specs
-
-## Lambda initialization
-
-During the Lambda's initialization, the `BreezeLambdaAPI` reads the configuration from the following `Environment` variables:
-- `AWS_REGION`: AWS Region
-- `_HANDLER`: The handler name specifies the CRUD operation implemented by the Lambda using the following format `{executable_name}.{BreezeOperation}` or `{BreezeOperation}`
-
-```swift
-enum BreezeOperation: String {
-    case create
-    case read
-    case update
-    case delete
-    case list
-}
-```
-(example: `build/RestAPI.create` where `build/RestAPI` is the executable name and `create` is the BreezeOperation).
-- `DYNAMO_DB_TABLE_NAME`: DynamoDB table name.
-- `DYNAMO_DB_KEY`: DynamoDB Primary Key
-
-## APIGateway Requests and Responses
-
-`BreezeLambdaAPI` receives an APIGateway event, extracts the relevant parameters and performs a `BreezeOperation` on `BreezeDynamoDBService`.
-
-- `create`
-
-Decodes a `BreezeCodable` from the `APIGatewayV2Request.body` and calls `createItem` on `BreezeDynamoDBService`.
-Returns the created `BreezeCodable`.
-
-- `read`
-
-Gets the value of the `BreezeCodable.key` from the `APIGatewayV2Request.pathParameters` dictionary and calls `readItem` on `BreezeDynamoDBService`.
-Returns the `BreezeCodable` if persisted on DynamoDB.
-
-- `update`
-
-Decodes a `BreezeCodable` from the `APIGatewayV2Request.body` and calls `updateItem` on `BreezeDynamoDBService`.
-Returns the updated `BreezeCodable`.
-
-- `delete`
-
-Gets the value of the `BreezeCodable.key` from the `APIGatewayV2Request.pathParameters` dictionary, the value of `updatedAt` and `createdAt` from `APIGatewayV2Request.queryStringParameters` dictionary and calls `deleteItem` on `BreezeDynamoDBService`.
-Returns the `BreezeCodable` if persisted on DynamoDB.
-
-- `list`
-
-Gets the value of the `exclusiveStartKey` and `limit` from the `APIGatewayV2Request.queryStringParameters` dictionary and calls `listItems` on `BreezeDynamoDBService`.
-Returns the `ListResponse` containing the items if persisted on DynamoDB.
-
-```swift
-struct ListResponse<T: Codable>: Codable {
-    let items: [T]
-    let lastEvaluatedKey: String?
-}
-```
-
- (See SotoDynamoDB documentation for more info [*](https://soto.codes/reference/DynamoDB.html))

@@ -22,7 +22,9 @@ struct BreezeConfig: Codable {
     let swiftConfiguration: String
     let packageName: String
     let buildPath: String
-    let breezeLambdaAPI: BreezeLambdaAPIConfig
+    let breezeLambdaAPI: BreezeLambdaAPIConfig?
+    let breezeGithubWebhook: BreezeGithubWebhookConfig?
+    let breezeWebhook: BreezeWebhookConfig?
     let cors: Bool
     let authorizer: BreezeAuthorizer?
 }
@@ -45,6 +47,17 @@ struct BreezeLambdaAPIConfig: Codable {
     let itemKey: String
     let httpAPIPath: String
     let dynamoDBTableNamePrefix: String
+}
+
+struct BreezeGithubWebhookConfig: Codable {
+    let targetName: String
+    let httpPath: String
+    let secret: String
+}
+
+struct BreezeWebhookConfig: Codable {
+    let targetName: String
+    let httpPath: String
 }
 
 extension BreezeConfig {

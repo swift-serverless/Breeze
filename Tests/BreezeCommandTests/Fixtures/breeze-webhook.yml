@@ -1,0 +1,10 @@
+service: swift-breeze-webhook
+awsRegion: us-east-1
+swiftVersion: 5.7.3
+swiftConfiguration: release
+packageName: BreezeWebHook
+buildPath: build
+cors: false
+breezeWebhook:
+    targetName: WebHook
+    httpPath: /webhook

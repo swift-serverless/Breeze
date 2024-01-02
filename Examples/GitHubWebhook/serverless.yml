@@ -1,0 +1,38 @@
+service: swift-breeze-github-webhook
+frameworkVersion: '3'
+configValidationMode: warn
+useDotenv: false
+provider:
+  name: aws
+  region: us-east-1
+  disableRollback: false
+  runtime: provided.al2
+  httpApi:
+    payload: '2.0'
+    cors: false
+  architecture: arm64
+  versionFunctions: true
+  iam:
+    role:
+      statements:
+      - Effect: Allow
+        Action:
+        - logs:CreateLogGroup
+        - logs:CreateLogStream
+        - logs:PutLogEvents
+        Resource: '*'
+package:
+  individually: true
+functions:
+  githubWebHook:
+    handler: github-webhook
+    memorySize: 256
+    environment:
+      WEBHOOK_SECRET: ${ssm:/dev/swift-webhook/webhook_secret}
+    description: '[${sls:stage}] post /github-webhook'
+    package:
+      artifact: build/GitHubWebHook/GitHubWebHook.zip
+    events:
+    - httpApi:
+        path: /github-webhook
+        method: post
