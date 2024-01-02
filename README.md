@@ -13,23 +13,29 @@ A Serverless API Template Generator for Server-Side Swift.
 
 Breeze is a powerful tool designed to streamline the process of creating Serverless API templates in Swift.
 
-It eliminates the complexity of setting up the infrastructure, allowing developers to focus on building robust APIs without the hassle of managing servers.
+It eliminates the complexity of setting up a project from scratch, providing developers with code, scripts and configurations to adapt and customize.
+The tool is based on open-source code, allowing anyone the possibility to inspect, understand and improve the implementation.
 
-## Features
+Breeze fundamental choices:
 
-- Serverless Architecture: Generate AWS Lambda functions and API Gateway configurations to deploy your API in a serverless environment.
+- Serverless Architecture
+- Server-Side Swift code based on [SSWG SDKs](https://www.swift.org/sswg/)
+- Open-Source dependencies
+- Open to inspection, customisation and contribution
+- Infrastructure as a Code
+- Deployment scripts
 
-- Server-Side Swift: Breeze is tailored for Swift developers, providing a seamless experience for creating Serverless APIs using Swift.
+## Why Serverless?
 
-- Template Customization: Breeze allows you to customize the generated templates to suit your specific requirements.
+Serverless architecture has revolutionized the way developers approach application deployment. Serverless computing eliminates the complexities associated with traditional server management. This approach results in increased agility, reduced operational overhead, scalability and efficient resource utilization.
 
-- Dependencies: All the open-source dependencies are integrated with Swift Package Manager.
+## Why Swift?
 
-- IaaC: The project is generated to be deployed on AWS using the Serverless Framework.
+Swift's concise syntax, strong type system, and performance optimizations contribute to faster development cycles and enhanced code maintainability. Leveraging Swift on the server side ensures a consistent and unified language experience for developers, fostering code sharing between client and server components.
 
 ## Breeze Swift Templates
 
-The tool can generate the following kinds of projects:
+The tool can generate the following available templates:
 
 ### Serverless REST API
 AWS Serverless REST API based on APIGateway, Lambda, DynamoDB
@@ -40,7 +46,7 @@ AWS Serverless REST API based on APIGateway, Lambda, DynamoDB
 
 - Command Line help: `swift run breeze generate-lambda-api --help`
 
-- Talk @NSLondon: [Serverles in Swift like a Breeze](https://youtu.be/D4qSv_fhQIo?si=WnsTlYbUjHs9DYHF)
+- Talk @NSLondon: Serverless in Swift like a Breeze](https://youtu.be/D4qSv_fhQIo?si=WnsTlYbUjHs9DYHF)
 
 - Slide: [Slides](https://www.slideshare.net/AndreaScuderi6/serverless-in-swift-like-a-breeze)
 
@@ -92,7 +98,21 @@ SUBCOMMANDS:
   See 'breeze help <subcommand>' for detailed help.
 ```
 
-## Requirements
+## Development Workflow
+
+The workflow to develop Serverless in Swift using Breeze can be described by the following steps:
+
+- Generate the project using the `breeze` command line tool
+  - Choose a Breeze template and follow the documentation
+  - Copy and adapt the template configuration file
+  - Generate the project
+- Customize the generated project adapting the code
+- Build the project using the `build.sh` script
+- Deploy the project using the `deploy.sh` script
+- Update the project when the code changes using the `update.sh` script
+- Remove the project if it's not needed anymore with `remove.sh` script
+
+## Requirements and Tools
 
 - Swift (Version >= 5.7)
 - [Docker](https://docs.docker.com/install/)
