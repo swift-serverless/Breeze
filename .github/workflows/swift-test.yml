@@ -41,10 +41,14 @@ jobs:
       - name: Test
         run: |
           make test
-      - name: Compare Output With Example
+      - name: Compare Output With Example ItemAPI
         run: |
           make compare_breeze_lambda_api_output_with_example
-          make compare_breeze_github_weboook_output_with_example
+      - name: Compare Output With Example GitHubWebhook
+        run: |
+            make compare_breeze_github_weboook_output_with_example
+      - name: Compare Output With Example Webhook
+        run: |
           make compare_breeze_weboook_output_with_example
       - name: Coverage
         run: |
