@@ -59,11 +59,11 @@ compare_breeze_lambda_api_output_with_example: install_yq generate_lambda_api_te
 	diff -rb $(EXAMPLE_PATH) $(BUILD_TEMP) --exclude=*.yml --exclude=Package.resolved
 
 compare_breeze_github_weboook_output_with_example: install_yq generate_github_weboook_temp
-	bash -c "diff <(yq -P 'sort_keys(..)' $(EXAMPLE_PATH)/serverless.yml) <(yq -P 'sort_keys(..)' $(BUILD_TEMP)/serverless.yml)"
-	bash -c "diff <(yq -P 'sort_keys(..)' $(EXAMPLE_PATH)/serverless-x86_64.yml) <(yq -P 'sort_keys(..)' $(BUILD_TEMP)/serverless-x86_64.yml)"
+	bash -c "diff <(yq -P 'sort_keys(..)' $(EXAMPLE_GITHUB_WEBHOOK_PATH)/serverless.yml) <(yq -P 'sort_keys(..)' $(BUILD_TEMP)/serverless.yml)"
+	bash -c "diff <(yq -P 'sort_keys(..)' $(EXAMPLE_GITHUB_WEBHOOK_PATH)/serverless-x86_64.yml) <(yq -P 'sort_keys(..)' $(BUILD_TEMP)/serverless-x86_64.yml)"
 	diff -rb $(EXAMPLE_PATH) $(BUILD_TEMP) --exclude=*.yml --exclude=Package.resolved
 
 compare_breeze_weboook_output_with_example: install_yq generate_webhook_temp
-	bash -c "diff <(yq -P 'sort_keys(..)' $(EXAMPLE_PATH)/serverless.yml) <(yq -P 'sort_keys(..)' $(BUILD_TEMP)/serverless.yml)"
-	bash -c "diff <(yq -P 'sort_keys(..)' $(EXAMPLE_PATH)/serverless-x86_64.yml) <(yq -P 'sort_keys(..)' $(BUILD_TEMP)/serverless-x86_64.yml)"
+	bash -c "diff <(yq -P 'sort_keys(..)' $(EXAMPLE_WEBHOOK_PATH)/serverless.yml) <(yq -P 'sort_keys(..)' $(BUILD_TEMP)/serverless.yml)"
+	bash -c "diff <(yq -P 'sort_keys(..)' $(EXAMPLE_WEBHOOK_PATH)/serverless-x86_64.yml) <(yq -P 'sort_keys(..)' $(BUILD_TEMP)/serverless-x86_64.yml)"
 	diff -rb $(EXAMPLE_PATH) $(BUILD_TEMP) --exclude=*.yml --exclude=Package.resolved
