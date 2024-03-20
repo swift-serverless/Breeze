@@ -18,7 +18,7 @@ let package = Package(
         .executableTarget(
             name: "WebHook",
              dependencies: [
-                .product(name: "BreezeLambdaWebHook", package: "Breeze"),
+                .product(name: "BreezeLambdaWebHook", package: "BreezeLambdaWebHook"),
             ]
         )
     ]

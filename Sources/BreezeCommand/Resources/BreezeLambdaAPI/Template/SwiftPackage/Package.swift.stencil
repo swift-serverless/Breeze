@@ -18,8 +18,8 @@ let package = Package(
         .executableTarget(
             name: "{{ params.targetName }}",
              dependencies: [
-                .product(name: "BreezeLambdaAPI", package: "Breeze"),
-                .product(name: "BreezeDynamoDBService", package: "Breeze"),
+                .product(name: "BreezeLambdaAPI", package: "BreezeLambdaDynamoDBAPI"),
+                .product(name: "BreezeDynamoDBService", package: "BreezeLambdaDynamoDBAPI"),
             ]
         )
     ]

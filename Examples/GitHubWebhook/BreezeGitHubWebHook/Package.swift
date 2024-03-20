@@ -19,14 +19,14 @@ let package = Package(
         .executableTarget(
             name: "GitHubWebHook",
              dependencies: [
-                .product(name: "BreezeLambdaWebHook", package: "Breeze"),
+                .product(name: "BreezeLambdaWebHook", package: "BreezeLambdaWebHook"),
                 .product(name: "Crypto", package: "swift-crypto"),
             ]
         ),
         .testTarget(
             name: "GitHubWebHookTests",
             dependencies: [
-                .product(name: "BreezeLambdaWebHook", package: "Breeze"),
+                .product(name: "BreezeLambdaWebHook", package: "BreezeLambdaWebHook"),
                 .product(name: "Crypto", package: "swift-crypto"),
                 "GitHubWebHook"
             ]
