@@ -12,14 +12,14 @@ let package = Package(
         .executable(name: "ItemAPI", targets: ["ItemAPI"]),
     ],
     dependencies: [
-        .package(url: "https://github.com/swift-sprinter/Breeze.git", from: "0.2.0")
+        .package(url: "https://github.com/swift-serverless/BreezeLambdaDynamoDBAPI.git", from: "0.4.0")
     ],
     targets: [
         .executableTarget(
             name: "ItemAPI",
              dependencies: [
-                .product(name: "BreezeLambdaAPI", package: "Breeze"),
-                .product(name: "BreezeDynamoDBService", package: "Breeze"),
+                .product(name: "BreezeLambdaAPI", package: "BreezeLambdaDynamoDBAPI"),
+                .product(name: "BreezeDynamoDBService", package: "BreezeLambdaDynamoDBAPI"),
             ]
         )
     ]
