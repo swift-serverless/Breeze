@@ -12,7 +12,7 @@ let package = Package(
         .executable(name: "WebHook", targets: ["WebHook"]),
     ],
     dependencies: [
-        .package(url: "https://github.com/swift-sprinter/Breeze.git", from: "0.3.0")
+        .package(url: "https://github.com/swift-serverless/BreezeLambdaWebHook.git", from: "0.4.0")
     ],
     targets: [
         .executableTarget(

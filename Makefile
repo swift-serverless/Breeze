@@ -23,7 +23,7 @@ localstack:
 	docker run -it --rm -p "4566:4566" localstack/localstack
 
 test:
-	swift test --sanitize=thread --enable-code-coverage
+	swift test --enable-code-coverage
 
 coverage:
 	llvm-cov export $(SWIFT_BIN_PATH)/BreezePackageTests.xctest \

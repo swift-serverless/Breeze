@@ -86,7 +86,7 @@ let package = Package(
         .executable(name: "ItemAPI", targets: ["ItemAPI"]),
     ],
     dependencies: [
-        .package(url: "https://github.com/swift-sprinter/Breeze.git", from: "0.2.0"),
+        .package(url: "https://github.com/swift-serverless/Breeze.git", from: "0.2.0"),
     ],
     targets: [
         .executableTarget(

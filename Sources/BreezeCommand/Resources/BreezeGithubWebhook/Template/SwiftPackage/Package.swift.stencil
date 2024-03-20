@@ -13,7 +13,7 @@ let package = Package(
     ],
     dependencies: [
         .package(url: "https://github.com/apple/swift-crypto.git", from: "1.0.0"),
-        .package(url: "https://github.com/swift-sprinter/Breeze.git", from: "0.3.0")
+        .package(url: "https://github.com/swift-serverless/BreezeLambdaWebHook.git", from: "0.4.0")
     ],
     targets: [
         .executableTarget(

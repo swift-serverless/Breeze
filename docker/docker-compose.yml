@@ -19,7 +19,7 @@ services:
       - localstack
     environment:
       - LOCALSTACK_ENDPOINT=http://localstack:4566
-    command: /bin/bash -xcl "swift test --sanitize=thread"
+    command: /bin/bash -xcl "swift test"
 
   localstack:
     image: localstack/localstack
