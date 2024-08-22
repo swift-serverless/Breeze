@@ -140,7 +140,7 @@ Define a configuration file with the following format:
 ```yml
 service: swift-breeze-rest-item-api
  awsRegion: us-east-1
- swiftVersion: 5.7.3
+ swiftVersion: 5.10.1
  swiftConfiguration: release
  packageName: BreezeItemAPI
  buildPath: build
@@ -193,7 +193,7 @@ output:
 
 service: swift-breeze-rest-item-api
 awsRegion: us-east-1
-swiftVersion: 5.7.3
+swiftVersion: 5.10.1
 swiftConfiguration: release
 packageName: BreezeItemAPI
 buildPath: build
