@@ -14,11 +14,11 @@ env:
 jobs:
   swift-tests:
     name: 'Swift Tests'
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-latest
     strategy:
       matrix:
         image:
-          - swift:5.10.1-amazonlinux2
+          - swift:5.10.1
     services:
       localstack:
         image: localstack/localstack
