@@ -2,7 +2,10 @@
 
 name: Meterian Scanner workflow
 
-on: push
+on: 
+  push:
+      branches:
+        - main
 
 jobs:
     meterian_scan:
