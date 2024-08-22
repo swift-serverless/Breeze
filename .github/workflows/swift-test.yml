@@ -35,7 +35,7 @@ jobs:
       # Checkout the repository to the GitHub Actions runner
       - name: Update
         run: |
-          yum -y update && yum install -y glibc-devel libyaml-devel cmake3 gcc-c++ make wget unzip tar git openssl11-devel cyrus-sasl-devel pkgconfig systemd-devel zlib-devel ca-certificates flex bison nodejs gdb
+          yum -y update && yum install -y glibc-devel libyaml-devel cmake3 gcc-c++ make
       - name: Checkout
         uses: actions/checkout@v3
       - name: Setup 
