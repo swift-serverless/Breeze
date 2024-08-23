@@ -31,7 +31,8 @@ coverage:
 		--format=lcov > $(GITHUB_WORKSPACE)/lcov.info
 
 install_yq:
-	yum -y install wget
+	# yum -y install wget
+	apt-get -q install -y wget
 	wget -qO /usr/local/bin/yq https://github.com/mikefarah/yq/releases/latest/download/yq_linux_amd64
 	chmod a+x /usr/local/bin/yq
 
