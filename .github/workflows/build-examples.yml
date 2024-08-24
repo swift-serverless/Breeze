@@ -3,6 +3,8 @@ name: 'Build Examples'
 on:
   workflow_dispatch:
   push:
+    branches:
+      - main
   pull_request:
 
 env:
@@ -34,7 +36,7 @@ jobs:
       - name: Checkout
         run: |
           yum -y update && yum -y install git make zip
-          git clone https://github.com/swift-serverless/Breeze.git
+          git clone https://github.com/swift-serverless/Breeze.git src
       - name: Build ItemAPI
         run: |
           cd /src/Examples/ItemAPI/BreezeItemAPI && swift package archive -c release
