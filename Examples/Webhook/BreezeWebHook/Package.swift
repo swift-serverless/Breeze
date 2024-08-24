@@ -12,7 +12,8 @@ let package = Package(
         .executable(name: "WebHook", targets: ["WebHook"]),
     ],
     dependencies: [
-        .package(url: "https://github.com/swift-serverless/BreezeLambdaWebHook.git", from: "0.4.0")
+        .package(url: "https://github.com/swift-serverless/BreezeLambdaWebHook.git", from: "0.4.0"),
+        .package(url: "https://github.com/swift-server/swift-aws-lambda-runtime.git", from: "1.0.0-alpha.1")
     ],
     targets: [
         .executableTarget(
