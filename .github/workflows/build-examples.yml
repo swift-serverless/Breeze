@@ -26,6 +26,7 @@ jobs:
       image: ${{ matrix.image }}
       env:
         LOCALSTACK_ENDPOINT : "http://localstack:4566"
+        BRANCH_NAME: ${{ github.head_ref || github.ref_name }} 
      # Use the Bash shell regardless whether the GitHub Actions runner is ubuntu-latest, macos-latest, or windows-latest
     defaults:
       run:
@@ -39,9 +40,8 @@ jobs:
       - name: Git Clone & Checkout
         run: |
           git clone https://github.com/swift-serverless/Breeze.git $GITHUB_WORKSPACE/src
-          cd $GITHUB_WORKSPACE/src
-          echo $GITHUB_REF_NAME
-          git checkout $GITHUB_REF_NAME
+          echo $BRANCH_NAME
+          cd $GITHUB_WORKSPACE/src && git checkout $BRANCH_NAME
       - name: Build ItemAPI
         run: |
           cd $GITHUB_WORKSPACE/src/Examples/ItemAPI/BreezeItemAPI
