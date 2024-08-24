@@ -40,8 +40,8 @@ jobs:
         run: |
           git clone https://github.com/swift-serverless/Breeze.git $GITHUB_WORKSPACE/src
           cd $GITHUB_WORKSPACE/src
-          echo $(GITHUB_REF_NAME)
-          git checkout $(GITHUB_REF_NAME)
+          echo $GITHUB_REF_NAME
+          git checkout $GITHUB_REF_NAME
       - name: Build ItemAPI
         run: |
           cd $GITHUB_WORKSPACE/src/Examples/ItemAPI/BreezeItemAPI
