@@ -36,17 +36,21 @@ jobs:
       - name: Setup
         run: |
           yum -y update && yum -y install git make zip
-      - name: Setup
+      - name: Git Clone & Checkout
         run: |
           git clone https://github.com/swift-serverless/Breeze.git $GITHUB_WORKSPACE/src
           cd $GITHUB_WORKSPACE/src
-          git checkout $(GITHUB_HEAD_REF)
+          echo $(GITHUB_REF_NAME)
+          git checkout $(GITHUB_REF_NAME)
       - name: Build ItemAPI
         run: |
-          cd $GITHUB_WORKSPACE/src/Examples/ItemAPI/BreezeItemAPI && swift package archive -c release
+          cd $GITHUB_WORKSPACE/src/Examples/ItemAPI/BreezeItemAPI
+          swift package archive -c release
       - name: Build WebHook
         run: |
-          cd $GITHUB_WORKSPACE/src/Examples/Webhook/BreezeHubWebHook && swift package archive -c release
+          cd $GITHUB_WORKSPACE/src/Examples/Webhook/BreezeHubWebHook
+          swift package archive -c release
       - name: Build GitHubWebHook
         run: |
-          cd $GITHUB_WORKSPACE/src/Examples/GitHubWebhook/BreezeGitHubWebHook && swift package archive -c release
+          cd $GITHUB_WORKSPACE/src/Examples/GitHubWebhook/BreezeGitHubWebHook
+          swift package archive -c release
