@@ -1,0 +1,46 @@
+name: 'Build Examples'
+
+on:
+  workflow_dispatch:
+  push:
+  pull_request:
+
+env:
+  AWS_ENABLE_LOGGING : "true"
+  AWS_LOG_LEVEL: "trace"
+
+jobs:
+  build-examples:
+    name: 'Build examples'
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        image:
+          - swift:5.10.1-amazonlinux2
+    services:
+      localstack:
+        image: localstack/localstack
+    container:
+      image: ${{ matrix.image }}
+      env:
+        LOCALSTACK_ENDPOINT : "http://localstack:4566"
+     # Use the Bash shell regardless whether the GitHub Actions runner is ubuntu-latest, macos-latest, or windows-latest
+    defaults:
+      run:
+        shell: bash
+
+    steps:
+      # Checkout the repository to the GitHub Actions runner
+      - name: Checkout
+        run: |
+          yum -y update && yum -y install git make zip
+          git clone https://github.com/swift-serverless/Breeze.git
+      - name: Build ItemAPI
+        run: |
+          cd /src/Examples/ItemAPI/BreezeItemAPI && swift package archive -c release
+      - name: Build WebHook
+        run: |
+          cd /src/Examples/Webhook/BreezeHubWebHook && swift package archive -c release
+      - name: Build GitHubWebHook
+        run: |
+          cd /src/Examples/GitHubWebhook/BreezeGitHubWebHook && swift package archive -c release
