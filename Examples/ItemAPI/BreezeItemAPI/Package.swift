@@ -12,8 +12,8 @@ let package = Package(
         .executable(name: "ItemAPI", targets: ["ItemAPI"]),
     ],
     dependencies: [
-        .package(url: "https://github.com/swift-serverless/BreezeLambdaDynamoDBAPI.git", from: "0.4.0"),
-        .package(url: "https://github.com/swift-server/swift-aws-lambda-runtime.git", from: "1.0.0-alpha.1")
+        .package(url: "https://github.com/swift-serverless/BreezeLambdaDynamoDBAPI.git", from: "0.5.0"),
+        .package(url: "https://github.com/swift-server/swift-aws-lambda-runtime.git", from: "1.0.0-alpha.2")
     ],
     targets: [
         .executableTarget(
