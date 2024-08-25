@@ -42,15 +42,16 @@ jobs:
           git clone https://github.com/swift-serverless/Breeze.git $GITHUB_WORKSPACE/src
           echo $BRANCH_NAME
           cd $GITHUB_WORKSPACE/src && git checkout $BRANCH_NAME
+          mkdir $GITHUB_WORKSPACE/cache
       - name: Build ItemAPI
         run: |
           cd $GITHUB_WORKSPACE/src/Examples/ItemAPI/BreezeItemAPI
-          swift package archive -c release
+          swift package archive -c release --cache-path $GITHUB_WORKSPACE/cache
       - name: Build WebHook
         run: |
-          cd $GITHUB_WORKSPACE/src/Examples/Webhook/BreezeHubWebHook
-          swift package archive -c release
+          cd $GITHUB_WORKSPACE/src/Examples/Webhook/BreezeWebHook
+          swift package archive -c release --cache-path $GITHUB_WORKSPACE/cache
       - name: Build GitHubWebHook
         run: |
           cd $GITHUB_WORKSPACE/src/Examples/GitHubWebhook/BreezeGitHubWebHook
-          swift package archive -c release
+          swift package archive -c release --cache-path $GITHUB_WORKSPACE/cache
