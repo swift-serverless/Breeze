@@ -18,7 +18,10 @@ jobs:
     strategy:
       matrix:
         image:
-          - swift:5.7.3-amazonlinux2
+          - swift:5.7.3
+          - swift:5.8.1
+          - swift:5.9.2
+          - swift:5.10.1
     services:
       localstack:
         image: localstack/localstack
@@ -37,7 +40,7 @@ jobs:
         uses: actions/checkout@v3
       - name: Setup 
         run:  |
-          yum -y update && yum -y install git make curl yq
+          export DEBIAN_FRONTEND=noninteractive DEBCONF_NONINTERACTIVE_SEEN=true && apt-get -q update && apt-get -q install -y make curl wget
       - name: Test
         run: |
           make test

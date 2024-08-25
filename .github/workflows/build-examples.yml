@@ -1,0 +1,57 @@
+name: 'Build Examples'
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+  pull_request:
+
+env:
+  AWS_ENABLE_LOGGING : "true"
+  AWS_LOG_LEVEL: "trace"
+
+jobs:
+  build-examples:
+    name: 'Build examples'
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        image:
+          - swift:5.10.1-amazonlinux2
+    services:
+      localstack:
+        image: localstack/localstack
+    container:
+      image: ${{ matrix.image }}
+      env:
+        LOCALSTACK_ENDPOINT : "http://localstack:4566"
+        BRANCH_NAME: ${{ github.head_ref || github.ref_name }} 
+     # Use the Bash shell regardless whether the GitHub Actions runner is ubuntu-latest, macos-latest, or windows-latest
+    defaults:
+      run:
+        shell: bash
+
+    steps:
+      # Checkout the repository to the GitHub Actions runner
+      - name: Setup
+        run: |
+          yum -y update && yum -y install git make zip
+      - name: Git Clone & Checkout
+        run: |
+          git clone https://github.com/swift-serverless/Breeze.git $GITHUB_WORKSPACE/src
+          echo $BRANCH_NAME
+          cd $GITHUB_WORKSPACE/src && git checkout $BRANCH_NAME
+          mkdir $GITHUB_WORKSPACE/cache
+      - name: Build ItemAPI
+        run: |
+          cd $GITHUB_WORKSPACE/src/Examples/ItemAPI/BreezeItemAPI
+          swift package archive -c release --cache-path $GITHUB_WORKSPACE/cache
+      - name: Build WebHook
+        run: |
+          cd $GITHUB_WORKSPACE/src/Examples/Webhook/BreezeWebHook
+          swift package archive -c release --cache-path $GITHUB_WORKSPACE/cache
+      - name: Build GitHubWebHook
+        run: |
+          cd $GITHUB_WORKSPACE/src/Examples/GitHubWebhook/BreezeGitHubWebHook
+          swift package archive -c release --cache-path $GITHUB_WORKSPACE/cache

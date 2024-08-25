@@ -3,6 +3,10 @@ EXAMPLE_PATH = ./Examples/ItemAPI
 EXAMPLE_GITHUB_WEBHOOK_PATH = ./Examples/GitHubWebhook
 EXAMPLE_WEBHOOK_PATH = ./Examples/Webhook
 BUILD_TEMP = .build/temp
+SWIFT_VERSION= 5.10
+OS = ubuntu
+DOCKER_TAG = breeze:$(SWIFT_VERSION)-$(OS)
+DOCKERFILE = docker/$(SWIFT_VERSION)/$(OS)/.
 
 linux_test:
 	docker-compose -f docker/docker-compose.yml run --rm test
@@ -25,13 +29,26 @@ localstack:
 test:
 	swift test --enable-code-coverage
 
+docker_build:
+	docker build --tag $(DOCKER_TAG) $(DOCKERFILE)
+
+docker_bash:
+	docker run \
+			-it \
+			--rm \
+			--volume "$(shell pwd):/src:rw" \
+			--workdir "/src/" \
+			$(DOCKER_TAG) \
+			/bin/bash
+
 coverage:
 	llvm-cov export $(SWIFT_BIN_PATH)/BreezePackageTests.xctest \
 		--instr-profile=$(SWIFT_BIN_PATH)/codecov/default.profdata \
 		--format=lcov > $(GITHUB_WORKSPACE)/lcov.info
 
 install_yq:
-	yum -y install wget
+	# yum -y install wget
+	apt-get -q install -y wget
 	wget -qO /usr/local/bin/yq https://github.com/mikefarah/yq/releases/latest/download/yq_linux_amd64
 	chmod a+x /usr/local/bin/yq
 

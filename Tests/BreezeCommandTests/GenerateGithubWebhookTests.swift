@@ -21,8 +21,16 @@ class GenerateGithubWebhookTests: XCTestCase {
     
     let targetPath = ".build/temp-github-webhook"
     let subcommand = "generate-github-webhook"
+    
+    override func setUp() async throws {
+        try await super.setUp()
+    }
+    
+    override func tearDown() async throws {
+        try await super.tearDown()
+    }
 
-    func test_generateGithubWebhook_run_whenParametersAreSet_thenSuccess() throws {
+    func test_generateGithubWebhook_run_whenParametersAreSet_thenSuccess() async throws {
         let configFile = try Fixtures.fixture(file: Fixtures.configFileGithubWebhook).path
         let output = try givenRunBreeze(subcommand: subcommand, args: "--config-file \(configFile) --target-path \(targetPath) --force-overwrite -y")
         XCTAssertTrue(output.contains("✅ Project is ready at target-path"))
@@ -34,7 +42,7 @@ class GenerateGithubWebhookTests: XCTestCase {
         try assertServerlessConfig(serverlessConfig: serverlessConfigX86, runtime: .providedAl2, architecture: .x86_64)
     }
     
-    func test_generateGithubWebhook_run_whenParametersAreSetAndForceOverrideIsFalse_thenErrorOnSecondRun() throws {
+    func test_generateGithubWebhook_run_whenParametersAreSetAndForceOverrideIsFalse_thenErrorOnSecondRun() async throws {
         let configFile = try Fixtures.fixture(file: Fixtures.configFileGithubWebhook).path
         let output = try givenRunBreeze(subcommand: subcommand, args: "--config-file \(configFile) --target-path \(targetPath) --force-overwrite -y")
         XCTAssertTrue(output.contains("✅ Project is ready at target-path"))
