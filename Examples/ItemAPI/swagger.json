@@ -113,8 +113,8 @@
           }
         },
         "parameters": [],
-        "description": "Get Item",
-        "operationId": "get-Item"
+        "description": "Get Item List",
+        "operationId": "get-Item-List"
       },
       "delete": {
         "responses": {

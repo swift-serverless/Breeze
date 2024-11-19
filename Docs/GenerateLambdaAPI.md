@@ -1,4 +1,3 @@
-
 # Breeze - Generate Lambda API
 
 The `breeze` package subcommand `generate-lambda-api` provides the code to build a Serverless REST API in Swift based on AWS Lambda, APIGateway and DynamoDB.

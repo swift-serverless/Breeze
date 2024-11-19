@@ -113,8 +113,8 @@
           }
         },
         "parameters": [],
-        "description": "Get {{ params.itemCodable }}",
-        "operationId": "get-{{ params.itemCodable }}"
+        "description": "Get {{ params.itemCodable }} List",
+        "operationId": "get-{{ params.itemCodable }}-List"
       },
       "delete": {
         "responses": {
