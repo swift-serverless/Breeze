@@ -67,7 +67,7 @@ struct GenerateLambdaAPI: ParsableCommand {
             region: Region(rawValue: config.awsRegion) ?? .us_east_1,
             authorizer: config.authorizer,
             cors: config.cors,
-            runtime: .provided,
+            runtime: .providedAl2,
             architecture: .x86_64,
             memorySize: 256,
             executable: params.targetName,

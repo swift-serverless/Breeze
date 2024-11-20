@@ -39,7 +39,7 @@ class GenerateLambdaAPITests: XCTestCase {
         try assertServerlessConfig(serverlessConfig: serverlessConfig, runtime: .providedAl2, architecture: .arm64)
         
         let serverlessConfigX86 = try loadServerlessConfig(targetPath: targetPath, fileName: "serverless-x86_64")
-        try assertServerlessConfig(serverlessConfig: serverlessConfigX86, runtime: .provided, architecture: .x86_64)
+        try assertServerlessConfig(serverlessConfig: serverlessConfigX86, runtime: .providedAl2, architecture: .x86_64)
     }
     
     func test_generateLambdaAPI_run_whenParametersAreSet_andSignInWithAppleConfig_thenSuccess() async throws {
@@ -51,7 +51,7 @@ class GenerateLambdaAPITests: XCTestCase {
         try assertServerlessConfigWithJWT(serverlessConfig: serverlessConfig, runtime: .providedAl2, architecture: .arm64)
         
         let serverlessConfigX86 = try loadServerlessConfig(targetPath: targetPath, fileName: "serverless-x86_64")
-        try assertServerlessConfigWithJWT(serverlessConfig: serverlessConfigX86, runtime: .provided, architecture: .x86_64)
+        try assertServerlessConfigWithJWT(serverlessConfig: serverlessConfigX86, runtime: .providedAl2, architecture: .x86_64)
     }
     
     func test_generateLambdaAPI_run_whenParametersAreSetAndForceOverrideIsFalse_thenErrorOnSecondRun() async throws {
