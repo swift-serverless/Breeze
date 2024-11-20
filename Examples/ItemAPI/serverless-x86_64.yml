@@ -6,7 +6,7 @@ provider:
   name: aws
   region: us-east-1
   disableRollback: false
-  runtime: provided
+  runtime: provided.al2
   httpApi:
     payload: '2.0'
     cors: false
