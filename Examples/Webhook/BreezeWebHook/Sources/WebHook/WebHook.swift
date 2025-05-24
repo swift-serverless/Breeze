@@ -14,7 +14,7 @@
 
 import Foundation
 import AWSLambdaEvents
-import AWSLambdaRuntimeCore
+import AWSLambdaRuntime
 import BreezeLambdaWebHook
 import Foundation
 
@@ -30,16 +30,16 @@ class WebHook: BreezeLambdaWebHookHandler {
         self.handlerContext = handlerContext
     }
     
-    func handle(context: AWSLambdaRuntimeCore.LambdaContext, event: AWSLambdaEvents.APIGatewayV2Request) async -> AWSLambdaEvents.APIGatewayV2Response {
+    func handle(_ event: APIGatewayV2Request, context: LambdaContext) async -> APIGatewayV2Response {
         do {
-            guard let handler = handlerContext.handler else {
+            guard let handler else {
                 throw  WebHookError.invalidHandler
             }
             switch handler {
             case "get-webhook":
-                return await GetWebHook(handlerContext: handlerContext).handle(context: context, event: event)
+                return await GetWebHook(handlerContext: handlerContext).handle(event, context: context)
             case "post-webhook":
-                return await PostWebHook(handlerContext: handlerContext).handle(context: context, event: event)
+                return await PostWebHook(handlerContext: handlerContext).handle(event, context: context)
             default:
                 throw  WebHookError.invalidHandler
             }

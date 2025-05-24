@@ -14,7 +14,24 @@
 
 import Foundation
 import AWSLambdaEvents
-import AWSLambdaRuntimeCore
+import AWSLambdaRuntime
 import BreezeLambdaWebHook
+import Logging
 
-BreezeLambdaWebHook<WebHook>.main()
+struct LambdaApp {
+    
+    static let applicationName = "BreezeDemoHTTPApplication"
+    static let logger = Logger(label: "BreezeDemoHTTPApplication")
+    
+    static func main() async throws {
+        let config = BreezeHTTPClientConfig(
+            timeout: .seconds(30),
+            logger: logger
+        )
+        let app = BreezeLambdaWebHook<WebHook>(
+            name: applicationName,
+            config: config,
+        )
+        try await app.run()
+    }
+}
