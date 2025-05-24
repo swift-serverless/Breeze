@@ -3,11 +3,15 @@
 
 import PackageDescription
 
+#if os(macOS)
+let platforms: [PackageDescription.SupportedPlatform]? = [.macOS(.v15), .iOS(.v13)]
+#else
+let platforms: [PackageDescription.SupportedPlatform]? = nil
+#endif
+
 let package = Package(
     name: "BreezeItemAPI",
-    platforms: [
-        .macOS(.v15),
-    ],
+    platforms: platforms,
     products: [
         .executable(name: "ItemAPI", targets: ["ItemAPI"]),
     ],
