@@ -1,0 +1,22 @@
+{
+    "configurations": [
+        {
+            "type": "swift",
+            "request": "launch",
+            "args": [],
+            "cwd": "${workspaceFolder:Breeze}",
+            "name": "Debug breeze",
+            "program": "${workspaceFolder:Breeze}/.build/debug/breeze",
+            "preLaunchTask": "swift: Build Debug breeze"
+        },
+        {
+            "type": "swift",
+            "request": "launch",
+            "args": [],
+            "cwd": "${workspaceFolder:Breeze}",
+            "name": "Release breeze",
+            "program": "${workspaceFolder:Breeze}/.build/release/breeze",
+            "preLaunchTask": "swift: Build Release breeze"
+        }
+    ]
+}

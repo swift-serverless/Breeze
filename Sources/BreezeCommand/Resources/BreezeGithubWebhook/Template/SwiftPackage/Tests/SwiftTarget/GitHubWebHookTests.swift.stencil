@@ -14,9 +14,9 @@
 
 import Foundation
 import XCTest
-@testable import GitHubWebHook
+@testable import {{ params.targetName }}
 
-class GitHubWebHookTests: XCTestCase {
+class {{ params.targetName }}Tests: XCTestCase {
     
     func testVerifySignature() throws {
         // https://docs.github.com/en/webhooks-and-events/webhooks/securing-your-webhooks

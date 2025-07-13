@@ -16,7 +16,6 @@ import Foundation
 import AWSLambdaEvents
 import AWSLambdaRuntime
 import BreezeLambdaWebHook
-import Foundation
 
 enum GitHubWebHookError: Error {
     case invalidKey

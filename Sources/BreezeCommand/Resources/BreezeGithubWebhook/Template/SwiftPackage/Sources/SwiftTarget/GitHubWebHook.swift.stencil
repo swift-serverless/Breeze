@@ -14,7 +14,7 @@
 
 import Foundation
 import AWSLambdaEvents
-import AWSLambdaRuntimeCore
+import AWSLambdaRuntime
 import BreezeLambdaWebHook
 
 enum {{ params.targetName }}Error: Error {
@@ -31,15 +31,15 @@ class {{ params.targetName }}: BreezeLambdaWebHookHandler {
         self.handlerContext = handlerContext
     }
     
-    private func validateGitHubSignature(context: AWSLambdaRuntimeCore.LambdaContext, event: AWSLambdaEvents.APIGatewayV2Request) throws -> String {
+    private func validateGitHubSignature(context: LambdaContext, event: AWSLambdaEvents.APIGatewayV2Request) throws -> String {
         guard let key = Lambda.env("WEBHOOK_SECRET") else {
-            throw GitHubWebHookError.invalidKey
+            throw {{ params.targetName }}Error.invalidKey
         }
         guard let payload = event.body else {
-            throw GitHubWebHookError.invalidBody
+            throw {{ params.targetName }}Error.invalidBody
         }
         guard let signature = event.headers["x-hub-signature-256"] else {
-            throw GitHubWebHookError.invalidSignature
+            throw {{ params.targetName }}Error.invalidSignature
         }
         let validator = GitHubSignatureValidator(signature: signature, secret: key, payload: payload)
         let isValid = try validator.isValid()
@@ -47,7 +47,7 @@ class {{ params.targetName }}: BreezeLambdaWebHookHandler {
         return payload
     }
     
-    func handle(context: AWSLambdaRuntimeCore.LambdaContext, event: AWSLambdaEvents.APIGatewayV2Request) async -> AWSLambdaEvents.APIGatewayV2Response {
+    func handle(_ event: APIGatewayV2Request, context: LambdaContext) async -> APIGatewayV2Response {
         do {
             context.logger.info("event: \(event)")
             let payload = try validateGitHubSignature(context: context, event: event)
