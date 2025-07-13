@@ -18,4 +18,4 @@ import AWSLambdaRuntime
 import BreezeLambdaWebHook
 import Logging
 
-try await BreezeLambdaWebHook<WebHook>(name: "LambdaApp").run()
+try await BreezeLambdaWebHook<WebHook>(name: "WebHook").run()
