@@ -5,7 +5,7 @@ import PackageDescription
 
 let package = Package(
     name: "BreezeItemAPI",
-     platforms: [
+    platforms: [
         .macOS(.v15),
     ],
     products: [

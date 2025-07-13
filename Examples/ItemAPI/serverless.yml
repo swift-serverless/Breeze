@@ -40,33 +40,9 @@ provider:
 package:
   artifact: build/ItemAPI/ItemAPI.zip
 custom:
-  tableName: items-table-${sls:stage}
   keyName: itemKey
+  tableName: items-table-${sls:stage}
 functions:
-  updateItemAPI:
-    handler: update
-    memorySize: 256
-    description: '[${sls:stage}] put /items'
-    events:
-    - httpApi:
-        path: /items
-        method: put
-  readItemAPI:
-    handler: read
-    memorySize: 256
-    description: '[${sls:stage}] get /items/{itemKey}'
-    events:
-    - httpApi:
-        path: /items/{itemKey}
-        method: get
-  deleteItemAPI:
-    handler: delete
-    memorySize: 256
-    description: '[${sls:stage}] delete /items/{itemKey}'
-    events:
-    - httpApi:
-        path: /items/{itemKey}
-        method: delete
   createItemAPI:
     handler: create
     memorySize: 256
@@ -75,6 +51,30 @@ functions:
     - httpApi:
         path: /items
         method: post
+  deleteItemAPI:
+    handler: delete
+    memorySize: 256
+    description: '[${sls:stage}] delete /items/{itemKey}'
+    events:
+    - httpApi:
+        path: /items/{itemKey}
+        method: delete
+  readItemAPI:
+    handler: read
+    memorySize: 256
+    description: '[${sls:stage}] get /items/{itemKey}'
+    events:
+    - httpApi:
+        path: /items/{itemKey}
+        method: get
+  updateItemAPI:
+    handler: update
+    memorySize: 256
+    description: '[${sls:stage}] put /items'
+    events:
+    - httpApi:
+        path: /items
+        method: put
   listItemAPI:
     handler: list
     memorySize: 256
@@ -89,10 +89,10 @@ resources:
       Type: AWS::DynamoDB::Table
       Properties:
         KeySchema:
-        - AttributeName: ${self:custom.keyName}
-          KeyType: HASH
-        TableName: ${self:custom.tableName}
-        AttributeDefinitions:
-        - AttributeType: S
+        - KeyType: HASH
           AttributeName: ${self:custom.keyName}
+        AttributeDefinitions:
+        - AttributeName: ${self:custom.keyName}
+          AttributeType: S
         BillingMode: PAY_PER_REQUEST
+        TableName: ${self:custom.tableName}
