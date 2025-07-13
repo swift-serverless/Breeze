@@ -71,7 +71,7 @@ Refer to the [DynamoDB documentation](https://docs.aws.amazon.com/amazondynamodb
 To package the Lambda is required to create a Swift Package using the following `Package.swift` file.
 
 ```swift
-// swift-tools-version:5.7
+// swift-tools-version:6.1
 // The swift-tools-version declares the minimum version of Swift required to build this package.
 
 import PackageDescription
@@ -79,7 +79,7 @@ import PackageDescription
 let package = Package(
     name: "swift-breeze-item-api",
     platforms: [
-        .macOS(.v13),
+        .macOS(.v15),
     ],
     products: [
         .executable(name: "ItemAPI", targets: ["ItemAPI"]),
@@ -97,7 +97,6 @@ let package = Package(
         )
     ]
 )
-
 ```
 
 To be executed on a Lambda, the package needs to be built on `AmazonLinux2` and deployed.

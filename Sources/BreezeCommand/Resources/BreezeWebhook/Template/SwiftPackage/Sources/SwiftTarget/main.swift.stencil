@@ -14,7 +14,8 @@
 
 import Foundation
 import AWSLambdaEvents
-import AWSLambdaRuntimeCore
+import AWSLambdaRuntime
 import BreezeLambdaWebHook
+import Logging
 
-BreezeLambdaWebHook<{{ params.targetName }}>.main()
+try await BreezeLambdaWebHook<WebHook>(name: "LambdaApp").run()

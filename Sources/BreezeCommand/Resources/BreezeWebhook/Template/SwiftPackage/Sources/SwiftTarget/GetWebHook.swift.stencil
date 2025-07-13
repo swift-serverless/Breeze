@@ -16,7 +16,7 @@ import Foundation
 import BreezeLambdaWebHook
 import AsyncHTTPClient
 import AWSLambdaEvents
-import AWSLambdaRuntimeCore
+import AWSLambdaRuntime
 
 class GetWebHook: BreezeLambdaWebHookHandler {
     
@@ -26,7 +26,7 @@ class GetWebHook: BreezeLambdaWebHookHandler {
         self.handlerContext = handlerContext
     }
     
-    func handle(context: AWSLambdaRuntimeCore.LambdaContext, event: AWSLambdaEvents.APIGatewayV2Request) async -> AWSLambdaEvents.APIGatewayV2Response {
+    func handle(_ event: APIGatewayV2Request, context: LambdaContext) async -> APIGatewayV2Response {
         do {
             context.logger.info("event: \(event)")
             guard let params = event.queryStringParameters else {
@@ -47,3 +47,4 @@ class GetWebHook: BreezeLambdaWebHookHandler {
         }
     }
 }
+
