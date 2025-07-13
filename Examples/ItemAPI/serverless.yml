@@ -12,8 +12,8 @@ provider:
     cors: false
   architecture: arm64
   environment:
-    DYNAMO_DB_TABLE_NAME: ${self:custom.tableName}
     DYNAMO_DB_KEY: ${self:custom.keyName}
+    DYNAMO_DB_TABLE_NAME: ${self:custom.tableName}
   versionFunctions: true
   iam:
     role:
@@ -51,21 +51,13 @@ functions:
     - httpApi:
         path: /items
         method: post
-  deleteItemAPI:
-    handler: delete
+  listItemAPI:
+    handler: list
     memorySize: 256
-    description: '[${sls:stage}] delete /items/{itemKey}'
+    description: '[${sls:stage}] get /items'
     events:
     - httpApi:
-        path: /items/{itemKey}
-        method: delete
-  readItemAPI:
-    handler: read
-    memorySize: 256
-    description: '[${sls:stage}] get /items/{itemKey}'
-    events:
-    - httpApi:
-        path: /items/{itemKey}
+        path: /items
         method: get
   updateItemAPI:
     handler: update
@@ -75,24 +67,32 @@ functions:
     - httpApi:
         path: /items
         method: put
-  listItemAPI:
-    handler: list
+  readItemAPI:
+    handler: read
     memorySize: 256
-    description: '[${sls:stage}] get /items'
+    description: '[${sls:stage}] get /items/{itemKey}'
     events:
     - httpApi:
-        path: /items
+        path: /items/{itemKey}
         method: get
+  deleteItemAPI:
+    handler: delete
+    memorySize: 256
+    description: '[${sls:stage}] delete /items/{itemKey}'
+    events:
+    - httpApi:
+        path: /items/{itemKey}
+        method: delete
 resources:
   Resources:
     ItemAPITable:
       Type: AWS::DynamoDB::Table
       Properties:
+        TableName: ${self:custom.tableName}
+        BillingMode: PAY_PER_REQUEST
         KeySchema:
         - KeyType: HASH
           AttributeName: ${self:custom.keyName}
         AttributeDefinitions:
-        - AttributeName: ${self:custom.keyName}
-          AttributeType: S
-        BillingMode: PAY_PER_REQUEST
-        TableName: ${self:custom.tableName}
+        - AttributeType: S
+          AttributeName: ${self:custom.keyName}

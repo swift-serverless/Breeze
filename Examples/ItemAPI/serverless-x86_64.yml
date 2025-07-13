@@ -12,8 +12,8 @@ provider:
     cors: false
   architecture: x86_64
   environment:
-    DYNAMO_DB_KEY: ${self:custom.keyName}
     DYNAMO_DB_TABLE_NAME: ${self:custom.tableName}
+    DYNAMO_DB_KEY: ${self:custom.keyName}
   versionFunctions: true
   iam:
     role:
@@ -40,24 +40,16 @@ provider:
 package:
   artifact: build/ItemAPI/ItemAPI.zip
 custom:
-  keyName: itemKey
   tableName: items-table-${sls:stage}
+  keyName: itemKey
 functions:
-  updateItemAPI:
-    handler: update
+  listItemAPI:
+    handler: list
     memorySize: 256
-    description: '[${sls:stage}] put /items'
+    description: '[${sls:stage}] get /items'
     events:
     - httpApi:
         path: /items
-        method: put
-  readItemAPI:
-    handler: read
-    memorySize: 256
-    description: '[${sls:stage}] get /items/{itemKey}'
-    events:
-    - httpApi:
-        path: /items/{itemKey}
         method: get
   createItemAPI:
     handler: create
@@ -67,6 +59,14 @@ functions:
     - httpApi:
         path: /items
         method: post
+  readItemAPI:
+    handler: read
+    memorySize: 256
+    description: '[${sls:stage}] get /items/{itemKey}'
+    events:
+    - httpApi:
+        path: /items/{itemKey}
+        method: get
   deleteItemAPI:
     handler: delete
     memorySize: 256
@@ -75,24 +75,24 @@ functions:
     - httpApi:
         path: /items/{itemKey}
         method: delete
-  listItemAPI:
-    handler: list
+  updateItemAPI:
+    handler: update
     memorySize: 256
-    description: '[${sls:stage}] get /items'
+    description: '[${sls:stage}] put /items'
     events:
     - httpApi:
         path: /items
-        method: get
+        method: put
 resources:
   Resources:
     ItemAPITable:
+      Type: AWS::DynamoDB::Table
       Properties:
+        KeySchema:
+        - KeyType: HASH
+          AttributeName: ${self:custom.keyName}
         TableName: ${self:custom.tableName}
         AttributeDefinitions:
         - AttributeType: S
           AttributeName: ${self:custom.keyName}
         BillingMode: PAY_PER_REQUEST
-        KeySchema:
-        - AttributeName: ${self:custom.keyName}
-          KeyType: HASH
-      Type: AWS::DynamoDB::Table
