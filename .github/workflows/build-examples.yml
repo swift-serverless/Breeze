@@ -18,7 +18,7 @@ jobs:
     strategy:
       matrix:
         image:
-          - swift:5.10.1-amazonlinux2
+          - swift:6.1.2-amazonlinux2
     services:
       localstack:
         image: localstack/localstack
@@ -46,12 +46,12 @@ jobs:
       - name: Build ItemAPI
         run: |
           cd $GITHUB_WORKSPACE/src/Examples/ItemAPI/BreezeItemAPI
-          swift package archive -c release --cache-path $GITHUB_WORKSPACE/cache
+          swift package archive -c release --cache-path $GITHUB_WORKSPACE/cache --allow-network-connections docker
       - name: Build WebHook
         run: |
           cd $GITHUB_WORKSPACE/src/Examples/Webhook/BreezeWebHook
-          swift package archive -c release --cache-path $GITHUB_WORKSPACE/cache
+          swift package archive -c release --cache-path $GITHUB_WORKSPACE/cache --allow-network-connections docker
       - name: Build GitHubWebHook
         run: |
           cd $GITHUB_WORKSPACE/src/Examples/GitHubWebhook/BreezeGitHubWebHook
-          swift package archive -c release --cache-path $GITHUB_WORKSPACE/cache
+          swift package archive -c release --cache-path $GITHUB_WORKSPACE/cache --allow-network-connections docker

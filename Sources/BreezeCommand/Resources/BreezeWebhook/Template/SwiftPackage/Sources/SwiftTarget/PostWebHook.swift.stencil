@@ -15,7 +15,7 @@
 import Foundation
 import AsyncHTTPClient
 import AWSLambdaEvents
-import AWSLambdaRuntimeCore
+import AWSLambdaRuntime
 import BreezeLambdaWebHook
 
 enum PostWebHookError: Error {
@@ -38,7 +38,7 @@ class PostWebHook: BreezeLambdaWebHookHandler {
         self.handlerContext = handlerContext
     }
     
-    func handle(context: AWSLambdaRuntimeCore.LambdaContext, event: AWSLambdaEvents.APIGatewayV2Request) async -> AWSLambdaEvents.APIGatewayV2Response {
+    func handle(_ event: APIGatewayV2Request, context: LambdaContext) async -> APIGatewayV2Response {
         do {
             context.logger.info("event: \(event)")
             let incomingRequest: PostWebHookRequest = try event.bodyObject()
@@ -53,3 +53,4 @@ class PostWebHook: BreezeLambdaWebHookHandler {
         }
     }
 }
+

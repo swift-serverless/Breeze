@@ -12,8 +12,8 @@ provider:
     cors: false
   architecture: arm64
   environment:
-    DYNAMO_DB_TABLE_NAME: ${self:custom.tableName}
     DYNAMO_DB_KEY: ${self:custom.keyName}
+    DYNAMO_DB_TABLE_NAME: ${self:custom.tableName}
   versionFunctions: true
   iam:
     role:
@@ -40,9 +40,25 @@ provider:
 package:
   artifact: build/ItemAPI/ItemAPI.zip
 custom:
-  tableName: items-table-${sls:stage}
   keyName: itemKey
+  tableName: items-table-${sls:stage}
 functions:
+  createItemAPI:
+    handler: create
+    memorySize: 256
+    description: '[${sls:stage}] post /items'
+    events:
+    - httpApi:
+        path: /items
+        method: post
+  listItemAPI:
+    handler: list
+    memorySize: 256
+    description: '[${sls:stage}] get /items'
+    events:
+    - httpApi:
+        path: /items
+        method: get
   updateItemAPI:
     handler: update
     memorySize: 256
@@ -67,32 +83,16 @@ functions:
     - httpApi:
         path: /items/{itemKey}
         method: delete
-  createItemAPI:
-    handler: create
-    memorySize: 256
-    description: '[${sls:stage}] post /items'
-    events:
-    - httpApi:
-        path: /items
-        method: post
-  listItemAPI:
-    handler: list
-    memorySize: 256
-    description: '[${sls:stage}] get /items'
-    events:
-    - httpApi:
-        path: /items
-        method: get
 resources:
   Resources:
     ItemAPITable:
       Type: AWS::DynamoDB::Table
       Properties:
-        KeySchema:
-        - AttributeName: ${self:custom.keyName}
-          KeyType: HASH
         TableName: ${self:custom.tableName}
+        BillingMode: PAY_PER_REQUEST
+        KeySchema:
+        - KeyType: HASH
+          AttributeName: ${self:custom.keyName}
         AttributeDefinitions:
         - AttributeType: S
           AttributeName: ${self:custom.keyName}
-        BillingMode: PAY_PER_REQUEST
