@@ -5,124 +5,126 @@
 [![stability status](https://www.meterian.io/badge/gh/swift-serverless/Breeze/stability?branch=main)](https://www.meterian.io/report/gh/swift-serverless/Breeze)
 [![licensing status](https://www.meterian.io/badge/gh/swift-serverless/Breeze/licensing?branch=main)](https://www.meterian.io/report/gh/swift-serverless/Breeze)
 
+
+# Breeze
+
+**Build and deploy serverless Swift applications in a Breeze\!**
+
 ![Breeze](logo.png)
 
-A Serverless API Template Generator for Server-Side Swift.
+Breeze is a command-line tool that makes it easy to create, build, and deploy serverless applications written in Swift. It provides ready-to-use templates that you can customize to fit your needs, so you can focus on writing your application's logic instead of wrestling with project setup and configuration.
 
-## Abstract
+## Why Breeze? 🤔
 
-Breeze is a powerful tool designed to streamline the process of creating Serverless API templates in Swift.
+Building serverless applications can be complex. You have to deal with infrastructure as code, deployment scripts, and a whole new set of tools and services. Breeze simplifies this process by providing:
 
-It eliminates the complexity of setting up a project from scratch, providing developers with code, scripts and configurations to adapt and customize.
-The tool is based on open-source code, allowing anyone the possibility to inspect, understand and improve the implementation.
+  * **Ready-to-use templates:** Get started quickly with pre-built templates for common serverless use cases.
+  * **Swift on the server:** Write your backend code in the same language you use for your iOS, macOS, and other Apple platform apps.
+  * **Open and customizable:** All the generated code and configurations are open source and can be easily modified to fit your specific needs.
+  * **Streamlined workflow:** Breeze provides a set of simple commands to generate, build, deploy, and manage your serverless applications.
 
-Breeze fundamental choices:
+## Why Serverless? 🚀
 
-- Serverless Architecture
-- Server-Side Swift code based on [SSWG SDKs](https://www.swift.org/sswg/)
-- Open-Source dependencies
-- Open to inspection, customisation and contribution
-- Infrastructure as a Code
-- Deployment scripts
+Serverless computing allows you to build and run applications without thinking about servers. It offers:
 
-## Why Serverless?
+  * **Reduced operational overhead:** No servers to provision or manage.
+  * **Automatic scaling:** Your application scales automatically with the number of requests.
+  * **Cost-effectiveness:** You only pay for the resources your application consumes.
 
-Serverless architecture has revolutionized the way developers approach application deployment. Serverless computing eliminates the complexities associated with traditional server management. This approach results in increased agility, reduced operational overhead, scalability and efficient resource utilization.
+## Why Swift? 🐦
 
-## Why Swift?
+Swift is a modern, fast, and safe programming language that is now a great choice for server-side development. It offers:
 
-Swift's concise syntax, strong type system, and performance optimizations contribute to faster development cycles and enhanced code maintainability. Leveraging Swift on the server side ensures a consistent and unified language experience for developers, fostering code sharing between client and server components.
+  * **High performance:** Swift is a compiled language that is known for its speed and efficiency.
+  * **Concise and readable syntax:** Swift's clean syntax makes it easy to write and maintain code.
+  * **Strongly typed:** Swift's strong type system helps you catch errors at compile time, not at runtime.
 
-## Breeze Swift Templates
+## Available Templates 📦
 
-The tool can generate the following available templates:
+Breeze currently offers the following templates:
 
 ### Serverless REST API
-AWS Serverless REST API based on APIGateway, Lambda, DynamoDB
+
+A complete serverless REST API with CRUD operations, using **API Gateway**, **Lambda**, and **DynamoDB**.
 
 ![AWS Serverless Rest API](/images/AWS-Serverless-REST-API.svg)
 
-- Specs: [Docs/GenerateLambdaAPI.md](Docs/GenerateLambdaAPI.md)
-
-- Command Line help: `swift run breeze generate-lambda-api --help`
-
-- Talk @NSLondon: Serverless in Swift like a Breeze](https://youtu.be/D4qSv_fhQIo?si=WnsTlYbUjHs9DYHF)
-
-- Slide: [Slides](https://www.slideshare.net/AndreaScuderi6/serverless-in-swift-like-a-breeze)
+  * **Learn more:** [Docs/GenerateLambdaAPI.md](https://www.google.com/search?q=Docs/GenerateLambdaAPI.md)
+  * **Get started:** `swift run breeze generate-lambda-api --help`
+  * **Watch the talk:** [Serverless in Swift Like a Breeze – Andrea Scuderi (NSLondon 2023.2)](http://www.youtube.com/watch?v=D4qSv_fhQIo)
+  * **View the slides:** [Slides](https://www.slideshare.net/AndreaScuderi6/serverless-in-swift-like-a-breeze)
 
 ### GitHub Webhook
 
-A GitHub Webhook with signature verification based on APIGateway and Lambda.
+A serverless webhook that can receive and process GitHub events, with signature verification.
 
 ![AWS Serverless GitHub Webhook](/images/AWS-Serverless-Github-Webhook.svg)
 
-- Specs: [Docs/GenerateGithubWebhook.md](Docs/GenerateGithubWebhook.md)
-
-- Command Line help: `swift run breeze generate-github-webhook --help`
+  * **Learn more:** [Docs/GenerateGithubWebhook.md](https://www.google.com/search?q=Docs/GenerateGithubWebhook.md)
+  * **Get started:** `swift run breeze generate-github-webhook --help`
 
 ### GET/POST Webhook
 
-A Serveless Webhook based on APIGateway and Lambda with POST and GET endpoints.
+A simple serverless webhook with GET and POST endpoints.
 
 ![AWS Serverless Webhook](/images/AWS-Serverless-Webhook.svg)
 
-- Specs: [Docs/GenerateWebhook.md](Docs/GenerateWebhook.md)
+  * **Learn more:** [Docs/GenerateWebhook.md](https://www.google.com/search?q=Docs/GenerateWebhook.md)
+  * **Get started:** `swift run breeze generate-webhook --help`
 
-- Command Line help: `swift run breeze generate-webhook --help`
+## Getting Started 🏁
 
-## Usage
+Make sure you have the prerequisites installed, including Swift, Docker, and the Open Source Serverless framework. 
+Then, you can start using Breeze to generate your serverless applications.
+It only takes a few steps to get your first serverless Swift application up and running with Breeze:
 
-```bash
-swift run breeze --help
-```
+1.  **Generate a project:**
+    ```bash
+    swift run breeze generate-lambda-api --product-name MyAwesomeAPI
+    ```
+2.  **Customize the code:**
+    Open the generated project in your favorite editor and start writing your application's logic.
+3.  **Build and deploy:**
+    ```bash
+    cd MyAwesomeAPI
+    ./build.sh
+    ./deploy.sh
+    ```
 
-output:
+That's it\! Your serverless application is now live.
 
-```
-OVERVIEW: Breeze command line
+## Cli Commands 📜
 
-Generate the deployment of a Serverless project using Breeze.
-The command generates of the swift package, the `serverless.yml` file and the relevant commands in the target path to deploy
-the Lambda code on AWS using the Serverless Framework.
+Breeze provides a set of command-line interface (CLI) commands to help you generate your serverless applications:
 
-USAGE: breeze <subcommand>
+- `swift run breeze generate-lambda-api`: Generate a new serverless REST API.
+- `swift run breeze generate-github-webhook`: Generate a new GitHub webhook.
+- `swift run breeze generate-webhook`: Generate a new generic webhook.
 
-OPTIONS:
-  -h, --help              Show help information.
+Help for each command can be accessed by appending `--help` to the command, e.g. `swift run breeze generate-lambda-api --help`.
 
-SUBCOMMANDS:
-  generate-lambda-api
-  generate-github-webhook
-  generate-webhook
+## Development Workflow 🛠️
 
-  See 'breeze help <subcommand>' for detailed help.
-```
+Breeze provides a simple and efficient workflow for developing serverless applications in Swift:
 
-## Development Workflow
+1.  **Generate:** Create a new project from a template.
+2.  **Customize:** Modify the generated code to implement your application's logic.
+3.  **Build:** Use the `build.sh` script to compile your code and package it for deployment.
+4.  **Deploy:** Use the `deploy.sh` script to deploy your application to AWS.
+5.  **Update:** Use the `update.sh` script to deploy changes to your application.
+6.  **Remove:** Use the `remove.sh` script to delete your application from AWS.
 
-The workflow to develop Serverless in Swift using Breeze can be described by the following steps:
+## Requirements 📋
 
-- Generate the project using the `breeze` command line tool
-  - Choose a Breeze template and follow the documentation
-  - Copy and adapt the template configuration file
-  - Generate the project
-- Customize the generated project adapting the code
-- Build the project using the `build.sh` script
-- Deploy the project using the `deploy.sh` script
-- Update the project when the code changes using the `update.sh` script
-- Remove the project if it's not needed anymore with `remove.sh` script
+  * Swift 5.7 or later
+  * [Docker](https://docs.docker.com/install/)
+  * [Open Source Serverless](https://github.com/oss-serverless/serverless)
+  * An AWS account with the necessary credentials to deploy a Serverless stack.
+  * `make`
 
-## Requirements and Tools
+## Contributing 🤝
 
-- Swift (Version >= 5.7)
-- [Docker](https://docs.docker.com/install/)
-- [Serverless Framework](https://www.serverless.com/framework/docs/getting-started/) version 3
-- Ensure your AWS Account has the right [credentials](https://www.serverless.com/framework/docs/providers/aws/guide/credentials/) to deploy a Serverless stack.
-- Ensure you can run `make`
-
-## Contributing
-
-Contributions are welcome! If you encounter any issues or have ideas for improvements, please open an issue or submit a pull request.
+Contributions are welcome! If you find any issues or have ideas for new features, please open an issue or submit a pull request.
 
 
 
