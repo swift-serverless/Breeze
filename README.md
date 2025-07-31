@@ -130,12 +130,15 @@ Breeze is designed to minimize costs by leveraging serverless architecture. Howe
   * **DynamoDB:** You pay for the read/write capacity and storage used by your database.[*](https://aws.amazon.com/dynamodb/pricing/)
   * **S3:** You pay for the storage used by your application assets.[*](https://aws.amazon.com/s3/pricing/)
   * **IAM:** You may incur costs for IAM roles and policies, depending on your usage. [*](https://aws.amazon.com/iam/pricing/)
+  * **CloudWatch:** You may incur costs for logging and monitoring your application. [*](https://aws.amazon.com/cloudwatch/pricing/)
 
 Estimated costs can vary based on your application's usage patterns, so it's important to monitor your AWS billing and optimize your resources accordingly. Estimation of costs can be done using the AWS Pricing Calculator: [AWS Pricing Calculator](https://calculator.aws/#/)
 
 Free tier usage is available for many AWS services, so you can get started without incurring costs.
 
 - Low Traffic: If your API handles fewer than 1 million requests per month and performs simple database operations, your total monthly bill will almost certainly be $0.00, thanks to the generous AWS Free Tier for every component.
+
+Note: The AWS Free Tier is subject to change, and it's important to review the [AWS Free Tier](https://aws.amazon.com/free/) page for the most up-to-date information. We are not responsible for any costs incurred while using Breeze or any of its generated applications. Please ensure you understand the pricing of the AWS services you use.
 
 ## Contributing 🤝
 
