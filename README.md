@@ -122,9 +122,21 @@ Breeze provides a simple and efficient workflow for developing serverless applic
   * An AWS account with the necessary credentials to deploy a Serverless stack.
   * `make`
 
+## Cost of Running Breeze 💰
+
+Breeze is designed to minimize costs by leveraging serverless architecture. However, you should be aware of the following potential costs when running your serverless applications:
+  * **AWS Lambda:** You pay for the compute time your functions consume.[*](https://aws.amazon.com/lambda/pricing/)
+  * **API Gateway:** You pay for the number of API calls and data transfer. [*](https://aws.amazon.com/api-gateway/pricing/)
+  * **DynamoDB:** You pay for the read/write capacity and storage used by your database.[*](https://aws.amazon.com/dynamodb/pricing/)
+  * **S3:** You pay for the storage used by your application assets.[*](https://aws.amazon.com/s3/pricing/)
+  * **IAM:** You may incur costs for IAM roles and policies, depending on your usage. [*](https://aws.amazon.com/iam/pricing/)
+
+Estimated costs can vary based on your application's usage patterns, so it's important to monitor your AWS billing and optimize your resources accordingly. Estimation of costs can be done using the AWS Pricing Calculator: [AWS Pricing Calculator](https://calculator.aws/#/)
+
+Free tier usage is available for many AWS services, so you can get started without incurring costs.
+
+- Low Traffic: If your API handles fewer than 1 million requests per month and performs simple database operations, your total monthly bill will almost certainly be $0.00, thanks to the generous AWS Free Tier for every component.
+
 ## Contributing 🤝
 
 Contributions are welcome! If you find any issues or have ideas for new features, please open an issue or submit a pull request.
-
-
-
