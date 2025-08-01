@@ -23,7 +23,7 @@ Building serverless applications can be complex. You have to deal with infrastru
   * **Open and customizable:** All the generated code and configurations are open source and can be easily modified to fit your specific needs.
   * **Streamlined workflow:** Breeze provides a set of simple commands to generate, build, deploy, and manage your serverless applications.
 
-## Why Serverless? 🚀
+## Why Serverless? ⚡️
 
 Serverless computing allows you to build and run applications without thinking about servers. It offers:
 
@@ -31,7 +31,7 @@ Serverless computing allows you to build and run applications without thinking a
   * **Automatic scaling:** Your application scales automatically with the number of requests.
   * **Cost-effectiveness:** You only pay for the resources your application consumes.
 
-## Why Swift? 🐦
+## Why Swift? 🚀
 
 Swift is a modern, fast, and safe programming language that is now a great choice for server-side development. It offers:
 
