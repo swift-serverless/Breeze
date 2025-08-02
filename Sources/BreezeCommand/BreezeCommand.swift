@@ -14,6 +14,7 @@
 
 import ArgumentParser
 import Foundation
+import Rainbow
 
 @main
 struct BreezeCommand: ParsableCommand {

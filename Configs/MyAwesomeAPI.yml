@@ -1,0 +1,13 @@
+service: swift-breeze-rest-my-awesome-api
+awsRegion: us-east-1
+swiftVersion: 6.1.2
+swiftConfiguration: release
+packageName: BreezeMyAwesomeAPI
+buildPath: build
+cors: false
+breezeLambdaAPI:
+    targetName: MyAwesomeAPI
+    itemCodable: Item
+    itemKey: itemKey
+    httpAPIPath: /my-awesome-items
+    dynamoDBTableNamePrefix: items

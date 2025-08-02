@@ -15,6 +15,7 @@
 import ArgumentParser
 import Foundation
 import SLSAdapter
+import Noora
 
 struct GenerateLambdaAPI: ParsableCommand {
     
@@ -28,7 +29,7 @@ struct GenerateLambdaAPI: ParsableCommand {
         let url: URL = URL(fileURLWithPath: options.configFile)
         let config = try BreezeConfig.load(from: url)
         guard let params = config.breezeLambdaAPI else {
-            print("GenerateLambdaAPI requires `breezeLambdaAPI` configuration.")
+            printError("GenerateLambdaAPI requires `breezeLambdaAPI` configuration.")
             throw BreezeCommandError.invalidConfig
         }
         
@@ -74,14 +75,14 @@ struct GenerateLambdaAPI: ParsableCommand {
             artifact: "\(config.buildPath)/\(params.targetName)/\(params.targetName).zip"
         )
         try serverlessConfig_x86_64.writeSLS(targetPath: options.targetPath, ymlFileName: "serverless-x86_64.yml")
+        let noora = Noora(theme: BreezeHeader.theme)
+        BreezeHeader(noora: noora).breeze()
         print("")
         printTitle("✅ Project is ready at target-path")
-        print("\(options.targetPath)\n")
-        breeze()
-        print()
+        printInfo("\(options.targetPath)\n")
         printTitle("💨 Use the following commands to build & deploy")
-        print("cd \(options.targetPath)")
-        print("./build.sh")
-        print("./deploy.sh")
+        printCommand("cd \(options.targetPath)")
+        printCommand("./build.sh")
+        printCommand("./deploy.sh")
     }
 }

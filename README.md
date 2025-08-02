@@ -80,13 +80,13 @@ It only takes a few steps to get your first serverless Swift application up and 
 
 1.  **Generate a project:**
     ```bash
-    swift run breeze generate-lambda-api --product-name MyAwesomeAPI
+    swift run breeze generate-lambda-api --target-path ../MyAwesomeAPI --config-file Configs/MyAwesomeAPI.yml
     ```
 2.  **Customize the code:**
     Open the generated project in your favorite editor and start writing your application's logic.
 3.  **Build and deploy:**
     ```bash
-    cd MyAwesomeAPI
+    cd ../MyAwesomeAPI
     ./build.sh
     ./deploy.sh
     ```

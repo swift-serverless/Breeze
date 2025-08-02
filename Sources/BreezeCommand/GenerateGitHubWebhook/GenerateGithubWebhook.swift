@@ -15,6 +15,7 @@
 import ArgumentParser
 import Foundation
 import SLSAdapter
+import Noora
 
 struct GenerateGithubWebhook: ParsableCommand {
     
@@ -28,7 +29,7 @@ struct GenerateGithubWebhook: ParsableCommand {
         let url: URL = URL(fileURLWithPath: options.configFile)
         let config = try BreezeConfig.load(from: url)
         guard let params = config.breezeGithubWebhook else {
-            print("GenerateGithubWebhook requires `breezeGithubWebhook` configuration.")
+            printError("GenerateGithubWebhook requires `breezeGithubWebhook` configuration.")
             throw BreezeCommandError.invalidConfig
         }
         try fileManager.cleanTargetPath(options.targetPath, remove: options.forceOverwrite, yes: options.yes)
@@ -75,14 +76,14 @@ struct GenerateGithubWebhook: ParsableCommand {
             lambdasParams: lambdasParams
         )
         try serverlessConfig_x86_64.writeSLS(targetPath: options.targetPath, ymlFileName: "serverless-x86_64.yml")
+        let noora = Noora(theme: BreezeHeader.theme)
+        BreezeHeader(noora: noora).breeze()
         print("")
         printTitle("✅ Project is ready at target-path")
-        print("\(options.targetPath)\n")
-        breeze()
-        print()
+        printInfo("\(options.targetPath)\n")
         printTitle("💨 Use the following commands to build & deploy")
-        print("cd \(options.targetPath)")
-        print("./build.sh")
-        print("./deploy.sh")
+        printCommand("cd \(options.targetPath)")
+        printCommand("./build.sh")
+        printCommand("./deploy.sh")
     }
 }

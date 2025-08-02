@@ -13,6 +13,7 @@
 //    limitations under the License.
 
 import Foundation
+import Noora
 
 extension FileManager {
     func cleanTargetPath(_ targetPath: String, remove: Bool, yes: Bool) throws {
@@ -23,7 +24,7 @@ extension FileManager {
         if remove,
            directoryExists,
            !yes {
-            print("WARNING: The folder at path \(targetPath) will be removed. Do you want to continue? [yes/no]")
+            printError("WARNING: The folder at path \(targetPath) will be removed. Do you want to continue? [yes/no]")
             let readline = readLine()
             if readline != "yes" {
                 throw BreezeCommandError.cannotOverwriteTargetPath(targetPath)
@@ -32,32 +33,85 @@ extension FileManager {
         
         if remove, directoryExists {
             try removeItem(at: URL(fileURLWithPath: targetPath))
-            print("🧹 \(targetPath)\n")
+            printInfo("🧹 \(targetPath)\n")
         }
         
         if fileExists(atPath: targetPath, isDirectory: &isDirectory) {
             throw BreezeCommandError.cannotOverwriteTargetPath(targetPath)
         }
-        print("✅ Target path ready!\n")
+        printSuccess("✅ Target path ready!\n")
     }
 }
 
 func printTitle(_ string: String) {
-    print("\(string)\n")
+    let noora = Noora(theme: BreezeHeader.theme)
+    let text: TerminalText = "\(.primary(string))"
+    let formattedText = noora.format(text)
+    print("\(formattedText)\n")
 }
 
-func breeze() {
+func printInfo(_ string: String) {
+    let noora = Noora(theme: BreezeHeader.theme)
+    let text: TerminalText = "\(.secondary(string))"
+    let formattedText = noora.format(text)
+    print("\(formattedText)\n")
+}
+
+func printError(_ string: String) {
+    let noora = Noora(theme: BreezeHeader.theme)
+    noora.error("\(string)")
+}
+
+func printSuccess(_ string: String) {
+    let noora = Noora(theme: BreezeHeader.theme)
+    noora.success("\(string)")
+}
+
+func printCommand(_ string: String) {
+    let noora = Noora(theme: BreezeHeader.theme)
+    let text: TerminalText = "\(.success(string))"
+    let formattedText = noora.format(text)
+    print("\(formattedText)\n")
+}
+
+struct BreezeHeader {
     
-    let title = """
-    🎵🎵🎵🎵🎵🎵🎵🎵🎵🎵🎵🎵🎵🎵🎵🎵🎵🎵🎵🎵🎵🎵🎵🎵🎵🎵🎵🎵🎵🎵🎵🎵🎵🎵🎵🎵🎵🎵🎵🎵🎵🎵🎵🎵
-    🎵💨💨💨💨💨💨🎵🎵🎵🎵🎵🎵🎵🎵🎵🎵🎵🎵🎵🎵🎵🎵🎵🎵🎵🎵🎵🎵🎵🎵🎵🎵🎵🎵🎵🎵🎵🎵🎵🎵🎵🎵🎵
-    🎵💨🎵🎵🎵🎵🎵💨🎵💨💨💨💨💨🎵🎵💨💨💨💨💨💨🎵💨💨💨💨💨💨🎵💨💨💨💨💨💨🎵💨💨💨💨💨💨🎵
-    🎵💨🎵🎵🎵🎵🎵💨🎵💨🎵🎵🎵🎵💨🎵💨🎵🎵🎵🎵🎵🎵💨🎵🎵🎵🎵🎵🎵🎵🎵🎵🎵💨🎵🎵💨🎵🎵🎵🎵🎵🎵
-    🎵💨💨💨💨💨💨🎵🎵💨🎵🎵🎵🎵💨🎵💨💨💨💨💨🎵🎵💨💨💨💨💨🎵🎵🎵🎵🎵💨🎵🎵🎵💨💨💨💨💨🎵🎵
-    🎵💨🎵🎵🎵🎵🎵💨🎵💨💨💨💨💨🎵🎵💨🎵🎵🎵🎵🎵🎵💨🎵🎵🎵🎵🎵🎵🎵🎵💨🎵🎵🎵🎵💨🎵🎵🎵🎵🎵🎵
-    🎵💨🎵🎵🎵🎵🎵💨🎵💨🎵🎵🎵💨🎵🎵💨🎵🎵🎵🎵🎵🎵💨🎵🎵🎵🎵🎵🎵🎵💨🎵🎵🎵🎵🎵💨🎵🎵🎵🎵🎵🎵
-    🎵💨💨💨💨💨💨🎵🎵💨🎵🎵🎵🎵💨🎵💨💨💨💨💨💨🎵💨💨💨💨💨💨🎵💨💨💨💨💨💨🎵💨💨💨💨💨💨🎵
-    🎵🎵🎵🎵🎵🎵🎵🎵🎵🎵🎵🎵🎵🎵🎵🎵🎵🎵🎵🎵🎵🎵🎵🎵🎵🎵🎵🎵🎵🎵🎵🎵🎵🎵🎵🎵🎵🎵🎵🎵🎵🎵🎵🎵
+    let noora: Noorable
+    
+    static let theme = Theme(
+        primary: "76A3FF",
+        secondary: "A9E8D8",
+        muted: "505050",
+        accent: "DE5E44",
+        danger: "FF2929",
+        success: "56822B",
+        info: "0280B9",
+        selectedRowText: "FFFFFF",
+        selectedRowBackground: "4600AE"
+    )
+    
+    func breeze() {
+        
+        let title = """
+    BBBBBBBBBBBBBBBBB                                                                                                    
+    B::::::::::::::::B                                                                                                   
+    B::::::BBBBBB:::::B                                                                                                  
+    BB:::::B     B:::::B                                                                                                 
+      B::::B     B:::::Brrrrr   rrrrrrrrr       eeeeeeeeeeee        eeeeeeeeeeee    zzzzzzzzzzzzzzzzz    eeeeeeeeeeee    
+      B::::B     B:::::Br::::rrr:::::::::r    ee::::::::::::ee    ee::::::::::::ee  z:::::::::::::::z  ee::::::::::::ee  
+      B::::BBBBBB:::::B r:::::::::::::::::r  e::::::eeeee:::::ee e::::::eeeee:::::eez::::::::::::::z  e::::::eeeee:::::ee
+      B:::::::::::::BB  rr::::::rrrrr::::::re::::::e     e:::::ee::::::e     e:::::ezzzzzzzz::::::z  e::::::e     e:::::e
+      B::::BBBBBB:::::B  r:::::r     r:::::re:::::::eeeee::::::ee:::::::eeeee::::::e      z::::::z   e:::::::eeeee::::::e
+      B::::B     B:::::B r:::::r     rrrrrrre:::::::::::::::::e e:::::::::::::::::e      z::::::z    e:::::::::::::::::e 
+      B::::B     B:::::B r:::::r            e::::::eeeeeeeeeee  e::::::eeeeeeeeeee      z::::::z     e::::::eeeeeeeeeee  
+      B::::B     B:::::B r:::::r            e:::::::e           e:::::::e              z::::::z      e:::::::e           
+    BB:::::BBBBBB::::::B r:::::r            e::::::::e          e::::::::e            z::::::zzzzzzzze::::::::e          
+    B:::::::::::::::::B  r:::::r             e::::::::eeeeeeee   e::::::::eeeeeeee   z::::::::::::::z e::::::::eeeeeeee  
+    B::::::::::::::::B   r:::::r              ee:::::::::::::e    ee:::::::::::::e  z:::::::::::::::z  ee:::::::::::::e  
+    BBBBBBBBBBBBBBBBB    rrrrrrr                eeeeeeeeeeeeee      eeeeeeeeeeeeee  zzzzzzzzzzzzzzzzz    eeeeeeeeeeeeee
     """
-    print(title)
+        
+        let formattedTitle = noora.format("\(.accent(title))")
+        print(formattedTitle)
+    }
 }
