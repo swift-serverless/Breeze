@@ -65,7 +65,7 @@ extension BreezeConfig {
     static func load(from url: URL) throws -> BreezeConfig {
         let paramsYML = try Data(contentsOf: url)
         printTitle("⚙️ Loading configuration file")
-        print("\(url.path)\n")
+        printInfo("\(url.path)\n")
         let yml = String(data: paramsYML, encoding: .utf8) ?? ""
         print(yml)
         return try decoder.decode(BreezeConfig.self, from: paramsYML)

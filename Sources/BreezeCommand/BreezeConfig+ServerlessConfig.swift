@@ -25,6 +25,6 @@ extension ServerlessConfig {
         let path = targetPath.appending("/").appending(ymlFileName)
         let destination = URL(fileURLWithPath: path)
         try content.data(using: .utf8)?.write(to: destination)
-        print("📄 \(destination.path)")
+        printInfo("📄 \(destination.path)")
     }
 }

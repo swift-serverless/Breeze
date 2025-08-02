@@ -32,7 +32,7 @@ extension FileManager {
         var isDirectory: ObjCBool = false
         let templatePath = templatePath(basePath: basePath)
         guard fileExists(atPath: templatePath, isDirectory: &isDirectory) else {
-            print("Invalid templatePath: \(templatePath)")
+            printError("Invalid templatePath: \(templatePath)")
             throw BreezeCommandError.invalidTemplateFolder
         }
         let dirEnum = enumerator(atPath: templatePath)
@@ -58,7 +58,7 @@ extension FileManager {
         let path = targetPath.appending("/").appending(stencil.replacingOccurrences(of: ".stencil", with: ""))
         let destination = URL(fileURLWithPath: path)
         try package.data(using: .utf8)?.write(to: destination)
-        print("📄 \(destination.path)")
+        printInfo("📄 \(destination.path)")
         if destination.pathExtension == "sh" {
             try setAttributes([FileAttributeKey.posixPermissions: 0o755], ofItemAtPath: path)
         }
@@ -68,6 +68,6 @@ extension FileManager {
         let moveAt = targetPath.appending(at)
         let moveTo = targetPath.appending(to)
         try moveItem(atPath: moveAt, toPath: moveTo)
-        print("🛫 \(moveAt)\n🛬 \(moveTo)")
+        printInfo("🛫 \(moveAt)\n🛬 \(moveTo)")
     }
 }
