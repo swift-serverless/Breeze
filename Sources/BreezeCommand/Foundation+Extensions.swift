@@ -93,24 +93,27 @@ struct BreezeHeader {
     func breeze() {
         
         let title = """
-    BBBBBBBBBBBBBBBBB                                                                                                    
-    B::::::::::::::::B                                                                                                   
-    B::::::BBBBBB:::::B                                                                                                  
-    BB:::::B     B:::::B                                                                                                 
-      B::::B     B:::::Brrrrr   rrrrrrrrr       eeeeeeeeeeee        eeeeeeeeeeee    zzzzzzzzzzzzzzzzz    eeeeeeeeeeee    
-      B::::B     B:::::Br::::rrr:::::::::r    ee::::::::::::ee    ee::::::::::::ee  z:::::::::::::::z  ee::::::::::::ee  
-      B::::BBBBBB:::::B r:::::::::::::::::r  e::::::eeeee:::::ee e::::::eeeee:::::eez::::::::::::::z  e::::::eeeee:::::ee
-      B:::::::::::::BB  rr::::::rrrrr::::::re::::::e     e:::::ee::::::e     e:::::ezzzzzzzz::::::z  e::::::e     e:::::e
-      B::::BBBBBB:::::B  r:::::r     r:::::re:::::::eeeee::::::ee:::::::eeeee::::::e      z::::::z   e:::::::eeeee::::::e
-      B::::B     B:::::B r:::::r     rrrrrrre:::::::::::::::::e e:::::::::::::::::e      z::::::z    e:::::::::::::::::e 
-      B::::B     B:::::B r:::::r            e::::::eeeeeeeeeee  e::::::eeeeeeeeeee      z::::::z     e::::::eeeeeeeeeee  
-      B::::B     B:::::B r:::::r            e:::::::e           e:::::::e              z::::::z      e:::::::e           
-    BB:::::BBBBBB::::::B r:::::r            e::::::::e          e::::::::e            z::::::zzzzzzzze::::::::e          
-    B:::::::::::::::::B  r:::::r             e::::::::eeeeeeee   e::::::::eeeeeeee   z::::::::::::::z e::::::::eeeeeeee  
-    B::::::::::::::::B   r:::::r              ee:::::::::::::e    ee:::::::::::::e  z:::::::::::::::z  ee:::::::::::::e  
-    BBBBBBBBBBBBBBBBB    rrrrrrr                eeeeeeeeeeeeee      eeeeeeeeeeeeee  zzzzzzzzzzzzzzzzz    eeeeeeeeeeeeee
-    """
+    
         
+                                         ⌠                                                   
+                            ⌠     └─────<─                                                   
+                        ┌───<            ⌡                                                   
+                            ⌡       ⌠                                                      
+            ░▒░░░░     ⌠        ┌───{                                                      
+          ░░▒░░░░▒░░   }───┘        ⌡                                                      
+         ░▒░░▒▒░▒░░▒░  ⌡                                                                   
+        ░░░▒░░▓█░▒▒░░░                                                                     
+        ░▒▒░▒████░░░░░                                                                     
+        ▒░░░░░█▓░▒░▒▒░      ░████████                                                      
+         ░░░░█░▒░░▒░░       ░██    ░██                                                     
+          ░░█░▒░▒░░▒        ░██    ░██  ░██████  ░████████  ░████████  ░█████████ ░████████
+           █░░░░░▒          ░████████   ░██  ░██ ░██        ░██             ░███  ░██      
+          ▓█                ░██     ░██ ░██████  ░████████  ░████████     ░███    ░████████
+          ▓█                ░██     ░██ ░██  ░██ ░██        ░██         ░███      ░██      
+          ██                ░█████████  ░██  ░██ ░████████  ░████████  ░█████████ ░████████
+        
+    
+    """
         let formattedTitle = noora.format("\(.accent(title))")
         print(formattedTitle)
     }
