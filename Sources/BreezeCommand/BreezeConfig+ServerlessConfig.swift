@@ -15,16 +15,17 @@
 import Foundation
 import Yams
 import SLSAdapter
+import Noora
 
 extension ServerlessConfig {
     
     private static let encoder = YAMLEncoder()
     
-    func writeSLS(targetPath: String, ymlFileName: String) throws {
+    func writeSLS(targetPath: String, ymlFileName: String, progress: (TerminalText) -> Void) throws {
         let content = try Self.encoder.encode(self)
         let path = targetPath.appending("/").appending(ymlFileName)
         let destination = URL(fileURLWithPath: path)
         try content.data(using: .utf8)?.write(to: destination)
-        printInfo("📄 \(destination.path)")
+        progress("📄 \(destination.path)")
     }
 }

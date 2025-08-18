@@ -14,6 +14,7 @@
 
 import Foundation
 import Yams
+import Noora
 
 struct BreezeConfig: Codable {
     let service: String
@@ -62,12 +63,9 @@ struct BreezeWebhookConfig: Codable {
 
 extension BreezeConfig {
     static let decoder = YAMLDecoder()
-    static func load(from url: URL) throws -> BreezeConfig {
+    static func load(from url: URL, progress: (TerminalText) -> Void) throws -> BreezeConfig {
         let paramsYML = try Data(contentsOf: url)
-        printTitle("⚙️ Loading configuration file")
-        printInfo("\(url.path)\n")
-        let yml = String(data: paramsYML, encoding: .utf8) ?? ""
-        print(yml)
+        progress("\(url.path)")
         return try decoder.decode(BreezeConfig.self, from: paramsYML)
     }
 }

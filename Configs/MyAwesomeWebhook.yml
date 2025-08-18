@@ -1,0 +1,10 @@
+service: swift-breeze-myawewesome-webhook
+awsRegion: us-east-1
+swiftVersion: 6.1.2
+swiftConfiguration: release
+packageName: BreezeMyAwesomeWebhook
+buildPath: build
+cors: false
+breezeWebhook:
+    targetName: WebHook
+    httpPath: /myawewesome-webhook

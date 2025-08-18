@@ -17,31 +17,78 @@ import Foundation
 import SLSAdapter
 import Noora
 
-struct GenerateGithubWebhook: ParsableCommand {
+struct GenerateGithubWebhook: AsyncParsableCommand {
     
     @OptionGroup var options: BreezeCommand.Options
     
-    mutating func run() throws {
+    mutating func run() async throws {
+        
+        let noora = Noora(theme: BreezeNoora.theme)
+        noora.breezeHeader()
+        
         let fileManager = FileManager.default
-        guard !options.configFile.isEmpty else {
-            throw BreezeCommandError.invalidConfig
+        let options = self.options
+        
+        // Load configuration
+        let (config, params) = try await noora.loadConfig { updateMessage in
+            
+            guard !options.configFile.isEmpty else {
+                throw BreezeCommandError.invalidConfig
+            }
+            let url: URL = URL(fileURLWithPath: options.configFile)
+            let config = try BreezeConfig.load(from: url) { text in
+                let formattedText = noora.format(text)
+                print("\tfrom: \(formattedText)\n")
+            }
+            guard let params = config.breezeGithubWebhook else {
+                noora.error("GenerateGithubWebhook requires `breezeGithubWebhook` configuration.")
+                throw BreezeCommandError.invalidConfig
+            }
+            return (config, params)
         }
-        let url: URL = URL(fileURLWithPath: options.configFile)
-        let config = try BreezeConfig.load(from: url)
-        guard let params = config.breezeGithubWebhook else {
-            printError("GenerateGithubWebhook requires `breezeGithubWebhook` configuration.")
-            throw BreezeCommandError.invalidConfig
+    
+        // Verify target path and clean if necessary
+        try await noora.verifyTarget { progress in
+            try await fileManager.cleanTargetPath(
+                options.targetPath,
+                remove: options.forceOverwrite,
+                yes: options.yes,
+                noora: noora
+            )
         }
-        try fileManager.cleanTargetPath(options.targetPath, remove: options.forceOverwrite, yes: options.yes)
+        
         let context: [String : Any] = ["config" : config,
                                        "params" : params]
-        try fileManager.applyStencils(
-            basePath: "BreezeGithubWebhook",
-            targetPath: options.targetPath,
-            packageName: config.packageName,
-            targetName: params.targetName,
-            context: context
-        )
+        
+        // Generate the project using stencils
+        try await noora.generateProject { progress in
+            try await fileManager.applyStencils(
+                basePath: "BreezeGithubWebhook",
+                targetPath: options.targetPath,
+                packageName: config.packageName,
+                targetName: params.targetName,
+                context: context,
+                progress: progress
+            )
+            try Self.generateSLS(
+                config: config,
+                params: params,
+                options: options,
+                progress: progress
+            )
+        }
+
+        // Success message
+        noora.projectReady(targetPath: options.targetPath)
+        noora.printInstructions(targetPath: options.targetPath)
+    }
+    
+    private static func generateSLS(
+        config: BreezeConfig,
+        params: BreezeGithubWebhookConfig,
+        options: BreezeCommand.Options,
+        progress: (TerminalText) -> Void
+    ) throws {
         let lambdasParams: [HttpAPILambdaParams] = [
             HttpAPILambdaParams(
                 name: "githubWebHook",
@@ -63,7 +110,11 @@ struct GenerateGithubWebhook: ParsableCommand {
             authorizer: nil,
             lambdasParams: lambdasParams
         )
-        try serverlessConfig.writeSLS(targetPath: options.targetPath, ymlFileName: "serverless.yml")
+        try serverlessConfig.writeSLS(
+            targetPath: options.targetPath,
+            ymlFileName: "serverless.yml",
+            progress: progress
+        )
         
         let serverlessConfig_x86_64 = try ServerlessConfig.webhookLambdaAPI(
             service: config.service,
@@ -75,15 +126,10 @@ struct GenerateGithubWebhook: ParsableCommand {
             authorizer: nil,
             lambdasParams: lambdasParams
         )
-        try serverlessConfig_x86_64.writeSLS(targetPath: options.targetPath, ymlFileName: "serverless-x86_64.yml")
-        let noora = Noora(theme: BreezeHeader.theme)
-        BreezeHeader(noora: noora).breeze()
-        print("")
-        printTitle("✅ Project is ready at target-path")
-        printInfo("\(options.targetPath)\n")
-        printTitle("💨 Use the following commands to build & deploy")
-        printCommand("cd \(options.targetPath)")
-        printCommand("./build.sh")
-        printCommand("./deploy.sh")
+        try serverlessConfig_x86_64.writeSLS(
+            targetPath: options.targetPath,
+            ymlFileName: "serverless-x86_64.yml",
+            progress: progress
+        )
     }
 }
