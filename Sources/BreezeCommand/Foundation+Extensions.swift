@@ -32,7 +32,7 @@ extension FileManager {
                 title: "\(.danger("WARNING: The folder at path \(targetPath) will be removed."))",
                 question: "Do you want to continue?",
                 defaultAnswer: false,
-                description: "The target path needs to be empty before proceeding.",
+                description: "The target path needs to be empty before proceeding."
             ) else {
                 throw BreezeCommandError.cannotOverwriteTargetPath(targetPath)
             }
