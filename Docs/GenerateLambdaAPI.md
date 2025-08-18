@@ -179,72 +179,45 @@ If you don't want to use a custom authorizer, remove the `authorizer` section.
 The following command will run using the example configuration file and generate the deployment files in the `.build/temp` folder.
 
 ```bash
-swift run breeze -c Sources/BreezeCommand/Resources/breeze.yml -t .build/temp
+swift run breeze generate-lambda-api -c Sources/BreezeCommand/Resources/breeze.yml -t .build/temp
 ```
 
 output:
 
 ```bash
-⚙️ Loading configuration file
 
-/Users/andreascuderi/Documents/workspace/Breeze/Sources/BreezeCommand/Resources/breeze.yml
+    
+                                    \ | /                                                  
+                         | /     -----< -                                                  
+                     ----< -          | \                                                 
+                       / |                    \ /                                                     
+        ░▒░░░░                    \       ----< -                                                     
+      ░░▒░░░░▒░░                  ->--        / \                                                     
+     ░▒░░▒▒░▒░░▒░                 /                                                            
+    ░░░▒░░▓█░▒▒░░░                                                                     
+    ░▒▒░▒████░░░░░                                                                     
+    ▒░░░░░█▓░▒░▒▒░      ░████████                                                      
+     ░░░░█░▒░░▒░░       ░██    ░██                                                     
+      ░░█░▒░▒░░▒        ░██    ░██  ░██████  ░████████  ░████████  ░█████████ ░████████
+       █░░░░░▒          ░████████   ░██  ░██ ░██        ░██             ░███  ░██      
+      ▓█                ░██     ░██ ░██████  ░████████  ░████████     ░███    ░████████
+      ▓█                ░██     ░██ ░██  ░██ ░██        ░██         ░███      ░██      
+      ██                ░█████████  ░██  ░██ ░████████  ░████████  ░█████████ ░████████
+    
 
-service: swift-breeze-rest-item-api
-awsRegion: us-east-1
-swiftVersion: 5.10.1
-swiftConfiguration: release
-packageName: BreezeItemAPI
-buildPath: build
-cors: false
-breezeLambdaAPI:
-    targetName: ItemAPI
-    itemCodable: Item
-    itemKey: itemKey
-    httpAPIPath: /items
-    dynamoDBTableNamePrefix: items
 
-🔎 Verifing target path
+ℹ︎ Loading configuration
+        from: ~/Documents/workspace/Breeze/Sources/BreezeCommand/Resources/breeze.yml
+✔︎ Configuration loaded [0.0s]
+✔︎ Target path is valid 
+✔︎ Project genereration succeeded 
 
-🧹 .build/temp
+✔ Success 
+  Project is ready at path: .build/temp 
 
-✅ Target path ready!
-
-📁 Generating project from template
-
-📄 /Users/andreascuderi/Documents/workspace/Breeze/.build/temp/SwiftPackage/Package.swift
-📄 /Users/andreascuderi/Documents/workspace/Breeze/.build/temp/SwiftPackage/Sources/SwiftTarget/main.swift
-📄 /Users/andreascuderi/Documents/workspace/Breeze/.build/temp/Dockerfile
-📄 /Users/andreascuderi/Documents/workspace/Breeze/.build/temp/remove.sh
-📄 /Users/andreascuderi/Documents/workspace/Breeze/.build/temp/.gitignore
-📄 /Users/andreascuderi/Documents/workspace/Breeze/.build/temp/deploy.sh
-📄 /Users/andreascuderi/Documents/workspace/Breeze/.build/temp/update.sh
-📄 /Users/andreascuderi/Documents/workspace/Breeze/.build/temp/Makefile
-📄 /Users/andreascuderi/Documents/workspace/Breeze/.build/temp/README.md
-📄 /Users/andreascuderi/Documents/workspace/Breeze/.build/temp/build.sh
-📄 /Users/andreascuderi/Documents/workspace/Breeze/.build/temp/swagger.json
-🛫 .build/temp/SwiftPackage/Sources/SwiftTarget
-🛬 .build/temp/SwiftPackage/Sources/ItemAPI
-🛫 .build/temp/SwiftPackage
-🛬 .build/temp/BreezeItemAPI
-📄 /Users/andreascuderi/Documents/workspace/Breeze/.build/temp/serverless.yml
-📄 /Users/andreascuderi/Documents/workspace/Breeze/.build/temp/serverless-x86_64.yml
-
-✅ Project is ready at target-path
-
-.build/temp
-
-🎵🎵🎵🎵🎵🎵🎵🎵🎵🎵🎵🎵🎵🎵🎵🎵🎵🎵🎵🎵🎵🎵🎵🎵🎵🎵🎵🎵🎵🎵🎵🎵🎵🎵🎵🎵🎵🎵🎵🎵🎵🎵🎵🎵
-🎵💨💨💨💨💨💨🎵🎵🎵🎵🎵🎵🎵🎵🎵🎵🎵🎵🎵🎵🎵🎵🎵🎵🎵🎵🎵🎵🎵🎵🎵🎵🎵🎵🎵🎵🎵🎵🎵🎵🎵🎵🎵
-🎵💨🎵🎵🎵🎵🎵💨🎵💨💨💨💨💨🎵🎵💨💨💨💨💨💨🎵💨💨💨💨💨💨🎵💨💨💨💨💨💨🎵💨💨💨💨💨💨🎵
-🎵💨🎵🎵🎵🎵🎵💨🎵💨🎵🎵🎵🎵💨🎵💨🎵🎵🎵🎵🎵🎵💨🎵🎵🎵🎵🎵🎵🎵🎵🎵🎵💨🎵🎵💨🎵🎵🎵🎵🎵🎵
-🎵💨💨💨💨💨💨🎵🎵💨🎵🎵🎵🎵💨🎵💨💨💨💨💨🎵🎵💨💨💨💨💨🎵🎵🎵🎵🎵💨🎵🎵🎵💨💨💨💨💨🎵🎵
-🎵💨🎵🎵🎵🎵🎵💨🎵💨💨💨💨💨🎵🎵💨🎵🎵🎵🎵🎵🎵💨🎵🎵🎵🎵🎵🎵🎵🎵💨🎵🎵🎵🎵💨🎵🎵🎵🎵🎵🎵
-🎵💨🎵🎵🎵🎵🎵💨🎵💨🎵🎵🎵💨🎵🎵💨🎵🎵🎵🎵🎵🎵💨🎵🎵🎵🎵🎵🎵🎵💨🎵🎵🎵🎵🎵💨🎵🎵🎵🎵🎵🎵
-🎵💨💨💨💨💨💨🎵🎵💨🎵🎵🎵🎵💨🎵💨💨💨💨💨💨🎵💨💨💨💨💨💨🎵💨💨💨💨💨💨🎵💨💨💨💨💨💨🎵
-🎵🎵🎵🎵🎵🎵🎵🎵🎵🎵🎵🎵🎵🎵🎵🎵🎵🎵🎵🎵🎵🎵🎵🎵🎵🎵🎵🎵🎵🎵🎵🎵🎵🎵🎵🎵🎵🎵🎵🎵🎵🎵🎵🎵
-
-💨 Use the following commands to build & deploy
-
+i Info 
+  Use the following commands to build & deploy: 
+   
 cd .build/temp
 ./build.sh
 ./deploy.sh
