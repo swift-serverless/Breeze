@@ -15,19 +15,8 @@ services:
     volumes:
       - ..:/src
     working_dir: /src
-    depends_on:
-      - localstack
-    environment:
-      - LOCALSTACK_ENDPOINT=http://localstack:4566
     command: /bin/bash -xcl "swift test"
-
-  localstack:
-    image: localstack/localstack
 
   shell:
     <<: *common
-    depends_on:
-      - localstack
-    environment:
-      - LOCALSTACK_ENDPOINT=http://localstack:4566
     entrypoint: /bin/bash

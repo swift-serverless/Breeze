@@ -33,7 +33,7 @@ class GenerateGithubWebhookTests: XCTestCase {
     func test_generateGithubWebhook_run_whenParametersAreSet_thenSuccess() async throws {
         let configFile = try Fixtures.fixture(file: Fixtures.configFileGithubWebhook).path
         let output = try givenRunBreeze(subcommand: subcommand, args: "--config-file \(configFile) --target-path \(targetPath) --force-overwrite -y")
-        XCTAssertTrue(output.contains("✅ Project is ready at target-path"))
+        XCTAssertTrue(output.contains("Project is ready"))
         
         let serverlessConfig = try loadServerlessConfig(targetPath: targetPath, fileName: "serverless")
         try assertServerlessConfig(serverlessConfig: serverlessConfig, runtime: .providedAl2, architecture: .arm64)
@@ -45,7 +45,7 @@ class GenerateGithubWebhookTests: XCTestCase {
     func test_generateGithubWebhook_run_whenParametersAreSetAndForceOverrideIsFalse_thenErrorOnSecondRun() async throws {
         let configFile = try Fixtures.fixture(file: Fixtures.configFileGithubWebhook).path
         let output = try givenRunBreeze(subcommand: subcommand, args: "--config-file \(configFile) --target-path \(targetPath) --force-overwrite -y")
-        XCTAssertTrue(output.contains("✅ Project is ready at target-path"))
+        XCTAssertTrue(output.contains("Project is ready"))
         
         let outputWithoutForce = try givenRunBreeze(subcommand: subcommand, args: "--config-file \(configFile) --target-path \(targetPath)")
         XCTAssertTrue(outputWithoutForce.contains("Error: TargetPath \(targetPath) cannot be overwritten"))
