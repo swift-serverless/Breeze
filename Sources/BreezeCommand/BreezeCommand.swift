@@ -14,9 +14,10 @@
 
 import ArgumentParser
 import Foundation
+import Rainbow
 
 @main
-struct BreezeCommand: ParsableCommand {
+struct BreezeCommand: AsyncParsableCommand {
     
     struct Options: ParsableArguments {
         @Option(name: .shortAndLong, help: "YML configurarion file")

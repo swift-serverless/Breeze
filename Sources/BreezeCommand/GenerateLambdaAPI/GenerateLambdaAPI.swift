@@ -15,34 +15,78 @@
 import ArgumentParser
 import Foundation
 import SLSAdapter
+import Noora
 
-struct GenerateLambdaAPI: ParsableCommand {
+struct GenerateLambdaAPI: AsyncParsableCommand {
     
     @OptionGroup var options: BreezeCommand.Options
     
-    mutating func run() throws {
+    mutating func run() async throws {
+        let noora = Noora(theme: BreezeNoora.theme)
+        noora.breezeHeader()
+        
+        let options = self.options
         let fileManager = FileManager.default
-        guard !options.configFile.isEmpty else {
-            throw BreezeCommandError.invalidConfig
-        }
-        let url: URL = URL(fileURLWithPath: options.configFile)
-        let config = try BreezeConfig.load(from: url)
-        guard let params = config.breezeLambdaAPI else {
-            print("GenerateLambdaAPI requires `breezeLambdaAPI` configuration.")
-            throw BreezeCommandError.invalidConfig
+        
+        // Load configuration
+        let (config, params) = try await noora.loadConfig { updateMessage in
+            guard !options.configFile.isEmpty else {
+                throw BreezeCommandError.invalidConfig
+            }
+            let url: URL = URL(fileURLWithPath: options.configFile)
+            let config = try BreezeConfig.load(from: url) { text in
+                let formattedText = noora.format(text)
+                print("\tfrom: \(formattedText)\n")
+            }
+            guard let params = config.breezeLambdaAPI else {
+                noora.error("GenerateLambdaAPI requires `breezeLambdaAPI` configuration.")
+                throw BreezeCommandError.invalidConfig
+            }
+            return (config, params)
         }
         
-        try fileManager.cleanTargetPath(options.targetPath, remove: options.forceOverwrite, yes: options.yes)
+        // Verify target path
+        try await noora.verifyTarget { progress in
+            try await fileManager.cleanTargetPath(
+                options.targetPath,
+                remove: options.forceOverwrite,
+                yes: options.yes,
+                noora: noora
+            )
+        }
         let context: [String : Any] = ["config" : config,
                                        "params" : params]
-        try fileManager.applyStencils(
-            basePath: "BreezeLambdaAPI",
-            targetPath: options.targetPath,
-            packageName: config.packageName,
-            targetName: params.targetName,
-            context: context
-        )
-
+        
+        // Generate project
+        try await noora.generateProject { progress in
+            try await fileManager.applyStencils(
+                basePath: "BreezeLambdaAPI",
+                targetPath: options.targetPath,
+                packageName: config.packageName,
+                targetName: params.targetName,
+                context: context,
+                progress: progress
+            )
+            
+            try Self.generateSLS(
+                config: config,
+                params: params,
+                options: options,
+                progress: progress
+            )
+        }
+        
+        // Success message
+        noora.projectReady(targetPath: options.targetPath)
+        noora.printInstructions(targetPath: options.targetPath)
+    }
+    
+    private static func generateSLS(
+        config: BreezeConfig,
+        params: BreezeLambdaAPIConfig,
+        options: BreezeCommand.Options,
+        progress: (TerminalText) -> Void
+    ) throws {
         let serverlessConfig = try ServerlessConfig.dynamoDBLambdaAPI(
             service: config.service,
             dynamoDBKey: params.itemKey,
@@ -57,7 +101,11 @@ struct GenerateLambdaAPI: ParsableCommand {
             executable: params.targetName,
             artifact: "\(config.buildPath)/\(params.targetName)/\(params.targetName).zip"
         )
-        try serverlessConfig.writeSLS(targetPath: options.targetPath, ymlFileName: "serverless.yml")
+        try serverlessConfig.writeSLS(
+            targetPath: options.targetPath,
+            ymlFileName: "serverless.yml",
+            progress: progress
+        )
         
         let serverlessConfig_x86_64 = try ServerlessConfig.dynamoDBLambdaAPI(
             service: config.service,
@@ -73,15 +121,10 @@ struct GenerateLambdaAPI: ParsableCommand {
             executable: params.targetName,
             artifact: "\(config.buildPath)/\(params.targetName)/\(params.targetName).zip"
         )
-        try serverlessConfig_x86_64.writeSLS(targetPath: options.targetPath, ymlFileName: "serverless-x86_64.yml")
-        print("")
-        printTitle("✅ Project is ready at target-path")
-        print("\(options.targetPath)\n")
-        breeze()
-        print()
-        printTitle("💨 Use the following commands to build & deploy")
-        print("cd \(options.targetPath)")
-        print("./build.sh")
-        print("./deploy.sh")
+        try serverlessConfig_x86_64.writeSLS(
+            targetPath: options.targetPath,
+            ymlFileName: "serverless-x86_64.yml",
+            progress: progress
+        )
     }
 }

@@ -15,6 +15,7 @@
 import Foundation
 import Stencil
 import PathKit
+import Noora
 
 extension FileManager {
     
@@ -27,12 +28,18 @@ extension FileManager {
 #endif
     }
     
-    func applyStencils(basePath: String, targetPath: String, packageName: String, targetName: String, context: [String: Any]) throws {
-        printTitle("📁 Generating project from template")
+    func applyStencils(
+        basePath: String,
+        targetPath: String,
+        packageName: String,
+        targetName: String,
+        context: [String: Any],
+        progress: (TerminalText) -> Void
+    ) async throws {
         var isDirectory: ObjCBool = false
         let templatePath = templatePath(basePath: basePath)
         guard fileExists(atPath: templatePath, isDirectory: &isDirectory) else {
-            print("Invalid templatePath: \(templatePath)")
+            progress("\(.danger("Invalid templatePath: \(templatePath)"))")
             throw BreezeCommandError.invalidTemplateFolder
         }
         let dirEnum = enumerator(atPath: templatePath)
@@ -41,15 +48,22 @@ extension FileManager {
                 let stencilURL = URL(fileURLWithPath: templatePath.appending(file))
                 let targetURL = URL(fileURLWithPath: targetPath.appending("/").appending(file)).deletingLastPathComponent().path
                 try createDirectory(atPath: targetURL, withIntermediateDirectories: true)
-                try applyStencil(stencilURL: stencilURL, targetPath: targetURL, context: context)
+                try applyStencil(
+                    stencilURL: stencilURL,
+                    targetPath: targetURL,
+                    context: context,
+                    progress: progress
+                )
             }
         }
-        try move(targetPath: targetPath, at: "/SwiftPackage/Sources/SwiftTarget", to: "/SwiftPackage/Sources/\(targetName)")
-        try? move(targetPath: targetPath, at: "/SwiftPackage/Tests/SwiftTarget", to: "/SwiftPackage/Tests/\(targetName)Tests")
-        try move(targetPath: targetPath, at: "/SwiftPackage", to: "/\(packageName)")
+        progress(try self.move(targetPath: targetPath, at: "/SwiftPackage/Sources/SwiftTarget", to: "/SwiftPackage/Sources/\(targetName)"))
+        if let value = try? self.move(targetPath: targetPath, at: "/SwiftPackage/Tests/SwiftTarget", to: "/SwiftPackage/Tests/\(targetName)Tests") {
+            progress(value)
+        }
+        progress(try self.move(targetPath: targetPath, at: "/SwiftPackage", to: "/\(packageName)"))
     }
     
-    func applyStencil(stencilURL: URL, targetPath: String, context: [String: Any]) throws {
+    func applyStencil(stencilURL: URL, targetPath: String, context: [String: Any], progress: (TerminalText) -> Void) throws {
         let stencil = stencilURL.lastPathComponent
         let templateFolder = stencilURL.deletingLastPathComponent().path
         let fsLoader = FileSystemLoader(paths: [Path(stringLiteral: templateFolder)])
@@ -58,16 +72,16 @@ extension FileManager {
         let path = targetPath.appending("/").appending(stencil.replacingOccurrences(of: ".stencil", with: ""))
         let destination = URL(fileURLWithPath: path)
         try package.data(using: .utf8)?.write(to: destination)
-        print("📄 \(destination.path)")
+        progress("\(destination.path)")
         if destination.pathExtension == "sh" {
             try setAttributes([FileAttributeKey.posixPermissions: 0o755], ofItemAtPath: path)
         }
     }
     
-    func move(targetPath: String, at: String, to: String) throws {
+    func move(targetPath: String, at: String, to: String) throws -> TerminalText {
         let moveAt = targetPath.appending(at)
         let moveTo = targetPath.appending(to)
         try moveItem(atPath: moveAt, toPath: moveTo)
-        print("🛫 \(moveAt)\n🛬 \(moveTo)")
+        return TerminalText(unicodeScalarLiteral: "\(moveAt)\n > \(moveTo)")
     }
 }

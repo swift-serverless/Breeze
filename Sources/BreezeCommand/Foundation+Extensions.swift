@@ -13,51 +13,38 @@
 //    limitations under the License.
 
 import Foundation
+import Noora
 
 extension FileManager {
-    func cleanTargetPath(_ targetPath: String, remove: Bool, yes: Bool) throws {
-        printTitle("🔎 Verifing target path")
+    func cleanTargetPath(
+        _ targetPath: String,
+        remove: Bool,
+        yes: Bool,
+        noora: Noorable
+    ) async throws {
         var isDirectory: ObjCBool = false
         
         let directoryExists = fileExists(atPath: targetPath, isDirectory: &isDirectory)
         if remove,
            directoryExists,
            !yes {
-            print("WARNING: The folder at path \(targetPath) will be removed. Do you want to continue? [yes/no]")
-            let readline = readLine()
-            if readline != "yes" {
+            guard noora.yesOrNoChoicePrompt(
+                title: "\(.danger("WARNING: The folder at path \(targetPath) will be removed."))",
+                question: "Do you want to continue?",
+                defaultAnswer: false,
+                description: "The target path needs to be empty before proceeding."
+            ) else {
                 throw BreezeCommandError.cannotOverwriteTargetPath(targetPath)
             }
         }
         
         if remove, directoryExists {
             try removeItem(at: URL(fileURLWithPath: targetPath))
-            print("🧹 \(targetPath)\n")
+            noora.info("removing: \(targetPath)\n")
         }
         
         if fileExists(atPath: targetPath, isDirectory: &isDirectory) {
             throw BreezeCommandError.cannotOverwriteTargetPath(targetPath)
         }
-        print("✅ Target path ready!\n")
     }
-}
-
-func printTitle(_ string: String) {
-    print("\(string)\n")
-}
-
-func breeze() {
-    
-    let title = """
-    🎵🎵🎵🎵🎵🎵🎵🎵🎵🎵🎵🎵🎵🎵🎵🎵🎵🎵🎵🎵🎵🎵🎵🎵🎵🎵🎵🎵🎵🎵🎵🎵🎵🎵🎵🎵🎵🎵🎵🎵🎵🎵🎵🎵
-    🎵💨💨💨💨💨💨🎵🎵🎵🎵🎵🎵🎵🎵🎵🎵🎵🎵🎵🎵🎵🎵🎵🎵🎵🎵🎵🎵🎵🎵🎵🎵🎵🎵🎵🎵🎵🎵🎵🎵🎵🎵🎵
-    🎵💨🎵🎵🎵🎵🎵💨🎵💨💨💨💨💨🎵🎵💨💨💨💨💨💨🎵💨💨💨💨💨💨🎵💨💨💨💨💨💨🎵💨💨💨💨💨💨🎵
-    🎵💨🎵🎵🎵🎵🎵💨🎵💨🎵🎵🎵🎵💨🎵💨🎵🎵🎵🎵🎵🎵💨🎵🎵🎵🎵🎵🎵🎵🎵🎵🎵💨🎵🎵💨🎵🎵🎵🎵🎵🎵
-    🎵💨💨💨💨💨💨🎵🎵💨🎵🎵🎵🎵💨🎵💨💨💨💨💨🎵🎵💨💨💨💨💨🎵🎵🎵🎵🎵💨🎵🎵🎵💨💨💨💨💨🎵🎵
-    🎵💨🎵🎵🎵🎵🎵💨🎵💨💨💨💨💨🎵🎵💨🎵🎵🎵🎵🎵🎵💨🎵🎵🎵🎵🎵🎵🎵🎵💨🎵🎵🎵🎵💨🎵🎵🎵🎵🎵🎵
-    🎵💨🎵🎵🎵🎵🎵💨🎵💨🎵🎵🎵💨🎵🎵💨🎵🎵🎵🎵🎵🎵💨🎵🎵🎵🎵🎵🎵🎵💨🎵🎵🎵🎵🎵💨🎵🎵🎵🎵🎵🎵
-    🎵💨💨💨💨💨💨🎵🎵💨🎵🎵🎵🎵💨🎵💨💨💨💨💨💨🎵💨💨💨💨💨💨🎵💨💨💨💨💨💨🎵💨💨💨💨💨💨🎵
-    🎵🎵🎵🎵🎵🎵🎵🎵🎵🎵🎵🎵🎵🎵🎵🎵🎵🎵🎵🎵🎵🎵🎵🎵🎵🎵🎵🎵🎵🎵🎵🎵🎵🎵🎵🎵🎵🎵🎵🎵🎵🎵🎵🎵
-    """
-    print(title)
 }

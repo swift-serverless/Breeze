@@ -1,0 +1,11 @@
+service: swift-breeze-myawesome-github-webhook
+awsRegion: us-east-1
+swiftVersion: 6.1.2
+swiftConfiguration: release
+packageName: BreezeMyAwesomeGitHubWebHook
+buildPath: build
+cors: false
+breezeGithubWebhook:
+    targetName: GitHubWebHook
+    httpPath: /myawesome-github-webhook
+    secret: ${ssm:/dev/swift-webhook/webhook_secret}
