@@ -22,7 +22,7 @@ enum WebHookError: Error {
     case invalidHandler
 }
 
-class WebHook: BreezeLambdaWebHookHandler {
+final class WebHook: BreezeLambdaWebHookHandler {
     
     let handlerContext: HandlerContext
     

@@ -23,7 +23,7 @@ enum {{ params.targetName }}Error: Error {
     case invalidSignature
 }
 
-class {{ params.targetName }}: BreezeLambdaWebHookHandler {
+final class {{ params.targetName }}: BreezeLambdaWebHookHandler {
     
     let handlerContext: HandlerContext
     

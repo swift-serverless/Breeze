@@ -30,7 +30,7 @@ struct PostWebHookRequest: Codable {
     }
 }
 
-class PostWebHook: BreezeLambdaWebHookHandler {
+final class PostWebHook: BreezeLambdaWebHookHandler {
     
     let handlerContext: HandlerContext
     
