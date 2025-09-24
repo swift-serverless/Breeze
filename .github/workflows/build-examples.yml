@@ -18,7 +18,6 @@ jobs:
     strategy:
       matrix:
         image:
-          - swift:6.1.2-amazonlinux2
           - swift:6.2.0-amazonlinux2
     services:
       localstack:
