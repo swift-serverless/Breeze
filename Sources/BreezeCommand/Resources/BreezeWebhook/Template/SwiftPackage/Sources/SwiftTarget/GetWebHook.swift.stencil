@@ -18,7 +18,7 @@ import AsyncHTTPClient
 import AWSLambdaEvents
 import AWSLambdaRuntime
 
-class GetWebHook: BreezeLambdaWebHookHandler {
+final class GetWebHook: BreezeLambdaWebHookHandler {
     
     let handlerContext: HandlerContext
     

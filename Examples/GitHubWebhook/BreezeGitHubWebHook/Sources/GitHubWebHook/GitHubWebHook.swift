@@ -23,7 +23,7 @@ enum GitHubWebHookError: Error {
     case invalidSignature
 }
 
-class GitHubWebHook: BreezeLambdaWebHookHandler {
+final class GitHubWebHook: BreezeLambdaWebHookHandler {
     
     let handlerContext: HandlerContext
     

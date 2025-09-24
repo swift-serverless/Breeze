@@ -12,7 +12,7 @@
 #    See the License for the specific language governing permissions and
 #    limitations under the License.
 
-SWIFT_VERSION=6.1.2
+SWIFT_VERSION=6.2.0
 SWIFT_DOCKER_IMAGE=swift-amazonlinux2-builder:$(SWIFT_VERSION)
 SWIFT_CONFIGURATION=release
 

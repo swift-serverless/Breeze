@@ -1,6 +1,6 @@
 service: swift-breeze-rest-my-awesome-api
 awsRegion: us-east-1
-swiftVersion: 6.1.2
+swiftVersion: 6.2.0
 swiftConfiguration: release
 packageName: BreezeMyAwesomeAPI
 buildPath: build
