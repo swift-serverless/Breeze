@@ -71,7 +71,9 @@ The `sha256` secret can be securely stored on AWS using `System Manager` -> `Par
 Open the generated code, decode the GitHub payload and implement your custom business logic.
 
 ```swift
-func handle(context: AWSLambdaRuntimeCore.LambdaContext, event: AWSLambdaEvents.APIGatewayV2Request) async -> AWSLambdaEvents.APIGatewayV2Response {
+...
+
+    func handle(_ event: APIGatewayV2Request, context: LambdaContext) async -> APIGatewayV2Response {
         do {
             context.logger.info("event: \(event)")
             let payload = try validateGitHubSignature(context: context, event: event)
@@ -85,4 +87,6 @@ func handle(context: AWSLambdaRuntimeCore.LambdaContext, event: AWSLambdaEvents.
             return APIGatewayV2Response(with: error, statusCode: .badRequest)
         }
     }
+...
+
 ```
