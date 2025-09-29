@@ -65,7 +65,13 @@ Open the generated code, and implement your custom business logic by changing th
 If the parameter `github-user` is present in the URL query string, the value is extracted and used to get the content from GitHub, the content is returned to the response payload.
 
 ```swift
-class GetWebHook: BreezeLambdaWebHookHandler {
+import Foundation
+import BreezeLambdaWebHook
+import AsyncHTTPClient
+import AWSLambdaEvents
+import AWSLambdaRuntime
+
+final class GetWebHook: BreezeLambdaWebHookHandler {
     
     let handlerContext: HandlerContext
     
@@ -73,7 +79,7 @@ class GetWebHook: BreezeLambdaWebHookHandler {
         self.handlerContext = handlerContext
     }
     
-    func handle(context: AWSLambdaRuntimeCore.LambdaContext, event: AWSLambdaEvents.APIGatewayV2Request) async -> AWSLambdaEvents.APIGatewayV2Response {
+    func handle(_ event: APIGatewayV2Request, context: LambdaContext) async -> APIGatewayV2Response {
         do {
             context.logger.info("event: \(event)")
             guard let params = event.queryStringParameters else {
@@ -101,6 +107,16 @@ class GetWebHook: BreezeLambdaWebHookHandler {
 If the parameter `github-user` is present in the JSON payload, the value is extracted and used to get the content from GitHub, the content is returned to the response payload.
 
 ```swift
+import Foundation
+import AsyncHTTPClient
+import AWSLambdaEvents
+import AWSLambdaRuntime
+import BreezeLambdaWebHook
+
+enum PostWebHookError: Error {
+    case invalidBody
+}
+
 struct PostWebHookRequest: Codable {
     let githubUser: String
     
@@ -109,7 +125,7 @@ struct PostWebHookRequest: Codable {
     }
 }
 
-class PostWebHook: BreezeLambdaWebHookHandler {
+final class PostWebHook: BreezeLambdaWebHookHandler {
     
     let handlerContext: HandlerContext
     
@@ -117,7 +133,7 @@ class PostWebHook: BreezeLambdaWebHookHandler {
         self.handlerContext = handlerContext
     }
     
-    func handle(context: AWSLambdaRuntimeCore.LambdaContext, event: AWSLambdaEvents.APIGatewayV2Request) async -> AWSLambdaEvents.APIGatewayV2Response {
+    func handle(_ event: APIGatewayV2Request, context: LambdaContext) async -> APIGatewayV2Response {
         do {
             context.logger.info("event: \(event)")
             let incomingRequest: PostWebHookRequest = try event.bodyObject()

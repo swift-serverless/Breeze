@@ -32,7 +32,7 @@ struct Item: Codable {
     public var updatedAt: String?
     
     enum CodingKeys: String, CodingKey {
-        case key
+        case key = "itemKey"
         case name
         case description
         case createdAt
@@ -42,7 +42,7 @@ struct Item: Codable {
 
 extension Item: BreezeCodable { }
 
-BreezeLambdaAPI<Item>.main()
+try await BreezeLambdaAPI<Item>().run()
 ```
 
 It's required the `Codable` struct or class to conform to the `BreezeCodable` protocol:
@@ -77,7 +77,7 @@ To package the Lambda is required to create a Swift Package using the following 
 import PackageDescription
 
 let package = Package(
-    name: "swift-breeze-item-api",
+    name: "BreezeItemAPI",
     platforms: [
         .macOS(.v15),
     ],
@@ -85,14 +85,15 @@ let package = Package(
         .executable(name: "ItemAPI", targets: ["ItemAPI"]),
     ],
     dependencies: [
-        .package(url: "https://github.com/swift-serverless/Breeze.git", from: "0.2.0"),
+        .package(url: "https://github.com/swift-serverless/BreezeLambdaDynamoDBAPI.git", from: "1.0.0"),
+        .package(url: "https://github.com/swift-server/swift-aws-lambda-runtime.git", from: "2.0.0")
     ],
     targets: [
         .executableTarget(
             name: "ItemAPI",
              dependencies: [
-                .product(name: "BreezeLambdaAPI", package: "Breeze"),
-                .product(name: "BreezeDynamoDBService", package: "Breeze"),
+                .product(name: "BreezeLambdaAPI", package: "BreezeLambdaDynamoDBAPI"),
+                .product(name: "BreezeDynamoDBService", package: "BreezeLambdaDynamoDBAPI"),
             ]
         )
     ]
