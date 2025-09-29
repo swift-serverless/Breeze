@@ -49,7 +49,7 @@ A complete serverless REST API with CRUD operations, using **API Gateway**, **La
 
 ![AWS Serverless Rest API](/images/AWS-Serverless-REST-API.svg)
 
-  * **Learn more:** [Docs/GenerateLambdaAPI.md](https://www.google.com/search?q=Docs/GenerateLambdaAPI.md)
+  * **Learn more:** [Docs/GenerateLambdaAPI.md](Docs/GenerateLambdaAPI.md)
   * **Get started:** `swift run breeze generate-lambda-api --help`
   * **Watch the talk:** [Serverless in Swift Like a Breeze – Andrea Scuderi (NSLondon 2023.2)](http://www.youtube.com/watch?v=D4qSv_fhQIo)
   * **View the slides:** [Slides](https://www.slideshare.net/AndreaScuderi6/serverless-in-swift-like-a-breeze)
@@ -60,7 +60,7 @@ A serverless webhook that can receive and process GitHub events, with signature 
 
 ![AWS Serverless GitHub Webhook](/images/AWS-Serverless-Github-Webhook.svg)
 
-  * **Learn more:** [Docs/GenerateGithubWebhook.md](https://www.google.com/search?q=Docs/GenerateGithubWebhook.md)
+  * **Learn more:** [Docs/GenerateGithubWebhook.md](Docs/GenerateGithubWebhook.md)
   * **Get started:** `swift run breeze generate-github-webhook --help`
 
 ### GET/POST Webhook
@@ -69,7 +69,7 @@ A simple serverless webhook with GET and POST endpoints.
 
 ![AWS Serverless Webhook](/images/AWS-Serverless-Webhook.svg)
 
-  * **Learn more:** [Docs/GenerateWebhook.md](https://www.google.com/search?q=Docs/GenerateWebhook.md)
+  * **Learn more:** [Docs/GenerateWebhook.md](Docs/GenerateWebhook.md)
   * **Get started:** `swift run breeze generate-webhook --help`
 
 ## Getting Started 🏁
